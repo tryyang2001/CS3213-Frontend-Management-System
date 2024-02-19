@@ -1,5 +1,6 @@
 "use client";
 
+import SideBar from "@/components/common/SideBar";
 import { Button } from "@nextui-org/react";
 
 export default function Home() {
