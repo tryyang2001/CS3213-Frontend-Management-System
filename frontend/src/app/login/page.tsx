@@ -10,20 +10,18 @@ import Link from "next/link";
 
 export default function Home() {
     const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>("");
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-    
-    
     const isInvalidEmail = useMemo<boolean>(() => {
         if (email === "") return false;
 
         return email.match(/^.+@([A-Z0-9.-]+\.[A-Z]{2,4})|(\[[0-9.]+\])|(\[IPv6[A-Z0-9:]+)$/i) ? false : true;
-    }, [email]);
+    }, [email])
 
+    const [password, setPassword] = useState<string>("");
+    const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [isVisible, setIsVisible] = useState<boolean>(false);
     const router = useRouter();
-
+    
     const handleSubmit = () => {
         if (isInvalidEmail) {
             return;
@@ -62,6 +60,7 @@ export default function Home() {
 
         setPassword("");
     }
+
     const Eye = () => {
         return <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
           {isVisible ? (
@@ -71,6 +70,7 @@ export default function Home() {
           )}
         </button>
     }
+    
     return <div className="w-screen h-screen flex items-center justify-center">
         <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-7">  
             <Input isRequired type="email" label="Email" 
@@ -85,6 +85,7 @@ export default function Home() {
                 value={password} onValueChange={setPassword}
                 errorMessage={isInvalidPassword && errorMessage} />
             <Button type="submit" color="primary" className="w-full" onClick={handleSubmit}> Login </Button>
+            
             <div className="flex gap-3">
                 <div> <Link href="/login/recovery"> Forgot Password </Link> </div>
                 <div> | </div>
