@@ -31,6 +31,12 @@ function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpe
         }
     }
 
+    const onOpenChangeModal = () => {
+      setFile(undefined);
+      setPhoto("");
+      onOpenChange()
+    }
+
     const handleUpload = () => {
         console.log("Uploading"  + file);
         onUpload(file);
@@ -39,7 +45,7 @@ function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpe
         setFile(undefined);
     }
 
-    return <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    return <Modal isOpen={isOpen} onOpenChange={onOpenChangeModal}>
     <ModalContent className="pt-12">
       {(onClose) => (
         <>
