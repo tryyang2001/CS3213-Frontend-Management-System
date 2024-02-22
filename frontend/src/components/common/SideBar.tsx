@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Avatar, Button, User } from "@nextui-org/react";
-import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
+import { useMemo, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import classNames from "classnames";
+import { Avatar, Button, User, Link } from "@nextui-org/react";
+import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
+import { MdHome, MdAssignment, MdLogout } from "react-icons/md";
 
 const SideBar = () => {
   const userName = "Jane Doe";
@@ -13,7 +14,7 @@ const SideBar = () => {
   const [isCollapsible, setIsCollapsible] = useState(false);
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg-gray-200 text-black flex justify-between flex-col border border-dashed",
+    "h-screen px-4 pt-8 pb-4 bg-gray-200 text-black flex justify-between flex-col",
     {
       ["w-60"]: !isCollapsed,
       ["w-20"]: isCollapsed,
@@ -33,11 +34,37 @@ const SideBar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const menuItems = [
+    { id: 1, label: "Home", icon: MdHome, link: "/" },
+    { id: 2, label: "Assignments", icon: MdAssignment, link: "/dashboard" },
+  ];
+
+  const currentPath = usePathname();
+
+  const activeMenu = useMemo(
+    () => menuItems.find((menu) => menu.link === currentPath),
+    [currentPath]
+  );
+
+  const getNavItemClasses = (menu: {
+    id: any;
+    label?: string;
+    link?: string;
+  }) => {
+    return classNames(
+      "flex items-center cursor-pointer hover:bg-light-lighter rounded w-full overflow-hidden whitespace-nowrap",
+      {
+        ["bg-light-lighter"]: activeMenu && activeMenu.id === menu.id,
+      }
+    );
+  };
+
   return (
     <div
       className={wrapperClasses}
       onMouseEnter={onMouseOver}
       onMouseLeave={onMouseOver}
+      style={{ transition: "width 300ms cubic-bezier(0.2, 0, 0, 1) 0s" }}
     >
       <div className="flex flex-col relative">
         <div className="flex items-center pl-1 gap-4">
@@ -70,6 +97,43 @@ const SideBar = () => {
           >
             <HiOutlineChevronDoubleLeft className="text-2xl" />
           </Button>
+        )}
+        <div className="flex flex-col items-start mt-24">
+          {menuItems.map(({ icon: Icon, ...menu }, index) => {
+            const classes = getNavItemClasses(menu);
+            return (
+              <div className={classes} key={menu.id}>
+                <Link href={menu.link}>
+                  <div className="flex py-4 px-3 items-center w-full h-full">
+                    <div style={{ width: "2.5rem" }}>
+                      <Icon />
+                    </div>
+                    {!isCollapsed && (
+                      <span
+                        className={classNames(
+                          "text-md font-medium text-text-light"
+                        )}
+                      >
+                        {menu.label}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div
+        className="absolute bottom-5 w-full flex items-center cursor-pointer hover:bg-light-lighter rounded overflow-hidden whitespace-nowrap" /* className={`${getNavItemClasses({})} px-3 py-4`}*/
+      >
+        <div style={{ width: "2.5rem" }}>
+          <MdLogout />
+        </div>
+        {!isCollapsed && (
+          <span className={classNames("text-md font-medium text-text-light")}>
+            Logout
+          </span>
         )}
       </div>
     </div>
