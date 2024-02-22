@@ -1,0 +1,21 @@
+{
+  "title": "Question 1",
+  "description": "<div>The description of the question in HTML code format.</div>",
+  "deadline": 1737964800000,
+  "testCases": [
+    {
+      "input": "Public Input",
+      "output": "Expected Public Output",
+      "isPublic": true
+    },
+    {
+      "input": "Hidden Input",
+      "output": "Expected Hidden Output",
+      "isPublic": false
+    }
+  ],
+  "referenceSolution": {
+    "language": "python",
+    "code": "print(\"Hello World!\")"
+  }
+}
