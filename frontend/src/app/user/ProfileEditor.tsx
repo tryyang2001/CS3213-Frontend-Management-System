@@ -14,6 +14,7 @@ export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
     const [photo, setPhoto] = useState<string | undefined>(userInfo.photo);
     const [newPhoto, setNewPhoto] = useState<File>();
     
+    // userInfo is constant, do not change for now
     const hasChanged = useMemo(() => {
         if (name != userInfo.name) return true;
         if (bio != userInfo.bio && !(bio == "" && userInfo.bio == undefined)) return true;
