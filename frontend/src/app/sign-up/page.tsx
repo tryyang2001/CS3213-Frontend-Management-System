@@ -2,21 +2,19 @@
 import {useState, useMemo} from "react";
 import { EyeSlashFilledIcon } from "../login/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../login/EyeFilledIcon";
-import { Button, Input, Link } from "@nextui-org/react";
+import { Button, Input, Link, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
     const [email, setEmail] = useState<string>("");
     const isInvalidEmail = useMemo<boolean>(() => {
         if (email === "") return false;
-
         return email.match(/^.+@([A-Z0-9.-]+\.[A-Z]{2,4})|(\[[0-9.]+\])|(\[IPv6[A-Z0-9:]+)$/i) ? false : true;
     }, [email])
 
     const [password, setPassword] = useState<string>("");
     const isInvalidPassword = useMemo<boolean>(() => {
         if (password == "") return false;
-
         return password.length < 8
     }, [password]);
     const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -25,21 +23,24 @@ export default function Home() {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const isInvalidConfirmation = useMemo<boolean>(() => {
         if (confirmation == "" || password == "") return false;
-
         return confirmation != password
     }, [confirmation, password])
     
     const router = useRouter();
 
-    const handleSubmit = () => {
-        if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword ||
-            email == "" || password == "" || confirmation == "") {
+    const handleSubmit = async () => {
+        if (email == "" || password == "" || confirmation == "") {
             setErrorMessage("Please enter the required fields")
             return;
         }
 
+        if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
+            setErrorMessage("Please correct the invalid fields")
+            return;
+        }
+
         // mock for backend
-        fetch("https://jsonplaceholder.typicode.com/user", {
+        const res = await fetch("https://jsonplaceholder.typicode.com/user", {
             method: "Post",
             headers: {
                 Accept: "application/json, text/plain, */*",
@@ -49,19 +50,20 @@ export default function Home() {
                 email: email,
                 password: password
             })
-        })
-        .then((res) => {
-            if (!res.ok) {
-                setErrorMessage("We are currently encountering some issues, please try again later");
-                throw new Error("We are currently encountering some issues, please try again later");
-            } else {
-                return res.json();
+        }).catch((err: Error) => {
+            console.log(err);
+            return {
+                ok: false,
+                status: 500
             }
-        })
-        .then((data) => {
-            router.push("/profile")
-        })
-        .catch((err: Error) => console.log(err.message));
+        });
+        
+        if (!res.ok) {
+            setErrorMessage("We are currently encountering some issues, please try again later");
+        } else {
+            router.push("/dashboard");
+        }
+        
     }
 
     const Eye = () => {
@@ -72,12 +74,6 @@ export default function Home() {
             <EyeFilledIcon />
           )}
         </button>
-    }
-
-    const ErrorMessage = () => {
-        return <p className="text-red-400 text-sm" >
-                {errorMessage}
-            </p>
     }
     
     return <div className="w-screen h-screen flex items-center justify-center">
@@ -98,8 +94,16 @@ export default function Home() {
                 value={confirmation} onValueChange={setPasswordConfirmation}
                 isInvalid={isInvalidConfirmation}
                 errorMessage={isInvalidConfirmation && "Your password confirmation does not match your password"} />
-            <ErrorMessage />
-            <Button type="submit" size= "sm" color="primary" className="w-full" onClick={handleSubmit}> Sign Up</Button>
+            
+            <Popover color="danger" isOpen={errorMessage != ""} onOpenChange={() => setErrorMessage("")}>
+                <PopoverTrigger>
+                    <Button type="submit" size= "sm" color="primary" className="w-full" onClick={handleSubmit}> Sign Up</Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                        <div className="text-tiny">{errorMessage}</div>
+                </PopoverContent>
+            </Popover>
+            
             <div className="flex gap-3">
                 <div className="text-sm"> Have an account? Login <Link href="/login">  here</Link> </div>
             </div>

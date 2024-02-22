@@ -1,6 +1,6 @@
 "use client";
 
-import {Button, Input} from "@nextui-org/react";
+import {Button, Input, Popover, PopoverContent, PopoverTrigger} from "@nextui-org/react";
 import { useMemo, useState } from "react";
 import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon";
 import { EyeFilledIcon } from "./EyeFilledIcon";
@@ -17,18 +17,22 @@ export default function Home() {
     }, [email])
 
     const [password, setPassword] = useState<string>("");
-    const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const router = useRouter();
     
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (email == "" || password == "") {
+            setErrorMessage("Please enter the required fields");
+            return;
+        }
         if (isInvalidEmail) {
+            setErrorMessage("Please correct the invalid fields");
             return;
         }
 
         // mock for backend
-        fetch("https://jsonplaceholder.typicode.com/session", {
+        const res = await fetch("https://jsonplaceholder.typicode.com/session", {
             method: "Post",
             headers: {
                 Accept: "application/json, text/plain, */*",
@@ -38,27 +42,21 @@ export default function Home() {
                 email: email,
                 password: password
             })
-        })
-        .then((res) => {
-            if (res.status == 401) {
-                setIsInvalidPassword(true)
-                setErrorMessage("Invalid Credentials");
-                throw new Error("Invalid Credentials");
-            } else if (!res.ok) {
-                setIsInvalidPassword(true)
-                setErrorMessage("We are currently encountering some issues, please try again later");
-                throw new Error("We are currently encountering some issues, please try again later");
-            } else {
-                setIsInvalidPassword(false);
-                return res.json();
+        }).catch((err: Error) => {
+            console.log(err);
+            return {
+                ok: false,
+                status: 500
             }
-        })
-        .then((data) => {
-            router.push("/dashboard")
-        })
-        .catch((err: Error) => console.log(err.message));
+        });
 
-        setPassword("");
+        if (res.status == 401) {
+            setErrorMessage("Invalid Email/Password");
+        } else if (!res.ok) {
+            setErrorMessage("We are currently encountering some issues, please try again later");
+        } else {
+            router.push("/dashboard");
+        }
     }
 
     const Eye = () => {
@@ -72,7 +70,7 @@ export default function Home() {
     }
     
     return <div className="w-screen h-screen flex items-center justify-center">
-        <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-7">  
+        <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4">  
             <Input isRequired type="email" label="Email" 
                 placeholder="Enter your email" 
                 value={email} onValueChange={setEmail} 
@@ -80,11 +78,19 @@ export default function Home() {
                 isInvalid={isInvalidEmail}
                 errorMessage={isInvalidEmail && "Please enter a valid email"}
                 />
-            <Input isRequired type={isVisible ? "text" : "password"} 
-                label="Password" endContent={<Eye />} 
+            
+            <Input label="Password" isRequired 
                 value={password} onValueChange={setPassword}
-                errorMessage={isInvalidPassword && errorMessage} />
-            <Button type="submit" color="primary" className="w-full" onClick={handleSubmit}> Login </Button>
+                type={isVisible ? "text" : "password"} endContent={<Eye />} />
+
+            <Popover color="danger" isOpen={errorMessage != ""} onOpenChange={() => setErrorMessage("")}>
+                <PopoverTrigger>
+                    <Button type="submit" color="primary" className="w-full" onClick={handleSubmit}> Login </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                        <div className="text-tiny">{errorMessage}</div>
+                </PopoverContent>
+            </Popover>
             
             <div className="flex gap-3">
                 <div> <Link href="/login/recovery"> Forgot Password </Link> </div>
@@ -92,6 +98,5 @@ export default function Home() {
                 <div> <Link href="/sign-up"> Sign up</Link> </div>
             </div>
         </div>
-        
     </div>
 }
