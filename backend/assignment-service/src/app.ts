@@ -27,4 +27,7 @@ const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Assignment Service is running on port ${PORT}`);
+  console.log(
+    `Swagger API documentation is available at http://localhost:${PORT}/assignment/api/docs`
+  );
 });

@@ -13,11 +13,13 @@ datasource db {
 }
 
 model Assignment {
-    id String @id @default(cuid())
+    id          String   @id @default(cuid())
+    title       String
+    deadline    DateTime
+    isPublished Boolean  @default(false)
 
-    title     String
-    deadline  DateTime
-    questions Question[]
+    numberOfQuestions Int        @default(0)
+    questions         Question[]
 
     // string for now, will be replaced by user model
     authors String[]
@@ -31,29 +33,31 @@ model Assignment {
 model Question {
     id          String   @id @default(cuid())
     title       String
+    // description should contain all the details of the question, including examples, constraints, images, etc.
     description String
     deadline    DateTime
-
-    examples    QuestionExample[]
-    constraints String[]
 
     referenceSolutionId String?
     referenceSolution   ReferenceSolution?
 
-    Assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+    numberOfTestCases Int        @default(0)
+    testCases         TestCase[]
+
+    Assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
     assignmentId String?
 
     @@schema("assignments")
 }
 
-model QuestionExample {
+model TestCase {
     id         String   @id @default(cuid())
     questionId String
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-    input       String
-    output      String
-    explanation String?
+    input  String
+    output String
+
+    isPublic Boolean @default(true)
 
     @@schema("assignments")
 }
