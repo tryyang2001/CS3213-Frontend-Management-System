@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { UserInfo } from "./ReadOnlyUserCard";
+import { UserInfo } from "../common/ReadOnlyUserCard";
 import { Button, Card, Input, Popover, PopoverContent, PopoverTrigger, Textarea, CardFooter, Avatar } from "@nextui-org/react";
-import FileInput from "./FileInput";
+import FileInput from "../common/FileInput";
 
 export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
     const [name, setName] = useState<string>(userInfo.name);
@@ -68,9 +68,7 @@ export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
             setProfileMessage("Profile saved!");
         }
     }
-    return <div className="flex w-full justify-around gap-12">
-            <div> Your Profile </div>
-            <form className="flex w-1/2 flex-col gap-4">
+    return <form className="flex w-1/2 flex-col gap-4">
                 <Card isFooterBlurred className="
                     border-none
                     self-center
@@ -102,6 +100,5 @@ export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
                         <p className="text-small" color="danger">{profileMessage}</p>
                     </PopoverContent>
                 </Popover>
-            </form>
-        </div>
+        </form>
 }

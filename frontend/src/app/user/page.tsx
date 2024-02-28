@@ -1,9 +1,9 @@
 import { Button, Textarea } from "@nextui-org/react";
-import { ReadOnlyFullUserCard, UserInfo } from "./ReadOnlyUserCard";
+import { ReadOnlyFullUserCard, UserInfo } from "../../components/common/ReadOnlyUserCard";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import ProfileEditor from "./ProfileEditor";
-import AccountEditor from "./AccountEditor";
+import ProfileEditor from "../../components/forms/ProfileEditor";
+import AccountEditor from "../../components/forms/AccountEditor";
 
 export const getUserData = async () => {
     const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
@@ -18,8 +18,14 @@ export default async function Home() {
 
     return (
       <div className="flex flex-col items-center p-12">
-        <ProfileEditor userInfo={userInfo} />
-        <AccountEditor userInfo={userInfo} />
+        <div className="flex w-full justify-around gap-12 pt-10">
+            <div> Your Account </div>
+          <ProfileEditor userInfo={userInfo} />
+        </div>
+        <div className="flex w-full justify-around gap-12 pt-10">
+            <div> Your Profile </div>
+            <AccountEditor userInfo={userInfo} />
+        </div>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { UserInfo } from "./ReadOnlyUserCard";
+import { UserInfo } from "../common/ReadOnlyUserCard";
 import { Button, Input, Popover, PopoverContent, PopoverTrigger, Textarea } from "@nextui-org/react";
 
 export default function AccountEditor({userInfo} : {userInfo: UserInfo}) {
@@ -48,9 +48,7 @@ export default function AccountEditor({userInfo} : {userInfo: UserInfo}) {
             setAccountMessage("Profile saved!");
         }
     }
-    return <div className="flex w-full justify-around gap-12 pt-10">
-            <div> Your Account </div>
-            <form className="flex w-1/2 flex-col gap-4"> 
+    return <form className="flex w-1/2 flex-col gap-4"> 
                 <Input type="email" isDisabled isRequired label="Email" value={userInfo.email} />
                 <Input type="password" label="New Password" name="New password"
                     value={newPassword} onValueChange={setNewPassword} isRequired
@@ -67,6 +65,5 @@ export default function AccountEditor({userInfo} : {userInfo: UserInfo}) {
                         <p className="text-small" color="danger">{accountMessage}</p>
                     </PopoverContent>
                 </Popover>
-            </form>
-        </div>
+        </form>
 }
