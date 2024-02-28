@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { UserInfo } from "./ReadOnlyUserCard";
-import { Image, Button, Card, CardHeader, Input, Popover, PopoverContent, PopoverTrigger, Textarea, CardFooter } from "@nextui-org/react";
+import { Button, Card, Input, Popover, PopoverContent, PopoverTrigger, Textarea, CardFooter, Avatar } from "@nextui-org/react";
 import FileInput from "./FileInput";
 
 export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
@@ -76,15 +76,12 @@ export default function ProfileEditor({userInfo} : {userInfo: UserInfo}) {
                     self-center
                     max-w-[200px] max-h-[200px]"
                     radius="lg">
-                    <Image
-                        removeWrapper
+                    <Avatar
                         alt="Profile Picture"
-                        className="object-cover"
+                        className="object-cover h-200 w-200"
                         src={photo ? photo : "https://picsum.photos/200"}
-                        height={200}
-                        width={200}
-                        //place holder not permanent
-                        fallbackSrc="https://picsum.photos/200"
+                        name={userInfo.name}
+                        fallback
                     />
                     <CardFooter className="justify-end before:bg-white/10   
                         overflow-hidden py-1 absolute rounded-large bottom-1 ml-1 z-10">
