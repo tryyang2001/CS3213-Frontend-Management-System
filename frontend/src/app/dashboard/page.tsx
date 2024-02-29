@@ -41,6 +41,37 @@ const DashBoard = () => {
       deadline: new Date(2024, 5, 28, 23, 59, 0),
     },
   ];
+
+  const submissions = [
+    {
+      assignment: "Assignment 1",
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 1",
+      date: new Date(2024, 1, 29, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 2",
+      date: new Date(2024, 2, 28, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 2",
+      date: new Date(2024, 2, 29, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 3",
+      date: new Date(2024, 3, 28, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 4",
+      date: new Date(2024, 4, 28, 23, 59, 0),
+    },
+    {
+      assignment: "Assignment 5",
+      date: new Date(2024, 5, 28, 23, 59, 0),
+    },
+  ];
   return (
     <div className="m-4">
       <b>Assignments</b>
@@ -53,24 +84,23 @@ const DashBoard = () => {
             title={item.title}
             className="bg-blue-200 text-blue-800"
           >
+            <Button size="md">Medium</Button>
             <Table aria-label="Example static collection table">
               <TableHeader>
                 <TableColumn>DATE</TableColumn>
                 <TableColumn>VIEW</TableColumn>
               </TableHeader>
               <TableBody>
-                <TableRow key="1">
-                  <TableCell>23 February 2024, 8.00PM</TableCell>
-                  <TableCell>
-                    <Button color="primary">Click to view</Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="2">
-                  <TableCell>23 February 2024, 7.00PM</TableCell>
-                  <TableCell>
-                    <Button color="primary">Click to view</Button>
-                  </TableCell>
-                </TableRow>
+                {submissions
+                  .filter((submission) => submission.assignment === item.title)
+                  .map((submission, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{submission.date.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Button color="primary">Click to view</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </AccordionItem>
