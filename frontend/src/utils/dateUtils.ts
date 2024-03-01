@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-
 const parseTimestampToDate = (timestamp: number) => {
   const date = new Date(timestamp).toLocaleDateString("en-US", {
     weekday: "long",
