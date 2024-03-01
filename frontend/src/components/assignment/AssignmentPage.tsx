@@ -13,7 +13,7 @@ const AssignmentPage = ({ assignment }: Props) => {
   }
 
   return (
-    <div className="ml-[25%] mt-[5%] mr-[8%]">
+    <div className="ml-[12%] mt-[5%] mr-[8%]">
       {/* Assignment Header */}
       <div className="flex gap-2">
         <div>
