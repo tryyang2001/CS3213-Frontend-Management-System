@@ -22,7 +22,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex flex-row justify-start">
             <SideBar />
-            <div className="bg-white flex-1 p-4 text-black border border-dashed">
+            <div className="bg-white flex-1 p-4 text-black border border-dashed overflow-auto">
               {children}
             </div>
           </div>
