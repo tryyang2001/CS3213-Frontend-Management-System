@@ -5,16 +5,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Image,
   Spacer,
-  Accordion,
-  AccordionItem,
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
   Button,
 } from "@nextui-org/react";
 
@@ -42,70 +33,31 @@ const DashBoard = () => {
     },
   ];
 
-  const submissions = [
-    {
-      assignment: "Assignment 1",
-      date: new Date(2024, 1, 28, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 1",
-      date: new Date(2024, 1, 29, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 2",
-      date: new Date(2024, 2, 28, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 2",
-      date: new Date(2024, 2, 29, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 3",
-      date: new Date(2024, 3, 28, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 4",
-      date: new Date(2024, 4, 28, 23, 59, 0),
-    },
-    {
-      assignment: "Assignment 5",
-      date: new Date(2024, 5, 28, 23, 59, 0),
-    },
-  ];
   return (
     <div className="m-4">
       <b>Assignments</b>
       <Spacer y={4} />
-      <Accordion variant="splitted">
+      <div className="gap-2 grid grid-cols-1 sm:grid-cols-1">
         {list.map((item, index) => (
-          <AccordionItem
+          <Card
+            shadow="sm"
             key={index}
-            aria-label={item.title}
-            title={item.title}
-            // className="bg-blue-200 text-blue-800"
+            // isPressable
+            // onPress={() => console.log("item pressed")}
           >
-            <Button size="md">Continue</Button>
-            <Table aria-label="Example static collection table">
-              <TableHeader>
-                <TableColumn>DATE</TableColumn>
-                <TableColumn>VIEW</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {submissions
-                  .filter((submission) => submission.assignment === item.title)
-                  .map((submission, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{submission.date.toLocaleString()}</TableCell>
-                      <TableCell>
-                        <Button color="primary">Click to view</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </AccordionItem>
+            <CardBody>
+              <div className="flex justify-between items-start">
+                <div className="flex gap-5">
+                  <b>{item.title}</b>
+                </div>
+                <Button color="primary" size="md">
+                  New Attempt
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
         ))}
-      </Accordion>
+      </div>
     </div>
   );
 };
