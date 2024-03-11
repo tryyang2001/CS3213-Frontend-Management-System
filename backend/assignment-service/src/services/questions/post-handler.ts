@@ -91,6 +91,16 @@ const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
 const createQuestionReferenceSolution = async (
   createQuestionReferenceSolutionBody: CreateQuestionReferenceSolutionBody
 ) => {
+  const questionExists = await db.question.findUnique({
+    where: {
+      id: createQuestionReferenceSolutionBody.id,
+    },
+  });
+
+  if (!questionExists) {
+    return null;
+  }
+
   const referenceSolution = await db.referenceSolution.create({
     data: {
       questionId: createQuestionReferenceSolutionBody.id,
