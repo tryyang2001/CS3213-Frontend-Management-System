@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Avatar, Button, User } from "@nextui-org/react";
-import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
 import classNames from "classnames";
 
@@ -13,7 +12,7 @@ const SideBar = () => {
   const [isCollapsible, setIsCollapsible] = useState(false);
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg-gray-200 text-black flex justify-between flex-col border border-dashed",
+    "px-4 pt-8 pb-4 bg-gray-200 text-black flex justify-between flex-col border border-dashed",
     {
       ["w-60"]: !isCollapsed,
       ["w-20"]: isCollapsed,
