@@ -1,7 +1,6 @@
 import db from "../../models/db";
 import { Assignment } from "../../models/types/assignment";
 import { Question } from "../../models/types/question";
-import { TestCase } from "../../models/types/test-case";
 
 const getAssignmentsByUserId = async (userId: string) => {
   const assignments = await db.assignment.findMany({

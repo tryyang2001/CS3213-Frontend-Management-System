@@ -31,7 +31,7 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
       return;
     }
 
-    response.status(HttpStatusCode.OK).json(assignments);
+    response.status(HttpStatusCode.OK).json({ assignments: assignments });
   } catch (error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
