@@ -16,7 +16,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node-version: [18.x, 20.x]
-        service: [assignment-service]
 
     steps:
       - name: Checkout Current Branch
@@ -29,13 +28,13 @@ jobs:
 
       - name: Clean up
         run: |
-          rm -rf frontend/${{matrix.service}}/node_modules
-          rm -rf frontend/${{matrix.service}}/coverage
+          rm -rf frontend/node_modules
+          rm -rf frontend/coverage
       - name: Install Dependencies Using yarn
         uses: borales/actions-yarn@v4
         with:
           cmd: install
-          dir: frontend/${{matrix.service}}
+          dir: frontend
 
       - name: Run Tests and Collect Coverage Reports
         env:
@@ -43,4 +42,4 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: coverage
-          dir: frontend/${{matrix.service}}
+          dir: frontend
