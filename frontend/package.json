@@ -42,6 +42,7 @@
     "typescript": "^5"
   },
   "resolutions": {
-    "string-width": "4.2.3"
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.1.0"
   }
 }
