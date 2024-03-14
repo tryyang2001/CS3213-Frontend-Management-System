@@ -15,7 +15,7 @@ const API_PREFIX = "/assignment/api";
 describe("Unit Tests for getAssignmentsByUserId", () => {
   var dbMock: PrismaClient;
 
-  beforeAll(() => {
+  beforeEach(() => {
     dbMock = db as jest.Mocked<typeof db>;
   });
 
@@ -130,20 +130,25 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
     });
   });
 
-  describe("GIven an unexpected error occurs", () => {
+  describe("Given an unexpected error occurs", () => {
     it("should return 500 and an error message", async () => {
       // Arrange
       const userId = "existing-user-id-1";
-      db.assignment.findMany = jest
+      GetHandler.getAssignmentsByUserId = jest
         .fn()
-        .mockRejectedValue(new Error("Database is down"));
+        .mockRejectedValue(
+          new Error("Unexpected error likely due to database")
+        );
 
       // Act
       const response = await supertest(app).get(
         `${API_PREFIX}/assignments?userId=${userId}`
       );
 
+      console.log(response.body);
+
       // Assert
+      expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual({
         error: "INTERNAL SERVER ERROR",
