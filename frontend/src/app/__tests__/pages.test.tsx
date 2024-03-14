@@ -2,6 +2,8 @@ import LandingPage from '../login/page'
 import LoginPage from '../login/page'
 import SignUpPage from '../sign-up/page'
 import UserPage from '../user/page'
+import AssignmentPage from '../(pages)/assignments/[id]/page'
+import AssignmentService from '@/helpers/assignment-service/api-wrapper'
 
 import {render} from '@testing-library/react'
 
@@ -16,7 +18,23 @@ jest.mock('next/navigation', () => {
     }),
     useSearchParams: () => ({
       get: () => {}
+    }),
+    notFound: () => ({
+
     })
+  }
+})
+
+jest.mock('@tanstack/react-query', () => {
+  return {
+    __esModule: true,
+    useQuery: () => {
+      const assignment = AssignmentService.getAssignmentById({assignmentId: "1"})
+      return {
+        data: assignment,
+        isLoading: assignment.then(() => false)
+      }
+    }
   }
 })
 
@@ -39,6 +57,12 @@ describe('Page Snapshot tests', () => {
     it('User Page Snapshot test', async () => {
       const Page = await UserPage()
       const { container } = render(Page)
+      expect(container).toMatchSnapshot()
+    })
+
+    it('Loading Assignment Page Snapshot test', () => {
+      const id = "1"
+      const { container } = render(<AssignmentPage id={id} />)
       expect(container).toMatchSnapshot()
     })
 })

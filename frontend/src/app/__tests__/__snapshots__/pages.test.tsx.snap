@@ -151,6 +151,46 @@ exports[`Page Snapshot tests Landing Page Snapshot test 1`] = `
 </div>
 `;
 
+exports[`Page Snapshot tests Loading Assignment Page Snapshot test 1`] = `
+<div>
+  <div>
+    <div
+      class="flex flex-col items-center justify-center"
+      style="height: 100vh;"
+    >
+      <div
+        class="flex items-center justify-center object-cover"
+      >
+        <div
+          class="shadow-black/5 shadow-none group relative overflow-hidden bg-content3 dark:bg-content2 before:opacity-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:border-t before:border-content4/30 before:bg-gradient-to-r before:from-transparent before:via-content4 dark:before:via-default-700/10 before:to-transparent after:opacity-100 after:absolute after:inset-0 after:-z-10 after:bg-content3 dark:after:bg-content2 rounded-large"
+          style="max-width: 100%;"
+        >
+           
+          <img
+            class="relative shadow-black/5 data-[loaded=true]:opacity-100 shadow-none opacity-0 transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large bg-logo mx-auto -mb-4 z-0"
+            height="100%"
+            src="/logo.svg"
+            width="100%"
+          />
+        </div>
+      </div>
+      <div
+        class="mx-2 -mt-2 z-20"
+      >
+        <div
+          class="flex items-center justify-center"
+        >
+          Loading...
+        </div>
+        <div
+          class="relative w-64 space-y-3 overflow-hidden rounded-md bg-logo p-3 shadow before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-slate-200 hover:shadow-lg before:animate-[shimmer_1.5s_infinite]"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Page Snapshot tests Login Snapshot test 1`] = `
 <div>
   <div
