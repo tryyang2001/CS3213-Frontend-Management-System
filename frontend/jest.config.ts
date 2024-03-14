@@ -16,7 +16,6 @@ const config: Config = {
   globals: {
     fetch: global.fetch,
   },
-  snapshotResolver: "./__tests__/__snapshots__/snapshotResolver.ts"
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }
