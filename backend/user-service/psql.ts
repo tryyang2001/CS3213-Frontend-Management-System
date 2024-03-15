@@ -1,12 +1,14 @@
-require('dotenv').config();
-const { Pool } = require('pg');
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const pool = new Pool({
     host     : process.env.PSQL_HOSTNAME,
-    database : process.env.PSQL_database,
+    database : process.env.PSQL_DATABASE,
     user     : process.env.PSQL_USERNAME,
     password : process.env.PSQL_PASSWORD,
-    port     : process.env.PSQL_PORT    
+    port     : parseInt(process.env.PSQL_PORT || '5432')
 });
 
 const createUserTableQueryIfNotExist = `
@@ -18,8 +20,11 @@ const createUserTableQueryIfNotExist = `
           WHERE table_name = 'users'
         ) THEN
           CREATE TABLE users (
-              email VARCHAR(255) PRIMARY KEY,
-              username VARCHAR(255) NOT NULL,
+              user_id SERIAL PRIMARY KEY,
+              email VARCHAR(255) NOT NULL,
+              name VARCHAR(255) NOT NULL,
+              major VARCHAR(255) NOT NULL,
+              course VARCHAR(255),
               password VARCHAR(255) NOT NULL,
               role VARCHAR(60) NOT NULL
           );
@@ -36,4 +41,4 @@ pool.connect()
     .then(() => console.log('Connected to the user microservice psql database'))
     .catch(err => console.error('Error connecting to the user microservce database', err));
 
-module.exports = pool;
+export default pool;
