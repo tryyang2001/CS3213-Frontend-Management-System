@@ -3,3 +3,5 @@ class ITSPostParserError extends Error {
     super("Failed to generate parser string from ITS API");
   }
 }
+
+export default ITSPostParserError;

@@ -1,6 +1,11 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import db from "../../models/db";
+import ITSPostParserError from "../../libs/errors/ITSPostParserError";
+import NotExistingReferencedSolutionError from "../../libs/errors/NotExistingReferencedSolutionError";
+import NotExistingTestCaseError from "../../libs/errors/NotExistingTestCaseError";
+import ITSPostFeedbackError from "../../libs/errors/ITSPostFeedbackError";
+import { ErrorFeedback } from "../../models/its/error-feedback";
 
 dotenv.config();
 
@@ -11,12 +16,6 @@ const api = axios.create({
     "User-Agent": "Grading Service",
     "Accept-Encoding": "gzip",
   },
-});
-
-api.interceptors.request.use((config) => {
-  // log request headers
-  console.log("Request Headers: ", config.headers);
-  return config;
 });
 
 const generateParserString = async (language: string, source_code: string) => {

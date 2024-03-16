@@ -4,7 +4,6 @@ import bodyParser from "body-parser";
 import cors from "./middlewares/cors";
 import HttpStatusCode from "./libs/enums/HttpStatusCode";
 import router from "./routes/route";
-import { IsOdd, TwoSum } from "./playground/playground";
 
 dotenv.config();
 
