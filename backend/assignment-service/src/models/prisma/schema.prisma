@@ -65,8 +65,9 @@ model TestCase {
 model ReferenceSolution {
     id String @id @default(cuid())
 
-    language String
-    code     String
+    language   String
+    code       String
+    codeParser String
 
     questionId String   @unique
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)

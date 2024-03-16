@@ -54,7 +54,7 @@ const updateQuestionReferenceSolution = async (
 ) => {
   const updatedReferenceSolution = await db.referenceSolution.update({
     where: {
-      id: updateQuestionReferenceSolutionBody.id,
+      questionId: updateQuestionReferenceSolutionBody.id,
     },
     data: {
       language: updateQuestionReferenceSolutionBody.language
