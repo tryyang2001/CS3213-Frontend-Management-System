@@ -24,8 +24,8 @@ async function registerUser(req: Request, res: Response) {
         .then(async (hash) => {
             console.log(hash);
             try {
-                const user_id = await db.createNewUser( name, major, course, email, hash, role);
-                return res.json({ user_id });
+                const uid = await db.createNewUser( name, major, course, email, hash, role);
+                return res.json({ uid });
             } catch (err) {
                 console.log(err);
                 return res.json({
@@ -95,9 +95,9 @@ async function loginUser (req: Request, res: Response) {
 }
 
 async function getUserByUserId (req: Request, res: Response) {
-    let  { user_id } = req.body;
+    let  { uid } = req.body;
     try {
-        const userIdSearch = await db.getUserByUserId(user_id);
+        const userIdSearch = await db.getUserByUserId(uid);
         if (userIdSearch.rows.length == 0) {
             console.log("User does not exist.");
             return res.json({
@@ -110,7 +110,7 @@ async function getUserByUserId (req: Request, res: Response) {
     } catch (err) {
         console.log(err);
         return res.send({
-            message: "Error getting user by user_id."
+            message: "Error getting user by uid."
         });
     }
 }
@@ -147,9 +147,9 @@ async function getAllUsers (req: Request, res: Response) {
 }
 
 async function updateUserPassword (req: Request, res: Response) {
-    let { user_id, old_password, new_password } = req.body;
+    let { uid, old_password, new_password } = req.body;
     try {
-        const userIdSearch = await db.getUserByUserId(user_id);
+        const userIdSearch = await db.getUserByUserId(uid);
         if (userIdSearch.rows.length == 0) {
             console.log("User does not exist.");
             return res.json({
@@ -169,7 +169,7 @@ async function updateUserPassword (req: Request, res: Response) {
                     bcrypt.hash(new_password, 10)
                     .then(async (hash) => {
                         try {
-                            await db.updateUserPassword( user_id, hash);
+                            await db.updateUserPassword( uid, hash);
                             return res.json({
                                 message: "Update password successfully."
                             })
@@ -196,15 +196,15 @@ async function updateUserPassword (req: Request, res: Response) {
     } catch (err) {
         console.log(err);
         return res.send({
-            message: "Error getting user by user_id."
+            message: "Error getting user by uid."
         });
     }
 }
 
 async function updateUserInfo (req: Request, res: Response) {
-    let { user_id, email, name, major, course, role } = req.body;
+    let { uid, email, name, major, course, role } = req.body;
     try {
-        await db.updateUserInfo(user_id, email, name, major, course, role);
+        await db.updateUserInfo(uid, email, name, major, course, role);
         return res.json({
             message: "User info updated."
         })
@@ -216,9 +216,9 @@ async function updateUserInfo (req: Request, res: Response) {
 }
 
 async function deleteUser (req: Request, res: Response) {
-    let { user_id } = req.body;
+    let { uid } = req.body;
     try {
-        const result = await db.deleteUser(user_id);
+        const result = await db.deleteUser(uid);
         console.log(result);
         res.clearCookie('token');
         return res.send({

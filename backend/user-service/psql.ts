@@ -12,24 +12,16 @@ const pool = new Pool({
 });
 
 const createUserTableQueryIfNotExist = `
-    DO $$ 
-    BEGIN
-        IF NOT EXISTS (
-          SELECT 1
-          FROM information_schema.tables
-          WHERE table_name = 'users'
-        ) THEN
-          CREATE TABLE users (
-              user_id SERIAL PRIMARY KEY,
-              email VARCHAR(255) NOT NULL,
-              name VARCHAR(255) NOT NULL,
-              major VARCHAR(255) NOT NULL,
-              course VARCHAR(255),
-              password VARCHAR(255) NOT NULL,
-              role VARCHAR(60) NOT NULL
-          );
-        END IF;
-    END $$;
+        CREATE SCHEMA IF NOT EXISTS users;
+        CREATE TABLE IF NOT EXISTS users.users (
+            uid SERIAL PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            major VARCHAR(255) NOT NULL,
+            course VARCHAR(255),
+            password VARCHAR(255) NOT NULL,
+            role VARCHAR(60) NOT NULL
+        );
   `;
   
 pool.query(createUserTableQueryIfNotExist)
