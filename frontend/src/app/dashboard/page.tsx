@@ -47,8 +47,9 @@ const DashBoard = () => {
           >
             <CardBody>
               <div className="flex justify-between items-start">
-                <div className="flex gap-5">
+                <div>
                   <b>{item.title}</b>
+                  <p>Deadline: {item.deadline.toUTCString()}</p>
                 </div>
                 <Button color="primary" size="md">
                   New Attempt
