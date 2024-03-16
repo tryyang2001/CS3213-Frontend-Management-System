@@ -1,0 +1,1022 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Assignment Service"
+  description: "This document describes all the API endpoints available for the Assignment Service that is used to manage the assignments and questions in ITS system."
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+
+schemes:
+  - "http"
+  - "https"
+
+paths:
+  /assignment/api/health:
+    get:
+      tags:
+        - "Base"
+      summary: "Health check for the service"
+      description: "Health check for the service"
+      operationId: "healthCheck"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Service is connected to the database and is up and running"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Healthy"
+        500:
+          description: "Service is down due to database connection or other unexpected errors, refer to the error message for more details"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "INTERNAL SERVER ERROR"
+              message:
+                type: "string"
+                example: "No database connection from the server"
+
+  /assignment/api/assignments:
+    get:
+      tags:
+        - "Assignment"
+      summary: "Get all assignments"
+      description: "Get all assignments"
+      operationId: "getAssignmentsByUserId"
+      parameters:
+        - in: "query"
+          name: "userId"
+          description: "User ID to get the assignments for"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "List of assignments"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/schemas/responses/Assignment"
+        400:
+          description: "Invalid user ID or missing user ID in the query params"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "userId is required in the query params"
+        404:
+          description: "Assignment not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
+
+    post:
+      tags:
+        - "Assignment"
+      summary: "Create a new assignment without questions"
+      description: "Create a new assignment without questions"
+      operationId: "createAssignment"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "assignment"
+          description: "Assignment object that needs to be created"
+          required: true
+          schema:
+            $ref: "#/schemas/createAssignment/CreateAssignmentBody"
+      responses:
+        201:
+          description: "Assignment object"
+          schema:
+            $ref: "#/schemas/responses/Assignment"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+
+  /assignment/api/assignments/:id:
+    get:
+      tags:
+        - "Assignment"
+      summary: "Get an assignment by its ID"
+      description: "Get an assignment by its ID"
+      operationId: "getAssignmentById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the assignment to return"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Assignment object"
+          schema:
+            # special case for assignment object returned
+            $ref: "#/schemas/getAssignmentById/responses/Assignment"
+        404:
+          description: "Assignment not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
+
+    put:
+      tags:
+        - "Assignment"
+      summary: "Update an assignment by its ID"
+      description: "Update an assignment by its ID"
+      operationId: "updateAssignmentById"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the assignment to update"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "assignment"
+          description: "Assignment object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/schemas/updateAssignmentById/UpdateAssignmentBody"
+      responses:
+        200:
+          description: "Assignment object"
+          schema:
+            $ref: "#/schemas/responses/Assignment"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Assignment not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
+
+    delete:
+      tags:
+        - "Assignment"
+      summary: "Delete an assignment by its ID"
+      description: "Delete an assignment by its ID"
+      operationId: "deleteAssignmentById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the assignment to delete"
+          required: true
+          type: "string"
+      responses:
+        204:
+          description: "Assignment deleted successfully"
+
+        404:
+          description: "Assignment not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
+
+  /assignment/api/questions:
+    post:
+      tags:
+        - "Question"
+      summary: "Create a new question"
+      description: "Create a new question"
+      operationId: "createQuestion"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "question"
+          description: "Question object that needs to be created"
+          required: true
+          schema:
+            $ref: "#/schemas/createQuestion/CreateQuestionBody"
+      responses:
+        201:
+          description: "Question object"
+          schema:
+            $ref: "#/schemas/responses/CreatedQuestion"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Assignment not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
+
+  /assignment/api/questions/:id:
+    get:
+      tags:
+        - "Question"
+      summary: "Get a question by its ID"
+      description: "Get a question by its ID"
+      operationId: "getQuestionById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the question to return"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Question object"
+          schema:
+            $ref: "#/schemas/responses/QuestionWithoutReferenceSolution"
+        404:
+          description: "Question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Question not found"
+
+    put:
+      tags:
+        - "Question"
+      summary: "Update a question by its ID"
+      description: "Update a question by its ID"
+      operationId: "updateQuestionById"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the question to update"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "question"
+          description: "Question object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/schemas/updateQuestionById/UpdateQuestionBody"
+      responses:
+        200:
+          description: "Question object"
+          schema:
+            $ref: "#/schemas/responses/CreatedQuestion"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Question not found"
+
+    delete:
+      tags:
+        - "Question"
+      summary: "Delete a question by its ID"
+      description: "Delete a question by its ID"
+      operationId: "deleteQuestionById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of the question to delete"
+          required: true
+          type: "string"
+      responses:
+        204:
+          description: "Question deleted successfully"
+
+        404:
+          description: "Question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Question not found"
+
+  /assignment/api/questions/:questionId/test-cases:
+    get:
+      tags:
+        - "Question"
+      summary: "Get all test cases for a question"
+      description: "Get all test cases for a question"
+      operationId: "getTestCasesByQuestionId"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to get the test cases for"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "List of test cases"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/schemas/responses/TestCase"
+        404:
+          description: "Test cases or question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Test cases or question not found"
+
+    post:
+      tags:
+        - "Question"
+      summary: "Create new test cases for a question"
+      description: "Create one or multiple new test cases for a question"
+      operationId: "createTestCaseByQuestionId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to create the test case for"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "testCase"
+          description: "Test case object that needs to be created"
+          required: true
+          schema:
+            $ref: "#/schemas/createTestCaseByQuestionId/CreateTestCasesBody"
+      responses:
+        201:
+          description: "Test case object"
+          schema:
+            $ref: "#/schemas/responses/TestCase"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Question not found"
+
+    delete:
+      tags:
+        - "Question"
+      summary: "Delete all test cases for a question"
+      description: "Delete all test cases for a question"
+      operationId: "deleteTestCasesById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to delete the test cases for"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "testCases"
+          description: "Test case IDs that needs to be deleted"
+          required: true
+          schema:
+            $ref: "#/schemas/deleteTestCasesById/DeleteTestCasesBody"
+      responses:
+        204:
+          description: "Test cases deleted successfully"
+
+        404:
+          description: "Test cases or question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Test cases or question not found"
+
+  /assignment/api/questions/:questionId/solution:
+    get:
+      tags:
+        - "Question"
+      summary: "Get the solution for a question"
+      description: "Get the solution for a question"
+      operationId: "getSolutionByQuestionId"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to get the solution for"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Solution object"
+          schema:
+            $ref: "#/schemas/responses/ReferenceSolution"
+        404:
+          description: "Solution or question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Solution or question not found"
+
+      post:
+        tags:
+          - "Question"
+        summary: "Create a new solution for a question"
+        description: "Create a new solution for a question"
+        operationId: "createReferenceSolutionByQuestionId"
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          - in: "path"
+            name: "questionId"
+            description: "ID of the question to create the solution for"
+            required: true
+            type: "string"
+          - in: "body"
+            name: "solution"
+            description: "Solution object that needs to be created"
+            required: true
+            schema:
+              $ref: "#/schemas/createReferenceSolutionByQuestionId/CreateReferenceSolutionBody"
+        responses:
+          201:
+            description: "Solution object"
+            schema:
+              $ref: "#/schemas/responses/ReferenceSolution"
+          400:
+            description: "Invalid request body, either contains extra fields or is empty"
+            schema:
+              type: "object"
+              properties:
+                error:
+                  type: "string"
+                  example: "BAD REQUEST"
+                message:
+                  type: "string"
+                  example: "Request body is empty"
+          404:
+            description: "Question not found"
+            schema:
+              type: "object"
+              properties:
+                error:
+                  type: "string"
+                  example: "NOT FOUND"
+                message:
+                  type: "string"
+                  example: "Question not found"
+
+      delete:
+        tags:
+          - "Question"
+        summary: "Delete the solution for a question"
+        description: "Delete the solution for a question"
+        operationId: "deleteSolutionByQuestionId"
+        produces:
+          - "application/json"
+        parameters:
+          - in: "path"
+            name: "questionId"
+            description: "ID of the question to delete the solution for"
+            required: true
+            type: "string"
+        responses:
+          204:
+            description: "Solution deleted successfully"
+
+          404:
+            description: "Solution not found"
+            schema:
+              type: "object"
+              properties:
+                error:
+                  type: "string"
+                  example: "NOT FOUND"
+                message:
+                  type: "string"
+                  example: "Solution not found"
+
+    post:
+      tags:
+        - "Question"
+      summary: "Create a new solution for a question"
+      description: "Create a new solution for a question"
+      operationId: "createSolutionByQuestionId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to create the solution for"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "solution"
+          description: "Solution object that needs to be created"
+          required: true
+          schema:
+            $ref: "#/schemas/createReferenceSolutionByQuestionId/CreateReferenceSolutionBody"
+      responses:
+        201:
+          description: "Solution object"
+          schema:
+            $ref: "#/schemas/responses/ReferenceSolution"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Question not found"
+
+    put:
+      tags:
+        - "Question"
+      summary: "Update the solution for a question"
+      description: "Update the solution for a question"
+      operationId: "updateReferenceSolutionByQuestionId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to update the solution for"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "solution"
+          description: "Solution object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/schemas/updateReferenceSolutionByQuestionId/UpdateReferenceSolutionBody"
+      responses:
+        200:
+          description: "Solution object"
+          schema:
+            $ref: "#/schemas/responses/ReferenceSolution"
+        400:
+          description: "Invalid request body, either contains extra fields or is empty"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Request body is empty"
+        404:
+          description: "Solution or question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Solution or question not found"
+
+    delete:
+      tags:
+        - "Question"
+      summary: "Delete the solution for a question"
+      description: "Delete the solution for a question"
+      operationId: "deleteSolutionByQuestionId"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionId"
+          description: "ID of the question to delete the solution for"
+          required: true
+          type: "string"
+      responses:
+        204:
+          description: "Solution deleted successfully"
+
+        404:
+          description: "Solution or question not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Solution or question not found"
+
+schemas:
+  responses:
+    Assignment:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "assignment_id"
+        title:
+          type: "string"
+          example: "Assignment 1"
+        deadline:
+          type: "number"
+          description: "Deadline date in timestamp format"
+          format: "int"
+          example: 16300025000000
+        authors:
+          type: "array"
+          items:
+            type: "string"
+          example: ["jonh_doe_user_id", "jane_doe_user_id"]
+        isPublished:
+          type: "boolean"
+          description: "If the assignment is published or not"
+          example: false
+        numberOfQuestions:
+          type: "number"
+          example: 0
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    CreatedQuestion:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "question_id"
+        title:
+          type: "string"
+          example: "Question 1"
+        description:
+          type: "string"
+          example: "This is a question"
+        deadline:
+          type: "number"
+          example: 1630000000000
+        numberOfTestCases:
+          type: "number"
+          example: 0
+        referenceSolutionId:
+          type: "string"
+          example: "reference_solution_id"
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    QuestionWithoutReferenceSolution:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "question_id"
+        title:
+          type: "string"
+          example: "Question 1"
+        description:
+          type: "string"
+          example: "This is a question"
+        deadline:
+          type: "number"
+          example: 1630000000000
+        numberOfTestCases:
+          type: "number"
+          example: 0
+        testCases:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "test_case_id"
+              input:
+                type: "string"
+                example: "input"
+              output:
+                type: "string"
+                example: "output"
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    TestCase:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "test_case_id"
+        input:
+          type: "string"
+          example: "input"
+        output:
+          type: "string"
+          example: "output"
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    ReferenceSolution:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "reference_solution_id"
+        questionId:
+          type: "string"
+          example: "question_id"
+        language:
+          type: "string"
+          example: "language"
+        code:
+          type: "string"
+          example: "code"
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+  createAssignment:
+    CreateAssignmentBody:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+          minLength: 1
+          maxLength: 255
+          example: "Assignment 1"
+        deadline:
+          type: "number"
+          description: "Deadline date in timestamp format, must be in the future"
+          format: "int"
+          example: 1630000000000
+        authors:
+          type: "array"
+          items:
+            type: "string"
+          minItems: 1
+          example: ["jonh_doe_user_id", "jane_doe_user_id"]
+        isPublished:
+          type: "boolean"
+          description: "If the assignment is published or not, default is false"
+          example: false
+
+  updateAssignmentById:
+    UpdateAssignmentBody:
+      $ref: "#/schemas/createAssignment/CreateAssignmentBody"
+
+  createQuestion:
+    CreateQuestionBody:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+          minLength: 1
+          maxLength: 255
+          example: "Question 1"
+        description:
+          type: "string"
+          minLength: 1
+          example: "This is a question"
+        deadline:
+          type: "number"
+          description: "Deadline date in timestamp format, must be in the future"
+          format: "int"
+          example: 1630000000000
+        testCases:
+          type: "array"
+          description: "List of test cases for the question"
+          $ref: "#/schemas/createTestCaseByQuestionId/CreateTestCasesBody"
+        referenceSolution:
+          type: "object"
+          description: "Reference solution for the question"
+          $ref: "#/schemas/createReferenceSolutionByQuestionId/CreateReferenceSolutionBody"
+
+  updateQuestionById:
+    UpdateQuestionBody:
+      $ref: "#/schemas/createQuestion/CreateQuestionBody"
+
+  createTestCaseByQuestionId:
+    CreateTestCasesBody:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          input:
+            type: "string"
+            minLength: 1
+            example: "input"
+          output:
+            type: "string"
+            minLength: 1
+            example: "output"
+
+  deleteTestCasesById:
+    DeleteTestCasesBody:
+      type: "object"
+      properties:
+        testCases:
+          type: "array"
+          items:
+            type: "string"
+          minItems: 1
+          example: ["test_case_id_1", "test_case_id_2"]
+
+  createReferenceSolutionByQuestionId:
+    CreateReferenceSolutionBody:
+      type: "object"
+      properties:
+        language:
+          type: "string"
+          minLength: 1
+          maxLength: 255
+          example: "language"
+        code:
+          type: "string"
+          minLength: 1
+          example: "code"
+
+  updateReferenceSolutionByQuestionId:
+    UpdateReferenceSolutionBody:
+      $ref: "#/schemas/createReferenceSolutionByQuestionId/CreateReferenceSolutionBody"

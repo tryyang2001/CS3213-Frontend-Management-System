@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("POSTGRESQL_DB_URL")
+    schemas  = ["assignments"]
+}
+
+model Assignment {
+    id          String   @id @default(cuid())
+    title       String
+    deadline    DateTime
+    isPublished Boolean  @default(false)
+
+    numberOfQuestions Int        @default(0)
+    questions         Question[]
+
+    // string for now, will be replaced by user model
+    authors String[]
+
+    createdOn DateTime @default(now())
+    updatedOn DateTime @updatedAt
+
+    @@schema("assignments")
+}
+
+model Question {
+    id          String   @id @default(cuid())
+    title       String
+    // description should contain all the details of the question, including examples, constraints, images, etc.
+    description String
+    deadline    DateTime
+
+    referenceSolutionId String?
+    referenceSolution   ReferenceSolution?
+
+    numberOfTestCases Int        @default(0)
+    testCases         TestCase[]
+
+    Assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+    assignmentId String?
+
+    @@schema("assignments")
+}
+
+model TestCase {
+    id         String   @id @default(cuid())
+    questionId String
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+    input  String
+    output String
+
+    isPublic Boolean @default(true)
+
+    @@schema("assignments")
+}
+
+model ReferenceSolution {
+    id String @id @default(cuid())
+
+    language String
+    code     String
+
+    questionId String   @unique
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+    @@schema("assignments")
+}
