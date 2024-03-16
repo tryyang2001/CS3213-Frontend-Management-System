@@ -67,7 +67,7 @@ model ReferenceSolution {
 
     language   String
     code       String
-    codeParser String
+    codeParser String?
 
     questionId String   @unique
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
