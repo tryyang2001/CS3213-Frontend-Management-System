@@ -20,7 +20,7 @@ export const api = axios.create({
   },
 });
 
-const generateParserString = async (language: string, source_code: string) => {
+async function generateParserString(language: string, source_code: string) {
   try {
     const response = await api.post("/cs3213/parser", {
       language: language,
@@ -44,14 +44,14 @@ const generateParserString = async (language: string, source_code: string) => {
 
     throw error;
   }
-};
+}
 
-const generateErrorFeedback = async (
+async function generateErrorFeedback(
   language: string,
   studentCode: string,
   questionId: string,
   studentId: number
-) => {
+) {
   // obtain referenced solution parser
   const referencedSolution = await db.referenceSolution.findFirst({
     where: {
@@ -67,10 +67,10 @@ const generateErrorFeedback = async (
   let referencedSolutionParserString = referencedSolution.codeParser as string;
 
   if (!referencedSolution.codeParser) {
-    referencedSolutionParserString = (await generateParserString(
-      language,
+    referencedSolutionParserString = await ITSApi.generateParserString(
+      referencedSolution.language,
       referencedSolution.code
-    )) as string;
+    );
 
     // write back to database
     await db.referenceSolution.update({
@@ -89,7 +89,7 @@ const generateErrorFeedback = async (
   )[0];
 
   // obtain student solution parser
-  const studentSolutionParserString = await generateParserString(
+  const studentSolutionParserString = await ITSApi.generateParserString(
     language,
     studentCode
   );
@@ -145,7 +145,7 @@ const generateErrorFeedback = async (
 
     throw error;
   }
-};
+}
 
 export const ITSApi = {
   generateParserString,
