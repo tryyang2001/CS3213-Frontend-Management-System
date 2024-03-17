@@ -17,10 +17,7 @@ const config: Config = {
         background: "#032539",
         white: "#ffffff",
         logo: "#07c1ff",
-      },
-      colors: {
-        white: "#ffffff",
-        lightgrey: "#f4f4f5",
+        lightgrey: "#eeeeee",
       },
     },
   },
