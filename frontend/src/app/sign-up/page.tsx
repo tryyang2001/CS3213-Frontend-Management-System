@@ -4,6 +4,7 @@ import { EyeSlashFilledIcon } from "../login/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../login/EyeFilledIcon";
 import { Button, Input, Link, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { USER_API_ENDPOINT } from "config";
 
 export default function Home() {
     const [email, setEmail] = useState<string>("");
@@ -15,10 +16,9 @@ export default function Home() {
     const [password, setPassword] = useState<string>("");
     const isInvalidPassword = useMemo<boolean>(() => {
         if (password == "") return false;
-        return password.length < 8
+        return password.length < 10
     }, [password]);
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    
     const [confirmation, setPasswordConfirmation] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
     const isInvalidConfirmation = useMemo<boolean>(() => {
@@ -40,7 +40,7 @@ export default function Home() {
         }
 
         // mock for backend
-        const res = await fetch("https://jsonplaceholder.typicode.com/user", {
+        const res = await fetch(USER_API_ENDPOINT + "/register", {
             method: "Post",
             headers: {
                 Accept: "application/json, text/plain, */*",
@@ -48,22 +48,25 @@ export default function Home() {
             },
             body: JSON.stringify({
                 email: email,
-                password: password
-            })
+                password: password,
+                name: "Username placeholder",           // To be changed in the future
+                major: "User's major placeholder",      // To be changed in the future
+                course : "",                            // To be changed in the future
+                role: "User role placeholder"           // To be changed in the future
+            }),
+            credentials: 'include',
+        }).then((res) => {
+            console.log(res);
+            if (!res.ok) {
+                setErrorMessage("We are currently encountering some issues, please try again later");
+            } else {
+                router.push("/dashboard");
+            }
         }).catch((err: Error) => {
             console.log(err);
-            return {
-                ok: false,
-                status: 500
-            }
         });
-        
-        if (!res.ok) {
-            setErrorMessage("We are currently encountering some issues, please try again later");
-        } else {
-            router.push("/dashboard");
-        }
-        
+
+
     }
 
     const Eye = () => {

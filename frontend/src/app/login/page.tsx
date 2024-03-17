@@ -1,11 +1,13 @@
 "use client";
 
 import {Button, Input, Popover, PopoverContent, PopoverTrigger} from "@nextui-org/react";
+import Cookies from 'js-cookie';
 import { useMemo, useState } from "react";
 import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon";
 import { EyeFilledIcon } from "./EyeFilledIcon";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { USER_API_ENDPOINT } from "config";
 
 
 export default function Home() {
@@ -32,7 +34,7 @@ export default function Home() {
         }
 
         // mock for backend
-        const res = await fetch("https://jsonplaceholder.typicode.com/session", {
+        const res = await fetch(USER_API_ENDPOINT + "/login", {
             method: "Post",
             headers: {
                 Accept: "application/json, text/plain, */*",
@@ -41,7 +43,8 @@ export default function Home() {
             body: JSON.stringify({
                 email: email,
                 password: password
-            })
+            }),
+            credentials: 'include',
         }).catch((err: Error) => {
             console.log(err);
             return {
@@ -55,8 +58,13 @@ export default function Home() {
         } else if (!res.ok) {
             setErrorMessage("We are currently encountering some issues, please try again later");
         } else {
+            const responseData = await (res as Response).json();
+            const user = responseData.user;
+            console.log(user); // This will log the user object
+            Cookies.set('user', JSON.stringify({user}), { expires: 7 })
             router.push("/dashboard");
         }
+
     }
 
     const Eye = () => {
