@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Spacer,
   Accordion,
@@ -11,9 +12,12 @@ import {
   TableRow,
   TableCell,
   Button,
+  Switch,
 } from "@nextui-org/react";
 
 const Submissions = () => {
+  const [isSelected, setIsSelected] = useState(false);
+
   const list = [
     {
       title: "Assignment 1",
@@ -75,6 +79,51 @@ const Submissions = () => {
     },
   ];
 
+  const studentSubmissions = [
+    {
+      id: "1",
+      assignment: "Assignment 1",
+      name: "Adam Tan",
+      submitted: true,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      id: "2",
+      assignment: "Assignment 1",
+      name: "Ben Lee",
+      submitted: true,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      id: "3",
+      assignment: "Assignment 1",
+      name: "Carol Tay",
+      submitted: false,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      id: "4",
+      assignment: "Assignment 2",
+      name: "Adam Tan",
+      submitted: true,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      id: "5",
+      assignment: "Assignment 2",
+      name: "Ben Lee",
+      submitted: false,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+    {
+      id: "6",
+      assignment: "Assignment 3",
+      name: "Carol Tay",
+      submitted: false,
+      date: new Date(2024, 1, 28, 23, 59, 0),
+    },
+  ];
+
   const columns = [
     {
       key: "submission",
@@ -90,34 +139,112 @@ const Submissions = () => {
     <div className="h-screen">
       <b>Submissions</b>
       <Spacer y={4} />
-      <Accordion variant="splitted">
-        {list.map((item, index) => (
-          <AccordionItem key={index} aria-label={item.title} title={item.title}>
-            <Table isStriped aria-label={`Submissions table for ${item.title}`}>
-              <TableHeader>
-                <TableColumn>Submission Date and Time</TableColumn>
-                <TableColumn width="20" align="end">
-                  Click to View
-                </TableColumn>
-              </TableHeader>
-              <TableBody
-                items={submissions.filter(
-                  (submission) => submission.assignment === item.title
-                )}
+      <Switch isSelected={isSelected} onValueChange={setIsSelected}>
+        Tutor view
+      </Switch>
+      <p className="text-small text-default-500">
+        Selected: {isSelected ? "Tutor's view" : "Student's view"}
+      </p>
+      <Spacer y={4} />
+      {isSelected ? (
+        <Accordion variant="splitted" selectionMode="multiple">
+          {list.map((item, index) => (
+            <AccordionItem
+              key={index}
+              aria-label={item.title}
+              title={item.title}
+            >
+              <Table
+                color="default"
+                selectionMode="single"
+                defaultSelectedKeys={[0]}
+                aria-label={`Submissions table for ${item.title}`}
+                shadow="none"
               >
-                {(submission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell>{submission.date.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Button color="primary">View</Button>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </AccordionItem>
-        ))}
-      </Accordion>
+                <TableHeader>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Submission Date and Time</TableColumn>
+                  <TableColumn width="20" align="end">
+                    Click to View
+                  </TableColumn>
+                </TableHeader>
+                <TableBody
+                  items={studentSubmissions
+                    .filter(
+                      (submission) => submission.assignment === item.title
+                    )
+                    .sort((a, b) => {
+                      return a.name - b.name;
+                    })}
+                >
+                  {(submission, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{submission.name}</TableCell>
+                      <TableCell>
+                        {submission.submitted
+                          ? submission.date.toLocaleString()
+                          : "Not Submitted"}
+                      </TableCell>
+                      <TableCell>
+                        {submission.submitted ? (
+                          <Button color="primary">View</Button>
+                        ) : (
+                          <Button isDisabled color="primary">
+                            View
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <Accordion variant="splitted" selectionMode="multiple">
+          {list.map((item, index) => (
+            <AccordionItem
+              key={index}
+              aria-label={item.title}
+              title={item.title}
+            >
+              <Table
+                color="default"
+                selectionMode="single"
+                defaultSelectedKeys={[0]}
+                aria-label={`Submissions table for ${item.title}`}
+                shadow="none"
+              >
+                <TableHeader>
+                  <TableColumn>Submission Date and Time</TableColumn>
+                  <TableColumn width="20" align="end">
+                    Click to View
+                  </TableColumn>
+                </TableHeader>
+                <TableBody
+                  items={submissions
+                    .filter(
+                      (submission) => submission.assignment === item.title
+                    )
+                    .sort((a, b) => {
+                      return b.date - a.date;
+                    })}
+                >
+                  {(submission, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{submission.date.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Button color="primary">View</Button>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
     </div>
   );
 };
