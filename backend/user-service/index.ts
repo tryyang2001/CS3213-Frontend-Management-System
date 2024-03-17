@@ -1,11 +1,19 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import userRoute from './routes/user-route';
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+    cors({
+      credentials: true,
+      origin: true,
+      optionsSuccessStatus: 200,
+    })
+  );
 
 app.get("/", (req, res) => {
     res.json("Connected to user microservice");
