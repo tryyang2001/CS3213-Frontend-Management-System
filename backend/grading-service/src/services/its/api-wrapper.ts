@@ -7,23 +7,17 @@ import NotExistingTestCaseError from "../../libs/errors/NotExistingTestCaseError
 import ITSPostFeedbackError from "../../libs/errors/ITSPostFeedbackError";
 import { ErrorFeedback } from "../../models/its/error-feedback";
 import CodeFunctionNameError from "../../libs/errors/CodeFunctionNameError";
+import HttpStatusCode from "../../libs/enums/HttpStatusCode";
 
 dotenv.config();
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: process.env.ITS_API_URL,
   headers: {
     "Content-Type": "application/json",
     "User-Agent": "Grading Service",
     "Accept-Encoding": "gzip",
   },
-});
-
-api.interceptors.request.use((config) => {
-  // log the request body
-  console.log("Request body: ", config.data);
-
-  return config;
 });
 
 const generateParserString = async (language: string, source_code: string) => {
@@ -39,8 +33,13 @@ const generateParserString = async (language: string, source_code: string) => {
 
     return parserString;
   } catch (error) {
-    if (error === typeof axios.AxiosError) {
-      throw new ITSPostParserError();
+    if (error instanceof axios.AxiosError) {
+      switch (error.response?.status) {
+        case HttpStatusCode.UNPROCESSABLE_ENTITY:
+          throw new ITSPostParserError("language");
+        default:
+          throw new ITSPostParserError("source_code");
+      }
     }
 
     throw error;

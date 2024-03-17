@@ -66,6 +66,22 @@ const postParser = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.OK).json({ parser });
   } catch (error) {
+    if (error instanceof ITSPostParserError) {
+      if (error.errorField === "language") {
+        response.status(HttpStatusCode.BAD_REQUEST).json({
+          error: "BAD REQUEST",
+          message: "Language not supported. (Only 'py' and 'c' are supported)",
+        });
+      } else {
+        response.status(HttpStatusCode.BAD_REQUEST).json({
+          error: "BAD REQUEST",
+          message:
+            "Invalid source code due to syntax error. Please check the input source_code and try again.",
+        });
+      }
+
+      return;
+    }
     console.log(error);
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
