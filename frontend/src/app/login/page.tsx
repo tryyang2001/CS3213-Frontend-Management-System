@@ -7,7 +7,7 @@ import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon";
 import { EyeFilledIcon } from "./EyeFilledIcon";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { USER_API_ENDPOINT } from "config";
+import { USER_API_ENDPOINT } from "../../../config";
 
 
 export default function Home() {

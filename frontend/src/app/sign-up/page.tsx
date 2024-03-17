@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { USER_API_ENDPOINT } from "config";
+import { USER_API_ENDPOINT } from "../../../config";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
