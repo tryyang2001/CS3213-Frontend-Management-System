@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Tabs,
@@ -29,18 +29,29 @@ interface Props {
 const Submission = ({ id, question }: Props) => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] = useState("python");
 
-  // const onMount = (editor: { focus: () => void; } | undefined) => {
-  //   editorRef.current = editor;
-  //   editor.focus();
-  // };
+  const newDecoration: monaco.editor.IModelDeltaDecoration[] = [
+    {
+      range: new monaco.Range(2, 1, 2, 1), // Highlight row 2
+      options: {
+        isWholeLine: true,
+        className: "bg-yellow-200",
+      },
+    },
+  ];
+
+  const onMount = (editor: any) => {
+    editorRef.current = editor;
+    editor.createDecorationsCollection(newDecoration);
+    editor.focus();
+  };
 
   const code = `def is_odd(x):
-    if x % 2 == 1:
-      return False
-    else:
-      return True
+  if x % 2 == 1:
+    return False
+  else:
+    return True
   `;
 
   const {
@@ -77,7 +88,7 @@ const Submission = ({ id, question }: Props) => {
     {
       id: "feedback",
       label: "Feedback",
-      content: feedback.hints[0],
+      content: `Line ${feedback.line.toString()}: ${feedback.hints[0]}`,
     },
     {
       id: "grades",
@@ -142,13 +153,13 @@ const Submission = ({ id, question }: Props) => {
                     minimap: {
                       enabled: false,
                     },
-                    readOnly: true
+                    readOnly: true,
                   }}
                   height="50vh"
                   // theme="vs-dark"
                   language="python"
                   // defaultValue={CODE_SNIPPETS[language]}
-                  // onMount={onMount}
+                  onMount={onMount}
                   value={code}
                   // onChange={(value) => setValue(value)}
                 />
