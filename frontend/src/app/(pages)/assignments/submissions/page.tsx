@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Spacer,
   Accordion,
@@ -17,6 +18,13 @@ import {
 
 const Submissions = () => {
   const [isSelected, setIsSelected] = useState(false);
+
+  const router = useRouter();
+
+  const handleButtonClick = (aid: String, sid: String) => {
+    // Navigate to the desired route when the button is clicked
+    router.push(`/assignments/${aid}/submissions/${sid}`);
+  };
 
   const list = [
     {
@@ -174,11 +182,11 @@ const Submissions = () => {
                       (submission) => submission.assignment === item.title
                     )
                     .sort((a, b) => {
-                      return a.name - b.name;
+                      return a.name.localeCompare(b.name);
                     })}
                 >
-                  {(submission, index) => (
-                    <TableRow key={index}>
+                  {(submission: any) => (
+                    <TableRow key={submission.id}>
                       <TableCell>{submission.name}</TableCell>
                       <TableCell>
                         {submission.submitted
@@ -187,7 +195,14 @@ const Submissions = () => {
                       </TableCell>
                       <TableCell>
                         {submission.submitted ? (
-                          <Button color="primary">View</Button>
+                          <Button
+                            color="primary"
+                            onPress={() =>
+                              handleButtonClick(submission.id, submission.id)
+                            }
+                          >
+                            View
+                          </Button>
                         ) : (
                           <Button isDisabled color="primary">
                             View
@@ -228,14 +243,21 @@ const Submissions = () => {
                       (submission) => submission.assignment === item.title
                     )
                     .sort((a, b) => {
-                      return b.date - a.date;
+                      return b.date.getTime() - a.date.getTime();
                     })}
                 >
-                  {(submission, index) => (
-                    <TableRow key={index}>
+                  {(submission) => (
+                    <TableRow key={submission.id}>
                       <TableCell>{submission.date.toLocaleString()}</TableCell>
                       <TableCell>
-                        <Button color="primary">View</Button>
+                        <Button
+                          color="primary"
+                          onPress={() =>
+                            handleButtonClick(submission.id, submission.id)
+                          }
+                        >
+                          View
+                        </Button>
                       </TableCell>
                     </TableRow>
                   )}
