@@ -42,14 +42,17 @@ const DashBoard = () => {
           <Card
             shadow="sm"
             key={index}
+            className="bg-white shadow-md"
             // isPressable
             // onPress={() => console.log("item pressed")}
           >
             <CardBody>
               <div className="flex justify-between items-start">
                 <div>
-                  <b>{item.title}</b>
-                  <p>Deadline: {item.deadline.toUTCString()}</p>
+                  <b className="text-black">{item.title}</b>
+                  <p className="text-black">
+                    Deadline: {item.deadline.toUTCString()}
+                  </p>
                 </div>
                 <Button color="primary" size="md">
                   New Attempt
