@@ -4,7 +4,7 @@ import { EyeSlashFilledIcon } from "../login/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../login/EyeFilledIcon";
 import { Button, Input, Link, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { USER_API_ENDPOINT } from "config";
+import { USER_API_ENDPOINT } from "../../../config";
 
 export default function Home() {
     const [email, setEmail] = useState<string>("");
