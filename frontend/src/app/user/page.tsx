@@ -1,17 +1,6 @@
-import { Button, Textarea } from "@nextui-org/react";
 import { ReadOnlyFullUserCard, UserInfo } from "../../components/common/ReadOnlyUserCard";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
-
-export const getUserData = async () => {
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
-    const userInfo: UserInfo = await res.json();
-    return userInfo
-};
-
-
 
 export default async function Home() {
     const userInfo = await getUserData();
@@ -29,3 +18,9 @@ export default async function Home() {
       </div>
     );
   }
+
+export const getUserData = async () => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
+  const userInfo: UserInfo = await res.json();
+  return userInfo
+};
