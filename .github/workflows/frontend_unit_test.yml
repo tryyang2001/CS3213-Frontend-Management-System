@@ -1,0 +1,45 @@
+name: frontend Services Tests
+# targeting pull requests to master branch
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+jobs:
+  coverage:
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: write
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout Current Branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: Clean up
+        run: |
+          rm -rf frontend/node_modules
+          rm -rf frontend/coverage
+      - name: Install Dependencies Using yarn
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+          dir: frontend
+
+      - name: Run Tests and Collect Coverage Reports
+        env:
+          NODE_ENV: test
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: coverage
+          dir: frontend
