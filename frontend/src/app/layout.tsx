@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en" className="bg-white">
       <body className={inter.className + " min-h-screen"}>
         <Providers>
-          <div className="flex flex-row justify-start">
+          <div className="h-screen flex flex-row justify-start">
             <SideBar />
             <div className="bg-white flex-1 p-4 text-black border border-dashed overflow-auto">
               {children}
