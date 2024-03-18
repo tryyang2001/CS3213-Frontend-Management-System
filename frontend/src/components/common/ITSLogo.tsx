@@ -5,7 +5,7 @@ interface Props {
   height?: string;
 }
 
-const ITSLogo = ({ width = "100%", height = "100%" }: Props) => {
+function ITSLogo({ width = "100%", height = "100%" }: Props) {
   return (
     <Image
       src="/logo.svg"
@@ -15,6 +15,6 @@ const ITSLogo = ({ width = "100%", height = "100%" }: Props) => {
       height={height}
     />
   );
-};
+}
 
 export default ITSLogo;

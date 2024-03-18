@@ -17,7 +17,7 @@ jest.mock("next/navigation", () => {
       prefetch: jest.fn(),
     }),
     useSearchParams: () => ({
-      get: () => {},
+      get: jest.fn(),
     }),
     notFound: () => ({}),
   };
@@ -54,7 +54,7 @@ describe("Page Snapshot tests", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("User Page Snapshot test", async () => {
+  it("User Page Snapshot test", () => {
     const { container } = render(<UserPage />);
     expect(container).toMatchSnapshot();
   });

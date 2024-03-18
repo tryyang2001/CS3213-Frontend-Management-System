@@ -35,7 +35,7 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
     )
       return true;
     return false;
-  }, [name, bio, photo]);
+  }, [name, bio, photo, userInfo]);
 
   useEffect(() => {
     if (newPhoto) {
@@ -49,43 +49,45 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
 
   const handleDiscard = () => {
     setName(userInfo.name);
-    setBio(userInfo.bio || "");
+    setBio(userInfo.bio ?? "");
     setPhoto(userInfo.photo);
     setNewPhoto(undefined);
   };
 
   const [profileMessage, setProfileMessage] = useState<string>("");
-  const handleProfileSubmit = async () => {
-    if (
-      name == userInfo.name &&
-      bio == userInfo.bio &&
-      photo == userInfo.photo
-    ) {
-      setProfileMessage("Profile saved!");
-      return;
-    }
+  const handleProfileSubmit = () => {
+    void (async () => {
+      if (
+        name == userInfo.name &&
+        bio == userInfo.bio &&
+        photo == userInfo.photo
+      ) {
+        setProfileMessage("Profile saved!");
+        return;
+      }
 
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-      method: "PATCH",
-      body: JSON.stringify({
-        name: name,
-        bio: bio,
-        photo: newPhoto,
-        email: userInfo.email,
-      }),
-    }).catch((err) => {
-      console.log(err);
-      return {
-        status: 500,
-        ok: false,
-      };
+      const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
+        method: "PATCH",
+        body: JSON.stringify({
+          name: name,
+          bio: bio,
+          photo: newPhoto,
+          email: userInfo.email,
+        }),
+      }).catch((err) => {
+        console.log(err);
+        return {
+          status: 500,
+          ok: false,
+        };
+      });
+
+      if (!res.ok) {
+        setProfileMessage("An error occured, please try again later");
+      } else {
+        setProfileMessage("Profile saved!");
+      }
     });
-
-    if (!res.ok) {
-      setProfileMessage("An error occured, please try again later");
-    } else {
-      setProfileMessage("Profile saved!");
-    }
   };
   return (
     <form className="flex w-1/2 flex-col gap-4">

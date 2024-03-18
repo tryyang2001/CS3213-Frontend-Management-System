@@ -7,7 +7,7 @@ interface Props {
   assignment?: Assignment;
 }
 
-const AssignmentPage = ({ assignment }: Props) => {
+function AssignmentPage({ assignment }: Props) {
   if (!assignment) {
     return notFound();
   }
@@ -49,6 +49,6 @@ const AssignmentPage = ({ assignment }: Props) => {
       })}
     </div>
   );
-};
+}
 
 export default AssignmentPage;

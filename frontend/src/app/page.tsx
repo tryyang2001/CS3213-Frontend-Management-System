@@ -1,6 +1,5 @@
 "use client";
 
-import SideBar from "@/components/common/SideBar";
 import { Button } from "@nextui-org/react";
 
 export default function Home() {
@@ -14,7 +13,7 @@ export default function Home() {
       <p>This is a proof that NextUI is working :)</p>
       <Button
         color="primary"
-        onClick={(e) => {
+        onClick={(_e) => {
           alert("Button clicked");
         }}
         className="my-4"
