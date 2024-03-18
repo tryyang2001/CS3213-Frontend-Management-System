@@ -1,4 +1,4 @@
-import HttpStatusCode from "@/types/HttpStatusCode";
+//import HttpStatusCode from "@/types/HttpStatusCode";
 import axios from "axios";
 
 const api = axios.create({
@@ -14,7 +14,7 @@ const getAssignmentById = async ({
 }: {
   assignmentId: string;
 }) => {
-  //   const response = await api.get(`/assignment/${assignmentId}`);
+  const _response = await api.get(`/assignment/${assignmentId}`);
 
   //   if (response.status !== HttpStatusCode.OK) {
   //     throw new Error("Failed to fetch assignment");
@@ -91,8 +91,8 @@ const getAssignmentById = async ({
   return assignment;
 };
 
-const AssignmentService = {
+const assignmentService = {
   getAssignmentById,
 };
 
-export default AssignmentService;
+export default assignmentService;
