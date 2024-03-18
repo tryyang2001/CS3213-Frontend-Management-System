@@ -196,7 +196,7 @@ const Submissions = () => {
                       <TableCell>
                         {submission.submitted ? (
                           <Button
-                            color="primary"
+                            className="bg-primary text-white"
                             onPress={() =>
                               handleButtonClick(submission.id, submission.id)
                             }
@@ -204,7 +204,7 @@ const Submissions = () => {
                             View
                           </Button>
                         ) : (
-                          <Button isDisabled color="primary">
+                          <Button isDisabled className="bg-primary text-white">
                             View
                           </Button>
                         )}
@@ -233,7 +233,7 @@ const Submissions = () => {
               >
                 <TableHeader>
                   <TableColumn>Submission Date and Time</TableColumn>
-                  <TableColumn width="20" align="end">
+                  <TableColumn className="w-20 text-right">
                     Click to View
                   </TableColumn>
                 </TableHeader>
@@ -251,7 +251,7 @@ const Submissions = () => {
                       <TableCell>{submission.date.toLocaleString()}</TableCell>
                       <TableCell>
                         <Button
-                          color="primary"
+                          className="bg-primary text-white"
                           onPress={() =>
                             handleButtonClick(submission.id, submission.id)
                           }
