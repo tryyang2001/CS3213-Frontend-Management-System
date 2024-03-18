@@ -125,9 +125,10 @@ const updateAssignmentById = async (request: Request, response: Response) => {
     });
 
     if (
-      Object.keys(updateAssignmentBody).length !==
+      Object.keys(updateAssignmentBody).length - 1 !==
       Object.keys(request.body).length
     ) {
+      console.log(updateAssignmentBody, request.body);
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
         message: "Request body must contain only the required fields",

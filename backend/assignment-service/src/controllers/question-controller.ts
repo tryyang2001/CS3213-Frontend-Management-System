@@ -106,7 +106,7 @@ const createQuestion = async (request: Request, response: Response) => {
     });
 
     if (
-      Object.keys(createQuestionBody).length !==
+      Object.keys(createQuestionBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -165,7 +165,7 @@ const createQuestionReferenceSolution = async (
       });
 
     if (
-      Object.keys(createQuestionReferenceSolutionBody).length !==
+      Object.keys(createQuestionReferenceSolutionBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -224,15 +224,15 @@ const createQuestionTestCases = async (
       return;
     }
 
-    const questionId = request.params.id;
+    const questionId = request.params.questionId;
 
     const createQuestionTestCasesBody = CreateTestCasesValidator.parse({
       ...request.body,
-      questionId,
+      questionId: questionId,
     });
 
     if (
-      Object.keys(createQuestionTestCasesBody).length !==
+      Object.keys(createQuestionTestCasesBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -242,11 +242,22 @@ const createQuestionTestCases = async (
       return;
     }
 
-    const testCasesCreationResponse = await PostHandler.createQuestionTestCases(
+    const createdTestCaseResponse = await PostHandler.createQuestionTestCases(
       createQuestionTestCasesBody
     );
 
-    response.status(HttpStatusCode.CREATED).json(testCasesCreationResponse);
+    const totalTestCases = await db.testCase.count({
+      where: {
+        questionId: questionId,
+      },
+    });
+
+    response.status(HttpStatusCode.CREATED).json({
+      numberOfTestCases: totalTestCases,
+      added: {
+        ...createdTestCaseResponse,
+      },
+    });
   } catch (error) {
     console.log(error);
 
@@ -255,6 +266,7 @@ const createQuestionTestCases = async (
         error: "BAD REQUEST",
         message: error.message,
       });
+
       return;
     }
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -281,7 +293,7 @@ const updateQuestionById = async (request: Request, response: Response) => {
     });
 
     if (
-      Object.keys(updateQuestionBody).length !==
+      Object.keys(updateQuestionBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -326,6 +338,8 @@ const updateQuestionReferenceSolution = async (
   response: Response
 ) => {
   try {
+    const questionId = request.params.questionId;
+
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
@@ -335,10 +349,13 @@ const updateQuestionReferenceSolution = async (
     }
 
     const updateQuestionReferenceSolutionBody =
-      UpdateReferenceSolutionValidator.parse(request.body);
+      UpdateReferenceSolutionValidator.parse({
+        ...request.body,
+        id: questionId,
+      });
 
     if (
-      Object.keys(updateQuestionReferenceSolutionBody).length !==
+      Object.keys(updateQuestionReferenceSolutionBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -374,7 +391,7 @@ const updateQuestionReferenceSolution = async (
 
 const deleteQuestionById = async (request: Request, response: Response) => {
   try {
-    const questionId = request.params.id;
+    const questionId = request.params.questionId;
 
     const question = await DeleteHandler.deleteQuestion(questionId);
 
@@ -400,7 +417,7 @@ const deleteQuestionReferenceSolutionById = async (
   response: Response
 ) => {
   try {
-    const questionId = request.params.id;
+    const questionId = request.params.questionId;
 
     const referenceSolution =
       await DeleteHandler.deleteQuestionReferenceSolution(questionId);
@@ -436,15 +453,19 @@ const deleteQuestionTestCasesById = async (
     }
     const questionId = request.params.questionId;
 
-    const testCaseIds = DeleteTestCaseValidator.parse(request.body).testCaseIds;
+    const parsedRequestBody = DeleteTestCaseValidator.parse(request.body);
 
-    if (Object.keys(testCaseIds).length !== Object.keys(request.body).length) {
+    if (
+      Object.keys(parsedRequestBody).length !== Object.keys(request.body).length
+    ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
         message: "Request body must contain only the required fields",
       });
       return;
     }
+
+    const testCaseIds = parsedRequestBody.testCaseIds;
 
     const testCases = await DeleteHandler.deleteQuestionTestCases(
       questionId,
@@ -460,13 +481,11 @@ const deleteQuestionTestCasesById = async (
     }
 
     response.status(HttpStatusCode.NO_CONTENT).send();
-  } catch (error) {
-    console.log(error);
-
-    if (error instanceof ZodError) {
+  } catch (_error) {
+    if (_error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: _error.message,
       });
       return;
     }
