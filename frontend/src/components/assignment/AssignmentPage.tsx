@@ -49,6 +49,6 @@ function AssignmentPage({ assignment }: Props) {
       })}
     </div>
   );
-};
+}
 
 export default AssignmentPage;

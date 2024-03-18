@@ -3,9 +3,9 @@ import { Metadata } from "next";
 
 interface PageProps {
   params: {
-    id: string
+    id: string;
   };
-};
+}
 
 export default function AssignmentPageLayout({
   children,
@@ -15,7 +15,7 @@ export default function AssignmentPageLayout({
 
 export const generateMetadata = async ({
   params,
-}: PageProps): Promise<Metadata>  => {
+}: PageProps): Promise<Metadata> => {
   const assignmentTitle = (
     await AssignmentService.getAssignmentById({
       assignmentId: params.id,
@@ -28,4 +28,4 @@ export const generateMetadata = async ({
   };
 
   return metadata;
-}
+};

@@ -87,7 +87,7 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       } else {
         setProfileMessage("Profile saved!");
       }
-    })
+    });
   };
   return (
     <form className="flex w-1/2 flex-col gap-4">

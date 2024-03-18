@@ -8,7 +8,7 @@ interface Assignment {
   authors: string[];
   createdOn: number;
   updatedOn: number;
-};
+}
 
 interface Question {
   id: string;
@@ -20,18 +20,18 @@ interface Question {
   referenceSolutionId?: string;
   referenceSolution?: ReferenceSolution;
   assignmentId?: string;
-};
+}
 
 interface TestCase {
   id?: string;
   input: string;
   output: string;
   isPublic: boolean;
-};
+}
 
 interface ReferenceSolution {
   id?: string;
   language: string;
   code: string;
   questionId?: string;
-};
+}

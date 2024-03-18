@@ -17,7 +17,7 @@ jest.mock("next/navigation", () => {
       prefetch: jest.fn(),
     }),
     useSearchParams: () => ({
-      get: jest.fn()
+      get: jest.fn(),
     }),
     notFound: () => ({}),
   };

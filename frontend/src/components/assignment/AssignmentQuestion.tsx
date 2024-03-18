@@ -27,4 +27,4 @@ export default function AssignmentQuestion({ question }: Props) {
       </div>
     </div>
   );
-};
+}

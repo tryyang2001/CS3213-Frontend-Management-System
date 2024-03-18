@@ -15,6 +15,6 @@ function ITSLogo({ width = "100%", height = "100%" }: Props) {
       height={height}
     />
   );
-};
+}
 
 export default ITSLogo;

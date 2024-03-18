@@ -20,4 +20,4 @@ export default function LogoLoading({ minHeight }: Props) {
       </div>
     </div>
   );
-};
+}

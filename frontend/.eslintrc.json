@@ -1,5 +1,6 @@
 {
   "extends": [
+    "prettier",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "next/core-web-vitals"
@@ -10,7 +11,7 @@
     "project": true,
     "tsconfigRootDir": "__dirname"
   },
-  
+
   "rules": {
     "@typescript-eslint/naming-convention": [
       "warn",
