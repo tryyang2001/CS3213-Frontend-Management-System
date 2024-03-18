@@ -172,7 +172,7 @@ const Submissions = () => {
                 <TableHeader>
                   <TableColumn>Name</TableColumn>
                   <TableColumn>Submission Date and Time</TableColumn>
-                  <TableColumn width="20" align="end">
+                  <TableColumn className="w-20 text-right">
                     Click to View
                   </TableColumn>
                 </TableHeader>
