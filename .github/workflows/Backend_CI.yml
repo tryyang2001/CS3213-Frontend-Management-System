@@ -1,10 +1,12 @@
-name: Backend Services Tests
+name: Backend Services CI
 # targeting pull requests to master branch
 on:
   pull_request:
     branches: [master]
+  push:
+    branches: [master]
 jobs:
-  coverage:
+  tests:
     permissions:
       checks: write
       pull-requests: write
@@ -36,10 +38,21 @@ jobs:
           cmd: install
           dir: backend/${{matrix.service}}
 
-      - name: Run Tests and Collect Coverage Reports
+      - name: Run Test Suites
         env:
           NODE_ENV: test
         uses: borales/actions-yarn@v4
         with:
           cmd: test
           dir: backend/${{matrix.service}}
+      
+      - name: Run Yarn Build
+        env:
+           NODE_ENV: test
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+          dir: backend/${{matrix.service}}
+  
+
+
