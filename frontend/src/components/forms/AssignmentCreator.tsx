@@ -58,7 +58,9 @@ export default function AssignmentCreator() {
 
         if (checkEmpty(formData)) {
             alert("Invalid or missing fields.");
+            return;
         }
+        console.log("Form submitted: ", formData);
         // Continue with form submission logic
     };
 
