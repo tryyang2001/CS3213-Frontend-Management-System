@@ -1,0 +1,33 @@
+name: Frontend Build Check
+on:
+  pull_request:
+    branches: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Current Branch
+        uses: actions/checkout@v4
+
+      - name: Use NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Clean up
+        run: |
+          rm -rf frontend/node_modules
+          rm -rf frontend/.next
+
+      - name: Install Dependencies
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+          dir: frontend
+
+      - name: Build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+          dir: frontend
