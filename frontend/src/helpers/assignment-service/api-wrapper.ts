@@ -1,16 +1,22 @@
 //import HttpStatusCode from "@/types/HttpStatusCode";
-// import axios from "axios";
+import axios from "axios";
 
-// const api = axios.create({
-//   baseURL: "http://localhost:8080/assignment/api",
-//   timeout: 5000,
-//   headers: {
-//     "Content-type": "application/json",
-//   },
-// });
+const api = axios.create({
+  baseURL: "http://localhost:8080/assignment/api",
+  timeout: 5000,
+  headers: {
+    "Content-type": "application/json",
+  },
+});
 
-const getAssignmentById = ({ assignmentId }: { assignmentId: string }) => {
-  // const _response = await api.get(`/assignment/${assignmentId}`);
+const getAssignmentById = async ({
+  assignmentId,
+}: {
+  assignmentId: string;
+}) => {
+  const _response = await api
+    .get(`/assignment/${assignmentId}`)
+    .catch((err: Error) => console.log(err));
 
   //   if (response.status !== HttpStatusCode.OK) {
   //     throw new Error("Failed to fetch assignment");
