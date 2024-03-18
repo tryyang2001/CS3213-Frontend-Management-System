@@ -4,13 +4,11 @@ import { useRouter } from "next/navigation";
 import {
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
   Spacer,
   Button,
 } from "@nextui-org/react";
 
-const DashBoard = () => {
+export default function DashBoard() {
   const router = useRouter();
 
   const handleButtonClick = (id: any) => {
@@ -76,5 +74,3 @@ const DashBoard = () => {
     </div>
   );
 };
-
-export default DashBoard;

@@ -16,7 +16,7 @@ import {
   Switch,
 } from "@nextui-org/react";
 
-const Submissions = () => {
+export default function Submissions() {
   const [isSelected, setIsSelected] = useState(false);
 
   const router = useRouter();
@@ -270,5 +270,3 @@ const Submissions = () => {
     </div>
   );
 };
-
-export default Submissions;
