@@ -9,9 +9,9 @@ interface Props {
     onFileUpload: (questionIndex: number, type: string, fileContent: string) => void;
 }
 
-export const FileUpload = ({ expectedFileTypes, questionIndex, type, onFileUpload }: Props) => {
+export function FileUpload ({ expectedFileTypes, questionIndex, type, onFileUpload }: Props) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [fileContent, setFileContent] = useState<string | null>(null);
+    const [fileContent, setFileContent] = useState<string>("");
     const [isValidFile, setIsValidFile] = useState<boolean>(true);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -23,18 +23,18 @@ export const FileUpload = ({ expectedFileTypes, questionIndex, type, onFileUploa
             });
         } else {
             setSelectedFile(null);
-            setFileContent(null);
+            setFileContent("");
         }
     };
 
-    function getExtension(filename: string) {
-        var parts = filename.split('.');
+    const getExtension = (filename: string) => {
+        const parts = filename.split('.');
         return parts[parts.length - 1];
     }
 
     useEffect(() => {
-        if (selectedFile && fileContent) {
-            var extension = getExtension(selectedFile?.name);
+        if (selectedFile) {
+            const extension = getExtension(selectedFile?.name);
             if (!expectedFileTypes.includes(extension)) {
                 setIsValidFile(false);
                 onFileUpload(questionIndex, type, "");
@@ -42,13 +42,15 @@ export const FileUpload = ({ expectedFileTypes, questionIndex, type, onFileUploa
                 setIsValidFile(true);
                 onFileUpload(questionIndex, type, fileContent);
             }
+        } else {
+            onFileUpload(questionIndex, type, "");
         }
     }, [fileContent]);
 
     const renderPreview = () => {
         if (isValidFile) {
             if (selectedFile && fileContent) {
-                var extension = getExtension(selectedFile?.name);
+                const extension = getExtension(selectedFile?.name);
                 let content;
                 if (extension === 'html') {
                     content = parse(fileContent);
