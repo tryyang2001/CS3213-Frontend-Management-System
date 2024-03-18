@@ -39,45 +39,43 @@ export default function Home() {
 
   const router = useRouter();
 
-  const handleSubmit = () => {
-    void (async () => {
-      if (email == "" || password == "" || confirmation == "") {
-        setErrorMessage("Please enter the required fields");
-        return;
-      }
+  const handleSubmit = async () => {
+    if (email == "" || password == "" || confirmation == "") {
+      setErrorMessage("Please enter the required fields");
+      return;
+    }
 
-      if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
-        setErrorMessage("Please correct the invalid fields");
-        return;
-      }
+    if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
+      setErrorMessage("Please correct the invalid fields");
+      return;
+    }
 
-      // mock for backend
-      const res = await fetch("https://jsonplaceholder.typicode.com/user", {
-        method: "Post",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      }).catch((err: Error) => {
-        console.log(err);
-        return {
-          ok: false,
-          status: 500,
-        };
-      });
-
-      if (!res.ok) {
-        setErrorMessage(
-          "We are currently encountering some issues, please try again later"
-        );
-      } else {
-        router.push("/dashboard");
-      }
+    // mock for backend
+    const res = await fetch("https://jsonplaceholder.typicode.com/user", {
+      method: "Post",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    }).catch((err: Error) => {
+      console.log(err);
+      return {
+        ok: false,
+        status: 500,
+      };
     });
+
+    if (!res.ok) {
+      setErrorMessage(
+        "We are currently encountering some issues, please try again later"
+      );
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   function Eye() {
@@ -145,7 +143,7 @@ export default function Home() {
               size="sm"
               color="primary"
               className="w-full"
-              onClick={handleSubmit}
+              onClick={() => void handleSubmit()}
             >
               {" "}
               Sign Up

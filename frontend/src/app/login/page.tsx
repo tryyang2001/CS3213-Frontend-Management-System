@@ -30,46 +30,44 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleSubmit = () => {
-    void (async () => {
-      if (email == "" || password == "") {
-        setErrorMessage("Please enter the required fields");
-        return;
-      }
-      if (isInvalidEmail) {
-        setErrorMessage("Please correct the invalid fields");
-        return;
-      }
+  const handleSubmit = async () => {
+    if (email == "" || password == "") {
+      setErrorMessage("Please enter the required fields");
+      return;
+    }
+    if (isInvalidEmail) {
+      setErrorMessage("Please correct the invalid fields");
+      return;
+    }
 
-      // mock for backend
-      const res = await fetch("https://jsonplaceholder.typicode.com/session", {
-        method: "Post",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      }).catch((err: Error) => {
-        console.log(err);
-        return {
-          ok: false,
-          status: 500,
-        };
-      });
-
-      if (res.status == 401) {
-        setErrorMessage("Invalid Email/Password");
-      } else if (!res.ok) {
-        setErrorMessage(
-          "We are currently encountering some issues, please try again later"
-        );
-      } else {
-        router.push("/dashboard");
-      }
+    // mock for backend
+    const res = await fetch("https://jsonplaceholder.typicode.com/session", {
+      method: "Post",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    }).catch((err: Error) => {
+      console.log(err);
+      return {
+        ok: false,
+        status: 500,
+      };
     });
+
+    if (res.status == 401) {
+      setErrorMessage("Invalid Email/Password");
+    } else if (!res.ok) {
+      setErrorMessage(
+        "We are currently encountering some issues, please try again later"
+      );
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   function Eye() {
@@ -118,7 +116,7 @@ export default function Home() {
               type="submit"
               color="primary"
               className="w-full"
-              onClick={handleSubmit}
+              onClick={() => void handleSubmit()}
             >
               {" "}
               Login{" "}
