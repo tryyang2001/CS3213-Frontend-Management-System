@@ -24,8 +24,6 @@ const convertDateToTimestamp = (date: string | Date) => {
   return timestamp;
 };
 
-console.log(convertDateToTimestamp("2024-03-31T23:59:59.999Z"));
-
 const DateUtils = {
   parseTimestampToDate,
   convertDateToTimestamp,
