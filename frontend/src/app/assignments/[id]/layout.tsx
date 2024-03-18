@@ -13,10 +13,9 @@ export default function AssignmentPageLayout({
   return <div>{children}</div>;
 }
 
-export async function generateMetadata(
-  { params }: PageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const assignmentTitle = (
     await AssignmentService.getAssignmentById({
       assignmentId: params.id,

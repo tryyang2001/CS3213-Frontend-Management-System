@@ -2,7 +2,7 @@ import LandingPage from "../login/page";
 import LoginPage from "../login/page";
 import SignUpPage from "../sign-up/page";
 import UserPage from "../user/page";
-import AssignmentPage from "../(pages)/assignments/[id]/page";
+import AssignmentPage from "../assignments/[id]/page";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
 import { render } from "@testing-library/react";
