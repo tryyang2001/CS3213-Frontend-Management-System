@@ -33,7 +33,7 @@ async function generateParserString(language: string, source_code: string) {
 
     return parserString;
   } catch (error) {
-    if (error instanceof axios.AxiosError) {
+    if (axios.isAxiosError(error)) {
       switch (error.response?.status) {
         case HttpStatusCode.UNPROCESSABLE_ENTITY:
           throw new ITSPostParserError("language");
@@ -138,7 +138,7 @@ async function generateErrorFeedback(
 
     return feedbacks;
   } catch (error) {
-    if (error instanceof axios.AxiosError) {
+    if (axios.isAxiosError(error)) {
       console.log(error.response?.data);
       throw new ITSPostFeedbackError();
     }
