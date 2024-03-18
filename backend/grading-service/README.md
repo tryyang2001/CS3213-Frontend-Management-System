@@ -16,3 +16,5 @@ Then, to set up the grading service locally, do the following:
 1. Run `yarn` or `yarn install` to install all the necessary dependencies
 2. To start the server in dev mode, simply run `yarn dev`.
 3. To start the server in prod mode, run `yarn build` follow by `yarn start`.
+
+After that, you may proceed to making API requests using Postman or any other agent tools as your choice. The server will start running on **port 8088** locally.
