@@ -14,7 +14,9 @@ const getAssignmentById = async ({
 }: {
   assignmentId: string;
 }) => {
-  const _response = await api.get(`/assignment/${assignmentId}`);
+  const _response = await api
+    .get(`/assignment/${assignmentId}`)
+    .catch((err: Error) => console.log(err));
 
   //   if (response.status !== HttpStatusCode.OK) {
   //     throw new Error("Failed to fetch assignment");
