@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Tabs,
   Tab,
   Card,
   CardBody,
-  CardHeader,
   Spacer,
   Divider,
   Code,
@@ -15,22 +14,17 @@ import {
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import AssignmentQuestion from "../../../../../../components/assignment/AssignmentQuestion";
-import DateUtils from "../../../../../../utils/dateUtils";
-import AssignmentPage from "@/components/assignment/AssignmentPage";
+import DateUtils from "../../../../../utils/dateUtils";
 import * as monaco from "monaco-editor";
-
-// import AssignmentQuestion from "./../../../../../components/assignment/AssignmentQuestion";
 
 interface Props {
   id: string;
-  question: Question;
 }
 
-const SubmissionPage = ({ id, question }: Props) => {
+export default function SubmissionPage({ id }: Props) {
   const editorRef = useRef();
-  const [value, setValue] = useState("");
-  const [language, setLanguage] = useState("python");
+  // const [value, setValue] = useState("");
+  // const [language, setLanguage] = useState("python");
 
   const feedback = {
     line: 2,
@@ -104,7 +98,7 @@ const SubmissionPage = ({ id, question }: Props) => {
     },
   ];
 
-  function renderTabContent(tabId: any, item: any) {
+  const renderTabContent = (tabId: any, item: any) => {
     if (tabId === "testcases") {
       return (
         <div className="flex flex-col gap-4">
@@ -254,6 +248,4 @@ const SubmissionPage = ({ id, question }: Props) => {
       )}
     </div>
   );
-};
-
-export default SubmissionPage;
+}
