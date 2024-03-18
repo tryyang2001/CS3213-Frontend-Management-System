@@ -11,7 +11,7 @@ import {
 export default function DashBoard() {
   const router = useRouter();
 
-  const handleButtonClick = (id: any) => {
+  const handleButtonClick = (id: number) => {
     router.push(`/assignments/${id}`);
   };
 

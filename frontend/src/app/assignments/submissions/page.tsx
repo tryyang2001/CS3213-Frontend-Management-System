@@ -21,7 +21,7 @@ export default function Submissions() {
 
   const router = useRouter();
 
-  const handleButtonClick = (aid: String, sid: String) => {
+  const handleButtonClick = (aid: string, sid: string) => {
     // Navigate to the desired route when the button is clicked
     router.push(`/assignments/${aid}/submissions/${sid}`);
   };
@@ -132,17 +132,6 @@ export default function Submissions() {
     },
   ];
 
-  const columns = [
-    {
-      key: "submission",
-      label: "Submission Date and Time",
-    },
-    {
-      key: "view",
-      label: "Click to View",
-    },
-  ];
-
   return (
     <div className="h-screen">
       <b>Submissions</b>
@@ -185,7 +174,7 @@ export default function Submissions() {
                       return a.name.localeCompare(b.name);
                     })}
                 >
-                  {(submission: any) => (
+                  {(submission) => (
                     <TableRow key={submission.id}>
                       <TableCell>{submission.name}</TableCell>
                       <TableCell>
@@ -269,4 +258,4 @@ export default function Submissions() {
       )}
     </div>
   );
-};
+}
