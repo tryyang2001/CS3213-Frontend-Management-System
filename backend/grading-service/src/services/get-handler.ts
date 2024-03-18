@@ -30,12 +30,14 @@ const getSubmissionById = async (submissionId: string) => {
     studentId: submission.studentId,
     language: submission.language,
     code: submission.code,
-    feedbacks: submission.feedbacks.map((feedback) => {
-      return {
-        line: feedback.line,
-        hints: feedback.hints,
-      };
-    }),
+    feedbacks: submission.feedbacks.map(
+      (feedback: { line: number; hints: string[] }) => {
+        return {
+          line: feedback.line,
+          hints: feedback.hints,
+        };
+      }
+    ),
   };
 };
 
@@ -73,12 +75,14 @@ const getSubmissionByQuestionIdAndStudentId = async (
     studentId: submission.studentId,
     language: submission.language,
     code: submission.code,
-    feedbacks: submission.feedbacks.map((feedback) => {
-      return {
-        line: feedback.line,
-        hints: feedback.hints,
-      };
-    }),
+    feedbacks: submission.feedbacks.map(
+      (feedback: { line: number; hints: string[] }) => {
+        return {
+          line: feedback.line,
+          hints: feedback.hints,
+        };
+      }
+    ),
   };
 };
 
