@@ -13,7 +13,7 @@ import supertest from "supertest";
 const API_PREFIX = "/assignment/api";
 
 describe("Unit Tests for getAssignmentsByUserId", () => {
-  var dbMock: PrismaClient;
+  let dbMock: PrismaClient;
 
   beforeEach(() => {
     dbMock = db as jest.Mocked<typeof db>;
@@ -39,7 +39,7 @@ describe("Unit Tests for getAssignmentsByUserId", () => {
 });
 
 describe("Unit Tests for GET /assignments?userId=:userId", () => {
-  var app: Express;
+  let app: Express;
 
   beforeAll(() => {
     app = createUnitTestServer();

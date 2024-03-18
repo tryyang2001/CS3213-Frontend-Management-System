@@ -11,7 +11,7 @@ const getHealth = async (_: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json({ message: "Healthy" });
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "No database connection from the server",

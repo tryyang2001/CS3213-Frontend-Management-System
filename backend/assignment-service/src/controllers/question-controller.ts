@@ -28,7 +28,7 @@ const getQuestionById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json(question);
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -54,7 +54,7 @@ const getQuestionTestCasesById = async (
     }
 
     response.status(HttpStatusCode.OK).json(testCases);
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -69,9 +69,8 @@ const getQuestionReferenceSolutionById = async (
   try {
     const questionId = request.params.questionId;
 
-    const referenceSolution = await GetHandler.getQuestionReferenceSolution(
-      questionId
-    );
+    const referenceSolution =
+      await GetHandler.getQuestionReferenceSolution(questionId);
 
     if (!referenceSolution) {
       response.status(HttpStatusCode.NOT_FOUND).json({
@@ -82,7 +81,7 @@ const getQuestionReferenceSolutionById = async (
     }
 
     response.status(HttpStatusCode.OK).json(referenceSolution);
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -292,9 +291,8 @@ const updateQuestionById = async (request: Request, response: Response) => {
       return;
     }
 
-    const updatedQuestion = await PutHandler.updateQuestionById(
-      updateQuestionBody
-    );
+    const updatedQuestion =
+      await PutHandler.updateQuestionById(updateQuestionBody);
 
     if (!updatedQuestion) {
       response.status(HttpStatusCode.NOT_FOUND).json({
@@ -389,7 +387,7 @@ const deleteQuestionById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.NO_CONTENT).send();
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -416,7 +414,7 @@ const deleteQuestionReferenceSolutionById = async (
     }
 
     response.status(HttpStatusCode.NO_CONTENT).send();
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
