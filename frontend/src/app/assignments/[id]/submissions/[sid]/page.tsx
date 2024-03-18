@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { MutableRefObject, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Tabs,
@@ -18,11 +18,21 @@ import DateUtils from "../../../../../utils/dateUtils";
 import * as monaco from "monaco-editor";
 
 interface Props {
-  id: string;
+  params: {
+    id: string;
+    sid: string;
+  };
 }
 
-export default function SubmissionPage({ id }: Props) {
-  const editorRef = useRef();
+interface Item {
+  id: string;
+  label: string;
+  content: string[];
+}
+
+export default function SubmissionPage({ params }: Props) {
+  const editorRef: MutableRefObject<monaco.editor.IStandaloneCodeEditor | null> =
+    useRef(null);
   // const [value, setValue] = useState("");
   // const [language, setLanguage] = useState("python");
 
@@ -41,7 +51,7 @@ export default function SubmissionPage({ id }: Props) {
     },
   ];
 
-  const onMount = (editor: any) => {
+  const onMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
     editor.createDecorationsCollection(newDecoration);
     editor.focus();
@@ -56,13 +66,13 @@ export default function SubmissionPage({ id }: Props) {
 
   const {
     data: assignment,
-    isLoading,
+    // isLoading,
     isError,
   } = useQuery({
-    queryKey: ["get-assignment", id],
-    queryFn: async () => {
-      const assignment = await AssignmentService.getAssignmentById({
-        assignmentId: id,
+    queryKey: ["get-assignment", params.id],
+    queryFn: () => {
+      const assignment = AssignmentService.getAssignmentById({
+        assignmentId: params.id,
       });
 
       return assignment;
@@ -88,29 +98,32 @@ export default function SubmissionPage({ id }: Props) {
     {
       id: "feedback",
       label: "Feedback",
-      content: `Line ${feedback.line.toString()}: ${feedback.hints[0]}`,
+      content: [`Line ${feedback.line.toString()}: ${feedback.hints[0]}`],
     },
     {
       id: "grades",
       label: "Grades",
-      content:
+      content: [
         "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      ],
     },
   ];
 
-  const renderTabContent = (tabId: any, item: any) => {
+  const renderTabContent = (tabId: string, item: Item) => {
     if (tabId === "testcases") {
       return (
         <div className="flex flex-col gap-4">
-          {item.content.map((testcase: any) => (
-            <Code color="default">{testcase}</Code>
+          {item.content.map((testcase: string) => (
+            <Code color="default" key={testcase}>
+              {testcase}
+            </Code>
           ))}
         </div>
       );
     } else if (tabId === "feedback") {
-      return item.content;
+      return item.content[0];
     } else if (tabId === "grades") {
-      return item.content;
+      return item.content[0];
     }
   };
 

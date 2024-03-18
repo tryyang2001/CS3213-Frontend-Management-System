@@ -1,19 +1,15 @@
 //import HttpStatusCode from "@/types/HttpStatusCode";
-import axios from "axios";
+// import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:8080/assignment/api",
-  timeout: 5000,
-  headers: {
-    "Content-type": "application/json",
-  },
-});
+// const api = axios.create({
+//   baseURL: "http://localhost:8080/assignment/api",
+//   timeout: 5000,
+//   headers: {
+//     "Content-type": "application/json",
+//   },
+// });
 
-const getAssignmentById = async ({
-  assignmentId,
-}: {
-  assignmentId: string;
-}) => {
+const getAssignmentById = ({ assignmentId }: { assignmentId: string }) => {
   // const _response = await api.get(`/assignment/${assignmentId}`);
 
   //   if (response.status !== HttpStatusCode.OK) {
