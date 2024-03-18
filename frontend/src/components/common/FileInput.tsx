@@ -1,9 +1,13 @@
 "use client";
 
 import { Button, Modal, ModalBody, ModalContent, Image, useDisclosure } from "@nextui-org/react";
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 
-export default function FileInput({onFileChange} : {onFileChange: Function}) {
+interface FileInputProps {
+  onFileChange: Dispatch<SetStateAction<File | undefined>>
+}
+
+export default function FileInput({onFileChange} : FileInputProps) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     
     
@@ -16,7 +20,13 @@ export default function FileInput({onFileChange} : {onFileChange: Function}) {
     </>
 }
 
-function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpenChange: VoidFunction, onUpload: Function}) {
+interface ModalUploadProps {
+  isOpen: boolean,
+  onOpenChange: VoidFunction,
+  onUpload: Dispatch<SetStateAction<File | undefined>>
+}
+
+function ModalUpload ({isOpen, onOpenChange, onUpload} : ModalUploadProps) {
 
     const inputRef = useRef<HTMLInputElement>(null);
     const [photo, setPhoto] = useState<string>(""); 
@@ -44,7 +54,6 @@ function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpe
     }
 
     const handleUpload = () => {
-        console.log("Uploading"  + file);
         onUpload(file);
         onOpenChange();
         setPhoto("");
@@ -53,7 +62,7 @@ function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpe
 
     return <Modal isOpen={isOpen} onOpenChange={onOpenChangeModal} size="2xl">
     <ModalContent className="pt-12">
-      {(onClose) => (
+      {(_onClose) => (
         <>
           <ModalBody className="flex flex-col items-center">
             {/* I can't get Avatar to limit image size to 200px */}
@@ -70,7 +79,7 @@ function ModalUpload ({isOpen, onOpenChange, onUpload} : {isOpen: boolean, onOpe
             <div className="flex flex-row items-center gap-4">
                 <Button onClick={onChooseFile}> Choose File </Button>
                 <p>{file ? file.name : "Choose a profile picture"}</p>
-                <input type="file" className="hidden" onChange={onChangePhoto} ref={inputRef}></input>
+                <input type="file" className="hidden" onChange={onChangePhoto} ref={inputRef} />
                 <Button onClick={handleUpload}> upload </Button>
             </div>
           </ModalBody>

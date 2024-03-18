@@ -1,4 +1,4 @@
-import { ReadOnlyFullUserCard, UserInfo } from "../../components/common/ReadOnlyUserCard";
+import { UserInfo } from "../../components/common/ReadOnlyUserCard";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
 
@@ -21,6 +21,6 @@ export default async function Home() {
 
 export const getUserData = async () => {
   const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
-  const userInfo: UserInfo = await res.json();
+  const userInfo: UserInfo = await res.json() as UserInfo;
   return userInfo
 };

@@ -1,21 +1,21 @@
 import { Avatar } from "@nextui-org/react"
 import { ReactNode } from "react"
 
-export type UserInfo = {
+export interface UserInfo {
     name: string,
     email: string,
     bio?: string,
     photo?: string
 }
 
-const Card = ({children} : {children: ReactNode}) => {
+function Card({children} : {children: ReactNode}) {
     return <div className="flex items-center gap-4">
             {children}
         </div>
 }
 
 /** ReadOnly Profile Picture, Name and Email */
-export const ReadOnlyFullUserCard = ({userInfo}: {userInfo: UserInfo}) => {
+export function ReadOnlyFullUserCard({userInfo}: {userInfo: UserInfo}) {
     return <Card>
             <Avatar 
                 showFallback
@@ -29,7 +29,7 @@ export const ReadOnlyFullUserCard = ({userInfo}: {userInfo: UserInfo}) => {
 }
 
 /** ReadOnly Profile Picture and Name */
-export const ReadOnlyUserCard = ({userInfo}: {userInfo: UserInfo}) => {
+export function ReadOnlyUserCard ({userInfo}: {userInfo: UserInfo}) {
     return <Card>
             <Avatar 
                 showFallback

@@ -1,5 +1,5 @@
-export const EyeSlashFilledIcon = () => (
-  <svg
+export function EyeSlashFilledIcon() {
+  return <svg
     aria-hidden="true"
     fill="none"
     focusable="false"
@@ -30,4 +30,4 @@ export const EyeSlashFilledIcon = () => (
       fill="currentColor"
     />
   </svg>
-);
+};

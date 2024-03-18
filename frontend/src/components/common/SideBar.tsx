@@ -5,7 +5,7 @@ import { Avatar, Button, User } from "@nextui-org/react";
 import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
 import classNames from "classnames";
 
-const SideBar = () => {
+export default function SideBar() {
   const userName = "Jane Doe";
   const userEmail = "janedoe@u.nus.edu";
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -19,7 +19,7 @@ const SideBar = () => {
     }
   );
 
-  const collapseIconClasses = classNames(
+  const _collapseIconClasses = classNames(
     "p-4 rounded bg-gray-300 absolute right-0",
     { "rotate-180": isCollapsed }
   );
@@ -75,4 +75,3 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;

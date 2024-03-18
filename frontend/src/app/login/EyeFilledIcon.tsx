@@ -1,4 +1,4 @@
-export const EyeFilledIcon = () => {
+export function EyeFilledIcon() {
   return <svg
     aria-hidden="true"
     fill="none"

@@ -10,7 +10,7 @@ interface Props {
   id: string;
 }
 
-const page = ({ id }: Props) => {
+function Page({ id }: Props) {
   const {
     data: assignment,
     isLoading,
@@ -37,4 +37,4 @@ const page = ({ id }: Props) => {
   );
 };
 
-export default page;
+export default Page;

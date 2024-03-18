@@ -21,45 +21,47 @@ export default function Home() {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const router = useRouter();
     
-    const handleSubmit = async () => {
-        if (email == "" || password == "") {
-            setErrorMessage("Please enter the required fields");
-            return;
-        }
-        if (isInvalidEmail) {
-            setErrorMessage("Please correct the invalid fields");
-            return;
-        }
-
-        // mock for backend
-        const res = await fetch("https://jsonplaceholder.typicode.com/session", {
-            method: "Post",
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        }).catch((err: Error) => {
-            console.log(err);
-            return {
-                ok: false,
-                status: 500
+    const handleSubmit = () => {
+        void(async () => {
+            if (email == "" || password == "") {
+                setErrorMessage("Please enter the required fields");
+                return;
             }
-        });
+            if (isInvalidEmail) {
+                setErrorMessage("Please correct the invalid fields");
+                return;
+            }
 
-        if (res.status == 401) {
-            setErrorMessage("Invalid Email/Password");
-        } else if (!res.ok) {
-            setErrorMessage("We are currently encountering some issues, please try again later");
-        } else {
-            router.push("/dashboard");
-        }
+            // mock for backend
+            const res = await fetch("https://jsonplaceholder.typicode.com/session", {
+                method: "Post",
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }).catch((err: Error) => {
+                console.log(err);
+                return {
+                    ok: false,
+                    status: 500
+                }
+            });
+
+            if (res.status == 401) {
+                setErrorMessage("Invalid Email/Password");
+            } else if (!res.ok) {
+                setErrorMessage("We are currently encountering some issues, please try again later");
+            } else {
+                router.push("/dashboard");
+            }
+        })
     }
 
-    const Eye = () => {
+    function Eye() {
         return <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
           {isVisible ? (
             <EyeSlashFilledIcon />

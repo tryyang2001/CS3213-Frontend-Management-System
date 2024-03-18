@@ -1,4 +1,4 @@
-type Assignment = {
+interface Assignment {
   id: string;
   title: string;
   deadline: number;
@@ -10,7 +10,7 @@ type Assignment = {
   updatedOn: number;
 };
 
-type Question = {
+interface Question {
   id: string;
   title: string;
   description: string;
@@ -22,14 +22,14 @@ type Question = {
   assignmentId?: string;
 };
 
-type TestCase = {
+interface TestCase {
   id?: string;
   input: string;
   output: string;
-  isPublic: boolean = true;
+  isPublic: boolean;
 };
 
-type ReferenceSolution = {
+interface ReferenceSolution {
   id?: string;
   language: string;
   code: string;

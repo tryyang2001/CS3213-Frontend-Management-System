@@ -1,9 +1,9 @@
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { Metadata } from "next";
 
-type Props = {
+interface Props {
   params: {
-    id: string;
+    id: string
   };
 };
 
@@ -13,7 +13,7 @@ export default function AssignmentPageLayout({
   return <div>{children}</div>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export const generateMetadata = async ({ params }: Props) => {
   const assignmentTitle = (
     await AssignmentService.getAssignmentById({
       assignmentId: params.id,
