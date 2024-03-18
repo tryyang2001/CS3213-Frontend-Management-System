@@ -32,7 +32,7 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json({ assignments: assignments });
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -55,7 +55,7 @@ const getAssignmentById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json(assignment);
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -179,7 +179,7 @@ const deleteAssignmentById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.NO_CONTENT).send();
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",

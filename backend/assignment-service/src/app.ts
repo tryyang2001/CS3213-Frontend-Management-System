@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 app.use("/assignment/api", router);
 
-app.all("*", (req, res) => {
+app.all("*", (_req, res) => {
   res.status(HttpStatusCode.NOT_FOUND).json({
     error: "NOT FOUND",
     message: "The requested resource was not found",
