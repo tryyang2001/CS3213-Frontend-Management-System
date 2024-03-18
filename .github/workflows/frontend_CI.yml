@@ -1,4 +1,4 @@
-name: Frontend CI tests
+name: Frontend CI
 # targeting pull requests to master branch
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
   push:
     branches: [master]
 jobs:
-  CI:
+  tests:
     permissions:
       checks: write
       pull-requests: write
