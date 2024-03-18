@@ -1,5 +1,7 @@
 # Frontend Service
 
+![Frontend CI](https://github.com/tryyang2001/CS3213-Frontend-Management-System/actions/workflows/frontend_CI.yml/badge.svg)
+
 This project is built on top of NodeJS with NextJS, ReactJS, and TypeScript. Please ensure that you have Node installed with version >= 20.
 
 ## Instruction to set up
