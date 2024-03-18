@@ -12,7 +12,7 @@ interface Props {
   };
 }
 
-const Page = ({ params }: Props) => {
+export default function Page({ params }: Props) {
   const {
     data: assignment,
     isLoading,
@@ -37,6 +37,4 @@ const Page = ({ params }: Props) => {
       {isLoading ? <LogoLoading /> : <AssignmentPage assignment={assignment} />}
     </div>
   );
-};
-
-export default Page;
+}
