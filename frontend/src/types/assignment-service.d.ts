@@ -26,7 +26,7 @@ type TestCase = {
   id?: string;
   input: string;
   output: string;
-  isPublic: boolean = true;
+  isPublic: boolean;
 };
 
 type ReferenceSolution = {

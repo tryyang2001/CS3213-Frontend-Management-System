@@ -1,7 +1,7 @@
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 
-type Props = {
+type PageProps = {
   params: {
     id: string;
   };
@@ -13,7 +13,9 @@ export default function AssignmentPageLayout({
   return <div>{children}</div>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const assignmentTitle = (
     await AssignmentService.getAssignmentById({
       assignmentId: params.id,
