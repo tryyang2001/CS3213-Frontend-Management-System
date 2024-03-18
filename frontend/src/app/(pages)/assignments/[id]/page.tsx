@@ -7,19 +7,21 @@ import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
 interface Props {
-  id: string;
+  params: {
+    id: string;
+  };
 }
 
-const page = ({ id }: Props) => {
+const Page = ({ params }: Props) => {
   const {
     data: assignment,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["get-assignment", id],
+    queryKey: ["get-assignment", params.id],
     queryFn: async () => {
       const assignment = await AssignmentService.getAssignmentById({
-        assignmentId: id,
+        assignmentId: params.id,
       });
 
       return assignment;
@@ -37,4 +39,4 @@ const page = ({ id }: Props) => {
   );
 };
 
-export default page;
+export default Page;
