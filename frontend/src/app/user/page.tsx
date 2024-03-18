@@ -6,7 +6,7 @@ import AccountEditor from "../../components/forms/AccountEditor";
 import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 
-const Page = () => {
+export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -27,7 +27,7 @@ const Page = () => {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <div>
+        <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
             <ProfileEditor userInfo={userInfo} />
@@ -40,6 +40,4 @@ const Page = () => {
       )}
     </div>
   );
-};
-
-export default Page;
+}
