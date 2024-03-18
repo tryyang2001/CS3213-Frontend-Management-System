@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "2bf8cfeb-df92-4b4d-880f-50a42649cc97",
+		"name": "Grading",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31847032",
+		"_collection_link": "https://planetary-equinox-492753.postman.co/workspace/FMDevs~76ee504e-4116-4c84-8e26-ffe363f82dc5/collection/31847032-2bf8cfeb-df92-4b4d-880f-50a42649cc97?action=share&source=collection_link&creator=31847032"
+	},
+	"item": [
+		{
+			"name": "/health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{GRADING_API_URL}}/grading/api/health",
+					"protocol": "http",
+					"host": [
+						"{{GRADING_API_URL}}"
+					],
+					"path": [
+						"grading",
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parser/generate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var requestBody = pm.request.body;\r",
+							"\r",
+							"console.log(requestBody)\r",
+							"\r",
+							"var student_code = JSON.stringify(JSON.parse(requestBody.raw).source_code);\r",
+							"\r",
+							"pm.collectionVariables.set(\"student_code\", student_code);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"python\",\r\n    \"source_code\": \"def is_odd(x):\\r\\n    if x % 2 == 1:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{GRADING_API_URL}}/grading/api/parser/generate",
+					"protocol": "http",
+					"host": [
+						"{{GRADING_API_URL}}"
+					],
+					"path": [
+						"grading",
+						"api",
+						"parser",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "feedback/generate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"python\",\r\n    \"source_code\": {{student_code}},\r\n    \"question_id\": \"{{question_id}}\",\r\n    \"student_id\": {{student_id}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{GRADING_API_URL}}/grading/api/feedback/generate",
+					"protocol": "http",
+					"host": [
+						"{{GRADING_API_URL}}"
+					],
+					"path": [
+						"grading",
+						"api",
+						"feedback",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/submissions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{GRADING_API_URL}}/grading/api/questions/{{question_id}}/submissions?studentId=1",
+					"protocol": "http",
+					"host": [
+						"{{GRADING_API_URL}}"
+					],
+					"path": [
+						"grading",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"submissions"
+					],
+					"query": [
+						{
+							"key": "studentId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "GRADING_API_URL",
+			"value": "localhost:8088",
+			"type": "string"
+		},
+		{
+			"key": "student_code",
+			"value": ""
+		},
+		{
+			"key": "question_id",
+			"value": "cltu7sh7b0007rdzclqfnzbt9",
+			"type": "string"
+		},
+		{
+			"key": "student_id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

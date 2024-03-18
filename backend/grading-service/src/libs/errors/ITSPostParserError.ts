@@ -1,6 +1,9 @@
 class ITSPostParserError extends Error {
-  constructor() {
+  errorField: string;
+
+  constructor(errorField: string) {
     super("Failed to generate parser string from ITS API");
+    this.errorField = errorField;
   }
 }
 

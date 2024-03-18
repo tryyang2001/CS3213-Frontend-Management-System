@@ -25,7 +25,9 @@ router
   .route("/questions/:questionId/test-cases")
   .post(QuestionController.createQuestionTestCases);
 
-router.route("/questions/:questionId/test-cases");
+router
+  .route("/questions/:questionId/test-cases")
+  .delete(QuestionController.deleteQuestionTestCasesById);
 
 router
   .route("/questions/:questionId/solution")
@@ -34,6 +36,14 @@ router
 router
   .route("/questions/:questionId/solution")
   .post(QuestionController.createQuestionReferenceSolution);
+
+router
+  .route("/questions/:questionId/solution")
+  .put(QuestionController.updateQuestionReferenceSolution);
+
+router
+  .route("/questions/:questionId/solution")
+  .delete(QuestionController.deleteQuestionReferenceSolutionById);
 
 const questionRouter = router;
 
