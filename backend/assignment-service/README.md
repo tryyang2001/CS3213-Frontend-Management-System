@@ -10,7 +10,7 @@ Please ensure that you have obtained the necessary **environmental variables** f
 POSTGRESQL_DB_URL = <REPLACE_WITH_THE_ACTUAL_VALUE>
 ```
 
-Then, to set up the grading service locally, do the following:
+Then, to set up the assignment service locally, do the following:
 
 1. Run `yarn` or `yarn install` to install all the necessary dependencies
 2. To start the server in dev mode, simply run `yarn dev`.
