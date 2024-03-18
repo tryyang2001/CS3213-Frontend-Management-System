@@ -71,10 +71,11 @@ const SideBar = () => {
                 <HiMenu className="text-2xl" />
               </Button>
               <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026702d" />
-              <Spacer y={52} />
+              <Spacer y={60} />
               {menuItems.map((item: any) => (
                 <Button
                   isIconOnly
+                  key={item.id}
                   // onClick={handleToggleCollapse}
                   className="text-black"
                   onPress={() => handleNavigate(item.link)}
@@ -82,7 +83,7 @@ const SideBar = () => {
                   {item.icon}
                 </Button>
               ))}
-              <Spacer y={80} />
+              <Spacer y={72} />
               <Spacer y={6} />
               <Button
                 isIconOnly
@@ -108,11 +109,12 @@ const SideBar = () => {
                   src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
                 }}
               />
-              <Spacer y={52} />
+              <Spacer y={60} />
               {menuItems.map((item: any) => (
                 <Button
                   // isIconOnly
                   // onClick={handleToggleCollapse}
+                  key={item.id}
                   className="flex text-black text-left items-center justify-start p-2"
                   fullWidth={true}
                   startContent={item.icon}
@@ -121,7 +123,7 @@ const SideBar = () => {
                   {item.label}
                 </Button>
               ))}
-              <Spacer y={80} />
+              <Spacer y={72} />
               <Spacer y={6} />
               <Button
                 // isIconOnly
