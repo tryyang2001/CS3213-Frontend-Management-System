@@ -12,14 +12,14 @@ export default function Page() {
 
   const getUserData = async () => {
     const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
-    const userInfo: UserInfo = await res.json();
+    const userInfo: UserInfo = (await res.json()) as UserInfo;
 
     setUserInfo(userInfo);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getUserData();
+    getUserData().catch((err) => console.log(err));
   }, []);
 
   return (

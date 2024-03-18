@@ -11,7 +11,14 @@ import {
 } from "react-icons/md";
 import classNames from "classnames";
 
-const menuItems = [
+interface MenuItem {
+  id: number;
+  label: string;
+  icon: JSX.Element;
+  link: string;
+}
+
+const menuItems: MenuItem[] = [
   {
     id: 1,
     label: "Assignments",
@@ -26,7 +33,7 @@ const menuItems = [
   },
 ];
 
-const SideBar = () => {
+export default function SideBar() {
   const router = useRouter();
   const userName = "Jane Doe";
   const userEmail = "janedoe@u.nus.edu";
@@ -49,7 +56,7 @@ const SideBar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const handleNavigate = (route: any) => {
+  const handleNavigate = (route: string) => {
     router.push(route);
   };
 
@@ -76,7 +83,7 @@ const SideBar = () => {
                 src="https://i.pravatar.cc/150?u=a04258114e29026702d"
               />
               <Spacer y={60} />
-              {menuItems.map((item: any) => (
+              {menuItems.map((item: MenuItem) => (
                 <Button
                   isIconOnly
                   key={item.id}
@@ -116,7 +123,7 @@ const SideBar = () => {
                 }}
               />
               <Spacer y={60} />
-              {menuItems.map((item: any) => (
+              {menuItems.map((item: MenuItem) => (
                 <Button
                   // isIconOnly
                   // onClick={handleToggleCollapse}
@@ -146,6 +153,4 @@ const SideBar = () => {
       </div>
     </div>
   );
-};
-
-export default SideBar;
+}

@@ -24,9 +24,9 @@ const convertDateToTimestamp = (date: string | Date) => {
   return timestamp;
 };
 
-const DateUtils = {
+const dateUtils = {
   parseTimestampToDate,
   convertDateToTimestamp,
 };
 
-export default DateUtils;
+export default dateUtils;
