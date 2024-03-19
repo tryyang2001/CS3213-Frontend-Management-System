@@ -31,6 +31,8 @@ async function generateParserString(language: string, source_code: string) {
 
     const parserString = JSON.stringify(parser);
 
+    if (!parserString) throw new Error();
+
     return parserString;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -139,7 +141,6 @@ async function generateErrorFeedback(
     return feedbacks;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
       throw new ITSPostFeedbackError();
     }
 
