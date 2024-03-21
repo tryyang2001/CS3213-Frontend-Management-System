@@ -7,7 +7,7 @@ const getHealth = async (_: Request, response: Response) => {
     await db.$queryRaw`SELECT 1`;
 
     response.status(HttpStatusCode.OK).json({ message: "Healthy" });
-  } catch (error) {
+  } catch {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "No database connection from the server",
