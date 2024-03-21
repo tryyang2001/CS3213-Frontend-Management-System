@@ -1,6 +1,8 @@
 class CodeFunctionNameError extends Error {
-  constructor() {
-    super("Solution code does not contain the target function declaration");
+  constructor(targetFunction: string) {
+    super(
+      `Solution code does not contain the target function "${targetFunction}" declaration`
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 import StudentSolution from "../payloads/student-code";
 import { ITSApi, api } from "../../services/its/api-wrapper";
 import ITSPostParserError from "../../libs/errors/ITSPostParserError";
-import axios, { AxiosError, isAxiosError } from "axios";
+import { AxiosError } from "axios";
 import db from "../../models/db";
 import ReferenceSolution from "../payloads/reference-code";
 import NotExistingReferencedSolutionError from "../../libs/errors/NotExistingReferencedSolutionError";
@@ -9,6 +9,8 @@ import CodeFunctionNameError from "../../libs/errors/CodeFunctionNameError";
 import NotExistingTestCaseError from "../../libs/errors/NotExistingTestCaseError";
 import ITSPostFeedbackError from "../../libs/errors/ITSPostFeedbackError";
 import HttpStatusCode from "../../libs/enums/HttpStatusCode";
+import CodeError from "../payloads/code-error";
+import NotExistingStudentError from "../../libs/errors/NotExistingStudentError";
 
 const NODE_ENV = "test";
 
@@ -129,6 +131,10 @@ describe("Unit tests for generateFeedback service", () => {
       setupMockedGenerateErrorFeedbackParams();
 
     beforeEach(() => {
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
+
       dbMock.testCase.findFirst = jest.fn().mockResolvedValue({
         input: "2",
         output: "False",
@@ -181,10 +187,8 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
-        expect(feedbacks[0].lineNumber).toBe(2);
-        expect(feedbacks[0].hintStrings).toContain(
-          "Incorrect else-block for if ( ((x % 2) == 1) )"
-        );
+        expect(feedbacks[0].line).toBe(2);
+        expect(feedbacks[0].hints).toContain(CodeError.hintStrings[0]);
 
         // reset the mock
         spy.mockRestore();
@@ -223,8 +227,8 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
-        expect(feedbacks[0].lineNumber).toBe(2);
-        expect(feedbacks[0].hintStrings).toContain(
+        expect(feedbacks[0].line).toBe(2);
+        expect(feedbacks[0].hints).toContain(
           "Incorrect else-block for if ( ((x % 2) == 1) )"
         );
 
@@ -270,8 +274,8 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
-        expect(feedbacks[0].lineNumber).toBe(2);
-        expect(feedbacks[0].hintStrings).toContain(
+        expect(feedbacks[0].line).toBe(2);
+        expect(feedbacks[0].hints).toContain(
           "Incorrect else-block for if ( ((x % 2) == 1) )"
         );
 
@@ -289,6 +293,11 @@ describe("Unit tests for generateFeedback service", () => {
         setupMockedGenerateErrorFeedbackParams({
           desiredLanguage: "c",
         });
+
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
+
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
         codeParser: StudentSolution.cCodeParser,
       });
@@ -340,6 +349,10 @@ describe("Unit tests for generateFeedback service", () => {
       const questionId = "existing-question-id";
       const studentId = 1;
 
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
+
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue(null);
 
       // Act & Assert
@@ -367,6 +380,10 @@ describe("Unit tests for generateFeedback service", () => {
           withoutTargetFunction: true,
         });
 
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
+
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
         codeParser: ReferenceSolution.codeParser,
       });
@@ -386,7 +403,7 @@ describe("Unit tests for generateFeedback service", () => {
         console.log(error);
         expect(error instanceof CodeFunctionNameError).toBe(true);
         expect((error as CodeFunctionNameError).message).toBe(
-          "Solution code does not contain the target function declaration"
+          'Solution code does not contain the target function "is_odd" declaration'
         );
       }
 
@@ -400,6 +417,11 @@ describe("Unit tests for generateFeedback service", () => {
       // Arrange
       const { language, studentCode, questionId, studentId } =
         setupMockedGenerateErrorFeedbackParams();
+
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
+
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
         codeParser: ReferenceSolution.codeParser,
       });
@@ -427,11 +449,40 @@ describe("Unit tests for generateFeedback service", () => {
     });
   });
 
+  describe("Given a non-existing student id", () => {
+    it("should throw a NotExistingStudentError", async () => {
+      // Arrange
+      const { language, studentCode, questionId, studentId } =
+        setupMockedGenerateErrorFeedbackParams({ studentExists: false });
+
+      dbMock.user.findUnique = jest.fn().mockResolvedValue(null);
+
+      // Act & Assert
+      try {
+        await ITSApi.generateErrorFeedback(
+          language,
+          studentCode,
+          questionId,
+          studentId
+        );
+      } catch (error) {
+        expect(error instanceof NotExistingStudentError).toBe(true);
+        expect((error as NotExistingStudentError).message).toBe(
+          `Student with id ${studentId} does not exist`
+        );
+      }
+    });
+  });
+
   describe("Given the ITS API returns an error", () => {
     it("should throw an ITSPostFeedbackError", async () => {
       // Arrange
       const { language, studentCode, questionId, studentId } =
         setupMockedGenerateErrorFeedbackParams();
+
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
 
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
         codeParser: ReferenceSolution.codeParser,
@@ -477,6 +528,10 @@ describe("Unit tests for generateFeedback service", () => {
       // Arrange
       const { language, studentCode, questionId, studentId } =
         setupMockedGenerateErrorFeedbackParams();
+
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({
+        id: studentId,
+      });
 
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
         codeParser: ReferenceSolution.codeParser,
