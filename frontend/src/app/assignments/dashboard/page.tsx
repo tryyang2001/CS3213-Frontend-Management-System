@@ -1,12 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardBody,
-  Spacer,
-  Button,
-} from "@nextui-org/react";
+import { Card, CardBody, Spacer, Button } from "@nextui-org/react";
 
 export default function DashBoard() {
   const router = useRouter();
@@ -73,4 +68,4 @@ export default function DashBoard() {
       </div>
     </div>
   );
-};
+}
