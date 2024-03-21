@@ -4,11 +4,7 @@ import db from "../models/db";
 
 const getHealth = async (_: Request, response: Response) => {
   try {
-    const result = await db.$queryRaw`SELECT 1`;
-
-    if (!result) {
-      throw new Error("No database connection from the server");
-    }
+    await db.$queryRaw`SELECT 1`;
 
     response.status(HttpStatusCode.OK).json({ message: "Healthy" });
   } catch (error) {

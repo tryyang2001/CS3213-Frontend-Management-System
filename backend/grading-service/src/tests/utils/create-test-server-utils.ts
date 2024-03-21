@@ -13,12 +13,12 @@ export default function createUnitTestServer() {
 
   app.use("/grading/api", router);
 
-  app.all("*", (_, res) => {
-    res.status(HttpStatusCode.NOT_FOUND).json({
-      error: "NOT FOUND",
-      message: "The requested resource was not found",
-    });
-  });
+  // app.all("*", (_, res) => {
+  //   res.status(HttpStatusCode.NOT_FOUND).json({
+  //     error: "NOT FOUND",
+  //     message: "The requested resource was not found",
+  //   });
+  // });
 
   return app;
 }
