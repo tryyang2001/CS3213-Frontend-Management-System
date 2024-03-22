@@ -70,4 +70,35 @@ describe("Password Input", () => {
       expect(invalid.value).toBe(true);
     });
   });
+
+  it("should become a text input when eye is pressed", () => {
+    render(
+      <PasswordInput
+        password={password.value}
+        setPassword={password.setValue}
+        setIsInvalid={invalid.setValue}
+      />
+    );
+    
+    const eye = screen.getByRole("button", {name: ""})
+    fireEvent.click(eye);
+    const visibleInput: HTMLInputElement = screen.getByLabelText("Password");
+    expect(visibleInput.type).toBe("text");
+  });
+  it("should become a password input when eye is pressed twice", () => {
+    render(
+      <PasswordInput
+        password={password.value}
+        setPassword={password.setValue}
+        setIsInvalid={invalid.setValue}
+      />
+    );
+    
+    const eye = screen.getByRole("button", {name: ""})
+    fireEvent.click(eye);
+    const passwordInput: HTMLInputElement = screen.getByLabelText("Password");
+    expect(passwordInput.type).toBe("text");
+    fireEvent.click(eye);
+    expect(passwordInput.type).toBe("password");
+  });
 });

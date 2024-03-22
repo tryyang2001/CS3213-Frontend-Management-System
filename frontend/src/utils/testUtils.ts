@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-interface State<T> {
+export interface State<T> {
   value: T;
   setValue: Dispatch<SetStateAction<T>>;
 }
