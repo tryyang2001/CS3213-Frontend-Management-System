@@ -38,6 +38,10 @@ jest.mock("@tanstack/react-query", () => {
   };
 });
 
+global.fetch = jest.fn(() =>
+  Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) })
+) as jest.Mock;
+
 describe("Page Snapshot tests", () => {
   it("Landing Page Snapshot test", () => {
     const { container } = render(<LandingPage />);
