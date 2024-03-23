@@ -91,16 +91,13 @@ describe("Unit Tests for Get Handler", () => {
         const studentId = 1;
 
         // Act
-        try {
-          await GetHandler.getSubmissionByQuestionIdAndStudentId(
-            questionId,
-            studentId
-          );
-        } catch (error) {
-          // Assert
-          expect(error).toBeInstanceOf(Error);
-          expect((error as Error).message).toBe("Database is down");
-        }
+        const apiCall = GetHandler.getSubmissionByQuestionIdAndStudentId(
+          questionId,
+          studentId
+        );
+
+        // Assert
+        await expect(apiCall).rejects.toThrow(new Error("Database is down"));
       });
     });
   });

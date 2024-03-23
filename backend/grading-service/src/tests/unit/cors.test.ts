@@ -58,15 +58,14 @@ describe("Unit Tests for CORS", () => {
       // Arrange
       const origin = "https://some-malicious-website.com";
 
-      // Act & Assert
-      try {
-        await supertest(app)
-          .get(`${API_PREFIX}/someEndpoint`)
-          .set("Origin", origin);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toBe("Not allowed by CORS");
-      }
+      // Act
+      const apiCall = await supertest(app)
+        .get(`${API_PREFIX}/someEndpoint`)
+        .set("Origin", origin);
+
+      // Assert
+      expect(apiCall.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+      expect(apiCall.text).toContain("Not allowed by CORS");
     });
   });
 });
