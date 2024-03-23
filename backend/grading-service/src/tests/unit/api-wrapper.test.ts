@@ -61,16 +61,11 @@ describe("Unit tests for generateParser service", () => {
         } as AxiosError;
       });
 
-      // Act & Assert
-      try {
-        await ITSApi.generateParserString(language, sourceCode);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ITSPostParserError);
-        expect((error as ITSPostParserError).message).toBe(
-          "Failed to generate parser string from ITS API"
-        );
-        expect((error as ITSPostParserError).errorField).toBe("language");
-      }
+      // Act
+      const apiCall = ITSApi.generateParserString(language, sourceCode);
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(ITSPostParserError);
     });
   });
 
@@ -90,16 +85,11 @@ describe("Unit tests for generateParser service", () => {
         } as AxiosError;
       });
 
-      // Act & Assert
-      try {
-        await ITSApi.generateParserString(language, sourceCode);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ITSPostParserError);
-        expect((error as ITSPostParserError).message).toBe(
-          "Failed to generate parser string from ITS API"
-        );
-        expect((error as ITSPostParserError).errorField).toBe("source_code");
-      }
+      // Act
+      const apiCall = ITSApi.generateParserString(language, sourceCode);
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(ITSPostParserError);
     });
   });
 
@@ -112,12 +102,11 @@ describe("Unit tests for generateParser service", () => {
       // reject with AxiosError
       axiosMock.post = jest.fn().mockResolvedValue({});
 
-      // Act & Assert
-      try {
-        await ITSApi.generateParserString(language, sourceCode);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
+      // Act
+      const apiCall = ITSApi.generateParserString(language, sourceCode);
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(Error);
     });
   });
 });
@@ -355,20 +344,16 @@ describe("Unit tests for generateFeedback service", () => {
 
       dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue(null);
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        expect(error instanceof NotExistingReferencedSolutionError).toBe(true);
-        expect((error as NotExistingReferencedSolutionError).message).toBe(
-          "Referenced solution does not exist"
-        );
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(NotExistingReferencedSolutionError);
     });
   });
 
@@ -391,21 +376,18 @@ describe("Unit tests for generateFeedback service", () => {
         .spyOn(ITSApi, "generateParserString")
         .mockResolvedValue(StudentSolution.pyCodeParserWithoutTargetFunction);
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        console.log(error);
-        expect(error instanceof CodeFunctionNameError).toBe(true);
-        expect((error as CodeFunctionNameError).message).toBe(
-          'Solution code does not contain the target function "is_odd" declaration'
-        );
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toMatchObject(
+        new CodeFunctionNameError("is_odd")
+      );
 
       // reset the mocks
       spy.mockRestore();
@@ -432,20 +414,16 @@ describe("Unit tests for generateFeedback service", () => {
 
       dbMock.testCase.findFirst = jest.fn().mockResolvedValue(null);
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        expect(error instanceof NotExistingTestCaseError).toBe(true);
-        expect((error as NotExistingTestCaseError).message).toBe(
-          "Test case does not exist"
-        );
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(NotExistingTestCaseError);
     });
   });
 
@@ -457,20 +435,18 @@ describe("Unit tests for generateFeedback service", () => {
 
       dbMock.user.findUnique = jest.fn().mockResolvedValue(null);
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        expect(error instanceof NotExistingStudentError).toBe(true);
-        expect((error as NotExistingStudentError).message).toBe(
-          `Student with id ${studentId} does not exist`
-        );
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toMatchObject(
+        new NotExistingStudentError(studentId)
+      );
     });
   });
 
@@ -503,20 +479,16 @@ describe("Unit tests for generateFeedback service", () => {
         }
       });
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        expect(error instanceof ITSPostFeedbackError).toBe(true);
-        expect((error as ITSPostFeedbackError).message).toBe(
-          "Failed to generate feedback from ITS API"
-        );
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(ITSPostFeedbackError);
 
       // reset the mocks
       spy.mockRestore();
@@ -550,17 +522,16 @@ describe("Unit tests for generateFeedback service", () => {
         data: "invalid-data",
       });
 
-      // Act & Assert
-      try {
-        await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
+      // Act
+      const apiCall = ITSApi.generateErrorFeedback(
+        language,
+        studentCode,
+        questionId,
+        studentId
+      );
+
+      // Assert
+      await expect(apiCall).rejects.toThrow(Error);
 
       // reset the mocks
       spy.mockRestore();
