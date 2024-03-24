@@ -40,6 +40,24 @@ describe("Unit Tests fr getAssignmentById", () => {
       expect(assignment).toBeNull();
     });
   });
+
+  describe("Given database is down", () => {
+    it("should throws an error", async () => {
+      // Arrange
+      const assignmentId = "existing-assignment-id";
+      dbMock.assignment.findUnique = jest
+        .fn()
+        .mockRejectedValue(new Error("Database is down"));
+
+      // Act
+      const apiCall = GetHandler.getAssignmentById(assignmentId);
+
+      // Assert
+      await expect(apiCall).rejects.toMatchObject(
+        new Error("Database is down")
+      );
+    });
+  });
 });
 
 describe("Unit Tests for GET /assignment/api/assignments/:id", () => {
@@ -88,6 +106,31 @@ describe("Unit Tests for GET /assignment/api/assignments/:id", () => {
       expect(response.body).toEqual({
         error: "NOT FOUND",
         message: "Assignment not found",
+      });
+
+      // reset the mocks
+      spy.mockRestore();
+    });
+  });
+
+  describe("Given the database is down", () => {
+    it("should return 500 and an error message", async () => {
+      // Arrange
+      const assignmentId = "existing-assignment-id";
+      const spy = jest
+        .spyOn(GetHandler, "getAssignmentById")
+        .mockRejectedValue(new Error("Database is down"));
+
+      // Act
+      const response = await supertest(app).get(
+        `${API_PREFIX}/assignments/${assignmentId}`
+      );
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+      expect(response.body).toEqual({
+        error: "INTERNAL SERVER ERROR",
+        message: "An unexpected error has ocurred. Please try again later",
       });
 
       // reset the mocks
