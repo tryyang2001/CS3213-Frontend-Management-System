@@ -73,6 +73,50 @@ describe("Unit Tests for POST /assignment/api/assignments", () => {
     });
   });
 
+  describe("Given a request body with an empty title", () => {
+    it("should return 400 and an error message", async () => {
+      // Arrange
+      const requestBody = {
+        ...Request.getCreateAssignmentRequestBody(),
+        title: "",
+      };
+
+      // Act
+      const response = await supertest(app)
+        .post(`${API_PREFIX}/assignments`)
+        .send(requestBody);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
+      expect(response.body).toEqual({
+        error: "BAD REQUEST",
+        message: "Invalid title. String must contain at least 1 character(s)",
+      });
+    });
+  });
+
+  describe("Given a request body with a title that is too long (>255 characters)", () => {
+    it("should return 400 and an error message", async () => {
+      // Arrange
+      const requestBody = {
+        ...Request.getCreateAssignmentRequestBody(),
+        title: "a".repeat(256),
+      };
+
+      // Act
+      const response = await supertest(app)
+        .post(`${API_PREFIX}/assignments`)
+        .send(requestBody);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
+      expect(response.body).toEqual({
+        error: "BAD REQUEST",
+        message: "Invalid title. String must contain at most 255 character(s)",
+      });
+    });
+  });
+
   describe("Given a request body with a deadline in the past", () => {
     it("should return 400 and an error message", async () => {
       // Arrange
@@ -157,6 +201,31 @@ describe("Unit Tests for POST /assignment/api/assignments", () => {
       expect(response.body).toEqual({
         error: "BAD REQUEST",
         message: "Invalid authors. At least one author is required",
+      });
+    });
+  });
+
+  describe("Given a request body without the isPublished field", () => {
+    it("should return 400 and an error message", async () => {
+      // Arrange
+      const correctRequestBody = Request.getCreateAssignmentRequestBody();
+
+      const requestBody = {
+        title: correctRequestBody.title,
+        authors: correctRequestBody.authors,
+        deadline: correctRequestBody.deadline,
+      };
+
+      // Act
+      const response = await supertest(app)
+        .post(`${API_PREFIX}/assignments`)
+        .send(requestBody);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
+      expect(response.body).toEqual({
+        error: "BAD REQUEST",
+        message: "IsPublished is required.",
       });
     });
   });

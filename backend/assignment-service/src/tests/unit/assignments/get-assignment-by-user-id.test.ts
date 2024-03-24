@@ -145,8 +145,6 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
         `${API_PREFIX}/assignments?userId=${userId}`
       );
 
-      console.log(response.body);
-
       // Assert
       expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);

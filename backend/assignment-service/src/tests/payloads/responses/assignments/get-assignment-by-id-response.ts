@@ -20,7 +20,7 @@ export const getAssignmentByIdDbResponse = (
         title: "Question 1",
         description: "Description 1",
         deadline: deadline,
-        numberOfTestCases: 2,
+        numberOfTestCases: 1,
         referenceSolutionId: "solution-id-1",
       },
       {
@@ -28,7 +28,7 @@ export const getAssignmentByIdDbResponse = (
         title: "Question 2",
         description: "Description 2",
         deadline: deadline,
-        numberOfTestCases: 1,
+        numberOfTestCases: 2,
         referenceSolutionId: "solution-id-2",
       },
     ],

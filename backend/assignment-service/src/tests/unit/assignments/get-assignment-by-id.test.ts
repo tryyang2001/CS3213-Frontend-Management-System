@@ -27,6 +27,47 @@ describe("Unit Tests fr getAssignmentById", () => {
     });
   });
 
+  describe("Given an existing assignment with no reference solution", () => {
+    it("should return the assignment with reference solution as undefined", async () => {
+      // Arrange
+      const assignmentId = "existing-assignment-id";
+      dbMock.assignment.findUnique = jest.fn().mockResolvedValue({
+        id: assignmentId,
+        title: "Assignment 1",
+        deadline: new Date("2024-12-31T00:00:00.000Z"),
+        authors: ["existing-user-id"],
+        isPublished: true,
+        numberOfQuestions: 2,
+        createdOn: new Date("2024-03-12T00:00:00.000Z"),
+        updatedOn: new Date("2024-03-12T00:00:00.000Z"),
+        questions: [
+          {
+            id: "question-id-1",
+            title: "Question 1",
+            description: "Description 1",
+            deadline: new Date("2024-12-31T00:00:00.000Z"),
+            numberOfTestCases: 1,
+            referenceSolutionId: null,
+          },
+          {
+            id: "question-id-2",
+            title: "Question 2",
+            description: "Description 2",
+            deadline: new Date("2024-12-31T00:00:00.000Z"),
+            numberOfTestCases: 2,
+            referenceSolutionId: null,
+          },
+        ],
+      });
+
+      // Act
+      const assignment = await GetHandler.getAssignmentById(assignmentId);
+
+      // Assert
+      expect(assignment).not.toBeNull();
+    });
+  });
+
   describe("Given a non-existing assignment id", () => {
     it("should return null", async () => {
       // Arrange

@@ -3,8 +3,6 @@ import { ZodError } from "zod";
 export function formatZodErrorMessage(error: ZodError<any>) {
   let errorMessage = JSON.parse(error.message)[0];
 
-  console.log(errorMessage);
-
   if (errorMessage.message === "Required") {
     const errorField = JSON.parse(error.message)[0].path[0];
     errorMessage = `${

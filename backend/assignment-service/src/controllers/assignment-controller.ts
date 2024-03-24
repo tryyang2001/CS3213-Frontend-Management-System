@@ -128,7 +128,6 @@ const updateAssignmentById = async (request: Request, response: Response) => {
       Object.keys(updateAssignmentBody).length - 1 !==
       Object.keys(request.body).length
     ) {
-      console.log(updateAssignmentBody, request.body);
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
         message: "Request body must contain only the required fields",
@@ -148,8 +147,6 @@ const updateAssignmentById = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.OK).json(assignment);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
