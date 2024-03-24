@@ -7,6 +7,7 @@ import { PostHandler } from "../services/assignments/post-handler";
 import { DeleteHandler } from "../services/assignments/delete-handler";
 import { UpdateAssignmentValidator } from "../libs/validators/assignments/update-assignment-validator";
 import { PutHandler } from "../services/assignments/put-handler";
+import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
 
 const getAssignmentsByUserId = async (request: Request, response: Response) => {
   try {
@@ -92,15 +93,14 @@ const createAssignment = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.CREATED).json(assignment);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
+
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has ocurred. Please try again later",
@@ -153,7 +153,7 @@ const updateAssignmentById = async (request: Request, response: Response) => {
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
