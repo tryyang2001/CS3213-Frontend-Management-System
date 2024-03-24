@@ -425,7 +425,7 @@ const deleteQuestionReferenceSolutionById = async (
     if (!referenceSolution) {
       response.status(HttpStatusCode.NOT_FOUND).json({
         error: "NOT FOUND",
-        message: "Reference solution not found",
+        message: "Reference solution or question not found",
       });
       return;
     }
