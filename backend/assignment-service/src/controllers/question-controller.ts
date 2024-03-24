@@ -501,7 +501,7 @@ export const QuestionController = {
   // GET
   getQuestionById,
   getQuestionTestCasesById,
-  getReferenceSolutionByQuestionId: getQuestionReferenceSolutionById,
+  getQuestionReferenceSolutionById,
   // POST
   createQuestion,
   createQuestionReferenceSolution,
