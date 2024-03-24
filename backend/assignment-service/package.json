@@ -10,7 +10,7 @@
     "dev": "prisma generate && nodemon src/app.ts",
     "build": "prisma generate && tsc -p .",
     "start": "node dist/app.js",
-    "test": "jest",
+    "test": "jest --coverage --verbose",
     "db": "prisma studio",
     "lint": "eslint src --ext .ts && prettier --check --ignore-path .gitignore .",
     "lint:autofix": "eslint src --ext .ts --fix --ignore-path .gitignore . && prettier --write --ignore-path .gitignore ."
