@@ -148,6 +148,68 @@ describe("Unit Tests for POST /assignment/api/questions/:id/solution", () => {
     });
   });
 
+  describe("Given the language is py (short form of python)", () => {
+    it("should return 201 and create the reference solution", async () => {
+      // Arrange
+      const questionId = "existing-question-id";
+      const createReferenceSolutionBody = {
+        ...Request.getCreateQuestionReferenceSolutionRequestBody(),
+        language: "py",
+      };
+
+      const spy = jest
+        .spyOn(PostHandler, "createQuestionReferenceSolution")
+        .mockResolvedValue(
+          Response.getCreatedReferenceSolutionExpectedResponse()
+        );
+
+      // Act
+      const response = await supertest(app)
+        .post(`${API_PREFIX}/questions/${questionId}/solution`)
+        .send(createReferenceSolutionBody);
+
+      // Assert
+      expect(response.status).toEqual(HttpStatusCode.CREATED);
+      expect(response.body).toEqual(
+        Response.getCreatedReferenceSolutionExpectedResponse()
+      );
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      // reset the mocks
+      spy.mockRestore();
+    });
+  });
+
+  describe("Given a non-supported language in the createReferenceSolutionBody", () => {
+    it("should return 400 with an error message", async () => {
+      // Arrange
+      const questionId = "existing-question-id";
+      const createReferenceSolutionBody = {
+        ...Request.getCreateQuestionReferenceSolutionRequestBody(),
+        language: "non-supported-language",
+      };
+      const spy = jest
+        .spyOn(PostHandler, "createQuestionReferenceSolution")
+        .mockResolvedValue(null);
+
+      // Act
+      const response = await supertest(app)
+        .post(`${API_PREFIX}/questions/${questionId}/solution`)
+        .send(createReferenceSolutionBody);
+
+      // Assert
+      expect(response.status).toEqual(HttpStatusCode.BAD_REQUEST);
+      expect(response.body).toEqual({
+        error: "BAD REQUEST",
+        message: "Only python and c languages are supported",
+      });
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      // reset the mocks
+      spy.mockRestore();
+    });
+  });
+
   describe("Given a non-existing questionId", () => {
     it("should return 404 with an error message", async () => {
       // Arrange

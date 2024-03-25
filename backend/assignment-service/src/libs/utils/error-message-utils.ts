@@ -3,8 +3,6 @@ import { ZodError } from "zod";
 export function formatZodErrorMessage(error: ZodError<any>) {
   let errorMessage = JSON.parse(error.message)[0];
 
-  console.log(errorMessage);
-
   if (errorMessage.message === "Required") {
     if (errorMessage.path.length > 1) {
       errorMessage = `${errorMessage.path[0][0].toUpperCase() + errorMessage.path[0].substr(1)} ${errorMessage.path[errorMessage.path.length - 1]} is required.`;

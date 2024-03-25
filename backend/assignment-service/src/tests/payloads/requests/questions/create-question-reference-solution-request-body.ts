@@ -1,6 +1,6 @@
 export const getCreateQuestionReferenceSolutionRequestBody = () => {
   return {
-    language: "python",
+    language: "python" as "python" | "c",
     code: "print('Hello, World!')",
   };
 };

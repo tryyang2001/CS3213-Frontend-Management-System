@@ -315,12 +315,10 @@ const updateQuestionById = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.OK).json(updatedQuestion);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
@@ -369,6 +367,14 @@ const updateQuestionReferenceSolution = async (
         updateQuestionReferenceSolutionBody
       );
 
+    if (!updatedReferenceSolution) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Reference solution or question not found",
+      });
+      return;
+    }
+
     response.status(HttpStatusCode.OK).json(updatedReferenceSolution);
   } catch (error) {
     console.log(error);
@@ -376,7 +382,7 @@ const updateQuestionReferenceSolution = async (
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }

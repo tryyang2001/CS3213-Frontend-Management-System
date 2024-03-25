@@ -50,7 +50,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Assignment 6 Demo\",\r\n    \"deadline\": 1711151999999,\r\n    \"authors\": [\"rui_yang_tan_user_id_1\"],\r\n    \"isPublished\": true\r\n}",
+					"raw": "{\r\n    \"title\": \"Assignment 6 Demo\",\r\n    \"deadline\": 1735689599999,\r\n    \"authors\": [\"rui_yang_tan_user_id_1\"],\r\n    \"isPublished\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -143,8 +143,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"exec": [],
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -153,7 +156,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Implementing a Function to Check if a Number is Odd\",\r\n    \"description\": \"You are tasked with implementing a Python function that determines whether a given integer is an odd number or not. Your function should take an integer as input and return True if the number is odd, and False otherwise.\",\r\n    \"deadline\": 1711151999999,\r\n    \"testCases\": [\r\n        {\r\n            \"input\": \"2\",\r\n            \"output\": \"false\"\r\n        },\r\n        {\r\n            \"input\": \"1\",\r\n            \"output\": \"true\"\r\n        }\r\n    ],\r\n    \"referenceSolution\": {\r\n        \"language\": \"python\",\r\n        \"code\": \"def is_odd(x):\\r\\n    if x % 2 == 0:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n    } \r\n}",
+					"raw": "{\r\n    \"title\": \"Implementing a Function to Check if a Number is Odd\",\r\n    \"description\": \"You are tasked with implementing a Python function that determines whether a given integer is an odd number or not. Your function should take an integer as input and return True if the number is odd, and False otherwise.\",\r\n    \"deadline\": 1735689599999,\r\n    \"testCases\": [\r\n        {\r\n            \"input\": \"2\",\r\n            \"output\": \"false\"\r\n        },\r\n        {\r\n            \"input\": \"1\",\r\n            \"output\": \"true\"\r\n        }\r\n    ],\r\n    \"referenceSolution\": {\r\n        \"language\": \"python\",\r\n        \"code\": \"def is_odd(x):\\r\\n    if x % 2 == 0:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n    } \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -330,8 +333,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"exec": [],
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -416,7 +422,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"code\": \"Just to showcase we can update the reference solution code.\"\r\n}",
+					"raw": "{\r\n    \"language\": \"py\",\r\n    \"code\": \"Just to showcase we can update the reference solution code.\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

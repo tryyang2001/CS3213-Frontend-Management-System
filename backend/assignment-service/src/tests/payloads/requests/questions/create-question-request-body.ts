@@ -28,7 +28,7 @@ export const getCreateQuestionRequestBody = ({
       : undefined,
     referenceSolution: includeReferenceSolution
       ? {
-          language: "Python",
+          language: "python" as "python" | "c",
           code: "print('Hello, World!')",
         }
       : undefined,

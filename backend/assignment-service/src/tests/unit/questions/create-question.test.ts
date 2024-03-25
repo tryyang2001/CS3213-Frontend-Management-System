@@ -725,7 +725,7 @@ describe("Unit Tests for POST /assignment/api/assignments/:id/questions", () => 
       // Arrange
       const assignmentId = "existing-assigment-id";
       const referenceSolution = {
-        language: "language",
+        language: "c",
         code: "a".repeat(10001),
       };
       const createQuestionBody = {
@@ -753,7 +753,7 @@ describe("Unit Tests for POST /assignment/api/assignments/:id/questions", () => 
       // Arrange
       const assignmentId = "existing-assigment-id";
       const referenceSolution = {
-        language: "language",
+        language: "c",
         code: "",
       };
       const createQuestionBody = {

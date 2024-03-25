@@ -10,3 +10,5 @@ export * from "./questions/get-question-reference-solution-response";
 export * from "./questions/get-created-question-response";
 export * from "./questions/get-created-reference-solution-response";
 export * from "./questions/get-created-test-cases-response";
+export * from "./questions/get-updated-question-response";
+export * from "./questions/get-updated-reference-solution-response";
