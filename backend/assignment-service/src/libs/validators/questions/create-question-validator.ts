@@ -7,6 +7,7 @@ export const CreateQuestionValidator = z.object({
   deadline: z
     .number()
     .int()
+    .positive()
     .refine((deadline) => deadline > Date.now(), {
       message: "Deadline must be in the future",
     }),
@@ -18,6 +19,7 @@ export const CreateQuestionValidator = z.object({
         isPublic: z.boolean().optional(),
       })
     )
+    .min(1)
     .optional(),
   referenceSolution: z
     .object({
