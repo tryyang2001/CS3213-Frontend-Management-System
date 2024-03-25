@@ -288,7 +288,7 @@ describe("Unit Tests for POST /assignment/api/questions/:questionId/test-cases",
       expect(spy).toHaveBeenCalledTimes(1);
       expect(response.body).toEqual({
         error: "INTERNAL SERVER ERROR",
-        message: "An unexpected error has ocurred. Please try again later",
+        message: "An unexpected error has occurred. Please try again later",
       });
     });
   });

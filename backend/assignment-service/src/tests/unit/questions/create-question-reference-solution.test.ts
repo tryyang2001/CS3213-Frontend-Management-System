@@ -340,7 +340,7 @@ describe("Unit Tests for POST /assignment/api/questions/:id/solution", () => {
       expect(response.status).toEqual(HttpStatusCode.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual({
         error: "INTERNAL SERVER ERROR",
-        message: "An unexpected error has ocurred. Please try again later",
+        message: "An unexpected error has occurred. Please try again later",
       });
 
       // reset the mocks
