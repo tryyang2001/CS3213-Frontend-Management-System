@@ -3,12 +3,16 @@ import axios, { AxiosError } from "axios";
 
 const api = axios.create({
   baseURL:
-    process.env.ASSIGNMENT_API_URL || "http://localhost:8080/assignment/api",
+    process.env.ASSIGNMENT_API_URL ?? "http://localhost:8080/assignment/api",
   timeout: 5000,
   headers: {
     "Content-type": "application/json",
   },
 });
+
+interface GetAssignmentsResponse {
+  assignments: Assignment[];
+}
 
 const getAssignmentById = async (assignmentId: string) => {
   try {
@@ -33,9 +37,11 @@ const getAssignmentById = async (assignmentId: string) => {
 
 const getAssignmentsByUserId = async (userId: string) => {
   try {
-    const response = await api.get(`/assignments?userId=${userId}`);
+    const response = await api.get<GetAssignmentsResponse>(
+      `/assignments?userId=${userId}`
+    );
 
-    const assignments = response.data.assignments as Assignment[];
+    const assignments = response.data.assignments;
 
     return assignments;
   } catch (error) {
@@ -59,7 +65,7 @@ const createAssignment = async (requestBody: CreateAssignmentBody) => {
     const createdAssignment = response.data as Assignment;
 
     return createdAssignment;
-  } catch (error) {
+  } catch (_error) {
     throw new Error("Failed to create assignment");
   }
 };
@@ -71,7 +77,7 @@ const createQuestion = async (requestBody: CreateQuestionBody) => {
     const createdQuestion = response.data as Question;
 
     return createdQuestion;
-  } catch (error) {
+  } catch (_error) {
     throw new Error("Failed to create question");
   }
 };
@@ -85,7 +91,7 @@ const createQuestions = async (requestBody: CreateQuestionBody[]) => {
     const createdQuestions = await Promise.all(questionPromises);
 
     return createdQuestions;
-  } catch (error) {
+  } catch (_error) {
     throw new Error("Failed to create questions");
   }
 };
