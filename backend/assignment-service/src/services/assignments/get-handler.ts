@@ -58,6 +58,7 @@ const getAssignmentById = async (id: string) => {
     id: assignment.id,
     title: assignment.title,
     deadline: assignment.deadline.getTime(),
+    description: assignment.description ?? undefined,
     isPublished: assignment.isPublished,
     numberOfQuestions: assignment.numberOfQuestions,
     questions: questionsDto,

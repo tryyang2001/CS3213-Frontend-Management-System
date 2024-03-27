@@ -17,7 +17,7 @@
     "lint:autofix": "eslint src --ext .ts --fix --ignore-path .gitignore . && prettier --write --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "^5.10.1",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
     "body-parser": "^1.20.2",
