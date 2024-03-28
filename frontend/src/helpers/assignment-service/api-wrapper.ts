@@ -54,6 +54,21 @@ const getAssignmentsByUserId = async (userId: string) => {
 
 const createAssignment = async (requestBody: CreateAssignmentBody) => {
   try {
+    if (requestBody.deadline instanceof Date) {
+      // cast Date to timestamp
+      requestBody.deadline = requestBody.deadline.getTime();
+    }
+
+    if (requestBody.authors === undefined) {
+      // TODO: create user context, and get the id from there
+      requestBody.authors = ["rui_yang_tan_user_id_1"];
+    }
+
+    if (requestBody.isPublished === undefined) {
+      // default to not publishing the assignment
+      requestBody.isPublished = false;
+    }
+
     const response = await api.post("/assignments", requestBody);
 
     const createdAssignment = response.data as Assignment;
@@ -64,9 +79,15 @@ const createAssignment = async (requestBody: CreateAssignmentBody) => {
   }
 };
 
-const createQuestion = async (requestBody: CreateQuestionBody) => {
+const createQuestion = async (
+  assignmentId: string,
+  requestBody: CreateQuestionBody
+) => {
   try {
-    const response = await api.post("/questions", requestBody);
+    const response = await api.post(
+      `/assignments/${assignmentId}/questions`,
+      requestBody
+    );
 
     const createdQuestion = response.data as Question;
 
@@ -76,10 +97,13 @@ const createQuestion = async (requestBody: CreateQuestionBody) => {
   }
 };
 
-const createQuestions = async (requestBody: CreateQuestionBody[]) => {
+const createQuestions = async (
+  assignmentId: string,
+  requestBody: CreateQuestionBody[]
+) => {
   try {
     const questionPromises = requestBody.map((question) =>
-      createQuestion(question)
+      createQuestion(assignmentId, question)
     );
 
     const createdQuestions = await Promise.all(questionPromises);
