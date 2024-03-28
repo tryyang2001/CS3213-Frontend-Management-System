@@ -31,7 +31,7 @@ router
 
 router
   .route("/questions/:questionId/solution")
-  .get(QuestionController.getReferenceSolutionByQuestionId);
+  .get(QuestionController.getQuestionReferenceSolutionById);
 
 router
   .route("/questions/:questionId/solution")

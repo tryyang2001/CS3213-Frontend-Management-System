@@ -2,6 +2,7 @@ import { UpdateQuestionReferenceSolutionBody } from "../../libs/validators/quest
 import { UpdateQuestionBody } from "../../libs/validators/questions/update-question-validator";
 import db from "../../models/db";
 import { Question } from "../../models/types/question";
+import { ReferenceSolution } from "../../models/types/reference-solution";
 
 const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
   const updatedQuestion = await db.question.update({
@@ -38,12 +39,10 @@ const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
     id: updatedQuestion.id,
     title: updatedQuestion.title,
     description: updatedQuestion.description,
-    deadline: updatedQuestion.deadline
-      ? updatedQuestion.deadline.getTime()
-      : undefined,
+    deadline: updatedQuestion.deadline.getTime(),
     numberOfTestCases: updatedQuestion.numberOfTestCases,
     referenceSolutionId: updatedQuestion.referenceSolutionId || undefined,
-    assignmentId: updatedQuestion.assignmentId || undefined,
+    assignmentId: updatedQuestion.assignmentId!,
   };
 
   return updatedQuestionDto;
@@ -52,31 +51,38 @@ const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
 const updateQuestionReferenceSolution = async (
   updateQuestionReferenceSolutionBody: UpdateQuestionReferenceSolutionBody
 ) => {
-  const updatedReferenceSolution = await db.referenceSolution.update({
-    where: {
-      questionId: updateQuestionReferenceSolutionBody.id,
-    },
-    data: {
-      language: updateQuestionReferenceSolutionBody.language
-        ? updateQuestionReferenceSolutionBody.language
-        : undefined,
-      code: updateQuestionReferenceSolutionBody.code
-        ? updateQuestionReferenceSolutionBody.code
-        : undefined,
-    },
-  });
-
-  // update question's referenceSolutionId
-  await db.question.update({
+  const questionExists = await db.question.findUnique({
     where: {
       id: updateQuestionReferenceSolutionBody.id,
     },
-    data: {
-      referenceSolutionId: updatedReferenceSolution.id,
+    select: {
+      id: true,
+      referenceSolutionId: true,
     },
   });
 
-  return updatedReferenceSolution;
+  if (!questionExists || !questionExists.referenceSolutionId) {
+    return null;
+  }
+
+  const updatedReferenceSolution = await db.referenceSolution.update({
+    where: {
+      id: questionExists.referenceSolutionId,
+    },
+    data: {
+      language: updateQuestionReferenceSolutionBody.language,
+      code: updateQuestionReferenceSolutionBody.code,
+    },
+  });
+
+  const updatedReferenceSolutionDto: ReferenceSolution = {
+    id: updatedReferenceSolution.id,
+    language: updatedReferenceSolution.language,
+    code: updatedReferenceSolution.code,
+    questionId: updatedReferenceSolution.questionId,
+  };
+
+  return updatedReferenceSolutionDto;
 };
 
 export const PutHandler = {

@@ -31,7 +31,7 @@ const getQuestionById = async (questionId: string) => {
     deadline: question.deadline.getTime(),
     numberOfTestCases: question.numberOfTestCases,
     testCases: question.testCases,
-    assignmentId: question.assignmentId ? question.assignmentId : undefined,
+    assignmentId: question.assignmentId!,
     referenceSolutionId: question.referenceSolutionId
       ? question.referenceSolutionId
       : undefined,

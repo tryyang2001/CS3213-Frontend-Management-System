@@ -10,7 +10,7 @@ export const CreateTestCasesValidator = z.object({
         isPublic: z.boolean().optional(),
       })
     )
-    .nonempty(),
+    .min(1),
 });
 
 export type CreateQuestionTestCasesBody = z.infer<
