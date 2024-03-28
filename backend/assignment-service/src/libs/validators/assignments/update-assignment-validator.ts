@@ -8,7 +8,8 @@ export const UpdateAssignmentValidator = z.object({
   deadline: z
     .number()
     .int()
-    .refine((val) => val > Date.now())
+    .positive()
+    .refine((val) => val > Date.now(), "Deadline must be in the future")
     .optional(),
 });
 

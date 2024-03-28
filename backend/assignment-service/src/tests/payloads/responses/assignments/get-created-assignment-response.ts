@@ -1,0 +1,31 @@
+export const getCreatedAssignmentExpectedResponse = (
+  assignmentId?: string,
+  userId?: string
+) => {
+  return {
+    id: assignmentId ?? "existing-assignment-id",
+    title: "Assignment 1",
+    deadline: new Date("2024-12-31T23:59:59.999Z").getTime(),
+    authors: [userId ?? "existing-user-id"],
+    isPublished: true,
+    numberOfQuestions: 0,
+    createdOn: new Date("2024-03-12T00:00:00.000Z").getTime(),
+    updatedOn: new Date("2024-03-12T00:00:00.000Z").getTime(),
+  };
+};
+
+export const getCreatedAssignmentDbResponse = (
+  assignmentId?: string,
+  userId?: string
+) => {
+  return {
+    id: assignmentId ?? "existing-assignment-id",
+    title: "Assignment 1",
+    deadline: new Date("2024-12-31T23:59:59.999Z"),
+    authors: [userId ?? "existing-user-id"],
+    isPublished: true,
+    numberOfQuestions: 0,
+    createdOn: new Date("2024-03-12T00:00:00.000Z"),
+    updatedOn: new Date("2024-03-12T00:00:00.000Z"),
+  };
+};
