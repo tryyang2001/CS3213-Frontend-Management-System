@@ -16,11 +16,11 @@ export default function AssignmentPageLayout({
 export const generateMetadata = async ({
   params,
 }: PageProps): Promise<Metadata> => {
-  const assignmentTitle = (
-    await AssignmentService.getAssignmentById({
-      assignmentId: params.id,
-    })
-  ).title;
+  const currentAssignment = await AssignmentService.getAssignmentById(
+    params.id
+  );
+
+  const assignmentTitle = currentAssignment?.title ?? "No such assignment";
 
   const metadata: Metadata = {
     title: assignmentTitle,
