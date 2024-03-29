@@ -3,11 +3,12 @@
 import { Button, Input, Switch, Tooltip } from "@nextui-org/react";
 import { FormEvent, useCallback, useState } from "react";
 import DescriptionField from "./DescriptionField";
-import assignmentService from "@/helpers/assignment-service/api-wrapper";
+import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { notFound, useRouter } from "next/navigation";
 import DateUtils from "@/utils/dateUtils";
 import FieldLabel from "./FieldLabel";
 import Icons from "@/components/common/Icons";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AssignmentEditor() {
   // states declaration
@@ -32,6 +33,8 @@ export default function AssignmentEditor() {
 
   const router = useRouter();
 
+  const { toast } = useToast();
+
   const checkFormValidity = useCallback(
     (field: string, value: string) => {
       switch (field) {
@@ -51,36 +54,41 @@ export default function AssignmentEditor() {
     [title, deadline, description]
   );
 
-  const handleFormSubmit = async (e: FormEvent) => {
+  const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted");
-    console.log("Title: ", title);
-    console.log("Deadline: ", deadline);
-    console.log("Description: ", description);
 
     // create assignment
-    const createdAssignment = await assignmentService.createAssignment({
+    AssignmentService.createAssignment({
       title,
       deadline,
       description,
       isPublished,
-    });
+    })
+      .then((createdAssignment) => {
+        if (!createdAssignment) {
+          return notFound();
+        }
 
-    if (!createdAssignment) {
-      return notFound();
-    }
+        // reset form values
+        setTitle("");
+        setDeadline(defaultDeadline);
+        setDescription("");
 
-    // Reset form values
-    setTitle("");
-    setDeadline(defaultDeadline);
-    setDescription("");
+        setIsTitleInvalid(false);
+        setIsDeadlineInvalid(false);
+        setIsDescriptionInvalid(false);
 
-    setIsTitleInvalid(false);
-    setIsDeadlineInvalid(false);
-    setIsDescriptionInvalid(false);
-
-    // redirect to create questions page
-    router.push(`/assignments/${createdAssignment.id}/questions/create`);
+        // redirect to create questions page
+        router.push(`/assignments/${createdAssignment.id}/questions/create`);
+      })
+      .catch((_err) => {
+        return toast({
+          title: "Failed to create assignment",
+          description:
+            "An error occurred while creating the assignment. Please check the inputs and try again.",
+          variant: "destructive",
+        });
+      });
   };
 
   return (

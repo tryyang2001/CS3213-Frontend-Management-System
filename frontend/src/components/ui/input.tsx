@@ -1,3 +1,6 @@
+/* eslint-disable */
+// file is generated from shadcn-ui
+
 import * as React from "react";
 
 import { cn } from "@/utils/classMergeUtils";

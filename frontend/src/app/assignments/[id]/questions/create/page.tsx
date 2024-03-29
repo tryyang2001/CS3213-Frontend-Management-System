@@ -4,8 +4,9 @@ import AssignmentPage from "@/components/assignment/AssignmentPage";
 import QuestionEditor from "@/components/assignment/create/QuestionEditor";
 import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
+import { useToast } from "@/components/ui/use-toast";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
-import { Button, Spacer } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,6 +19,15 @@ interface Props {
 
 function Page({ params }: Props) {
   const router = useRouter();
+
+  const [questions, setQuestions] = useState<CreateQuestionBody[]>([
+    {
+      title: "",
+      description: "",
+    },
+  ]);
+
+  const { toast } = useToast();
 
   const {
     data: assignment,
@@ -32,13 +42,6 @@ function Page({ params }: Props) {
       return assignment;
     },
   });
-
-  const [questions, setQuestions] = useState<CreateQuestionBody[]>([
-    {
-      title: "",
-      description: "",
-    },
-  ]);
 
   const handleQuestionChange = (
     updatedQuestion: CreateQuestionBody,
@@ -66,14 +69,18 @@ function Page({ params }: Props) {
     );
   };
 
-  const handleFinishQuestionsCreation = async () => {
+  const handleFinishQuestionsCreation = () => {
     // create questions
-    const createdQuestions = await AssignmentService.createQuestions(
-      assignment!.id,
-      questions
-    );
-
-    router.push(`/assignments/${assignment!.id}`);
+    AssignmentService.createQuestions(assignment!.id, questions)
+      .then(() => router.push(`/assignments/${assignment!.id}`))
+      .catch((_err) => {
+        toast({
+          title: "Failed to create questions",
+          description:
+            "An error occurred while creating questions. Please check the inputs and try again.",
+          variant: "destructive",
+        });
+      });
   };
 
   if (isError || (isFetched && !assignment)) {
@@ -89,7 +96,7 @@ function Page({ params }: Props) {
         <div>
           <div className="ml-[5%] mr-[8%]">
             <AssignmentPage
-              assignment={assignment!}
+              assignment={assignment}
               showNumberOfQuestions={false}
             />
           </div>

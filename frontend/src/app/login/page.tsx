@@ -8,8 +8,8 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useMemo, useState } from "react";
-import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon";
-import { EyeFilledIcon } from "./EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../../components/auth/EyeSlashFilledIcon";
+import { EyeFilledIcon } from "../../components/auth/EyeFilledIcon";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

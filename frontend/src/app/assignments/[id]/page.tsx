@@ -41,7 +41,7 @@ export default function Page({ params }: Props) {
         <div className="ml-[12%] mt-[5%] mr-[8%]">
           <div className="flex gap-2">
             {/* Assignment details */}
-            <AssignmentPage assignment={assignment!} />
+            <AssignmentPage assignment={assignment} />
 
             {/* Button for submission */}
             <div className="ml-auto mr-4 my-2">
