@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Avatar,
-  Button,
-  User,
-  Spacer,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@nextui-org/react";
+import { Avatar, Button, User, Spacer } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import Icons from "./Icons";

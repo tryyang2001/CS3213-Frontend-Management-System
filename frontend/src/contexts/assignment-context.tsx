@@ -13,8 +13,12 @@ interface IAssignmentContext {
 const AssignmentContext = createContext<IAssignmentContext>({
   assignment: null,
   isNewlyCreated: false,
-  enableAddingQuestion: () => {},
-  disableAddingQuestion: () => {},
+  enableAddingQuestion: () => {
+    throw new Error("Not implemented");
+  },
+  disableAddingQuestion: () => {
+    throw new Error("Not implemented");
+  },
 });
 
 const useAssignmentContext = () => useContext(AssignmentContext);
