@@ -8,7 +8,7 @@ import { Assignment } from "../../../models/types/assignment";
 
 const API_PREFIX = "/assignment/api";
 
-describe("Unit Tests fr getAssignmentById", () => {
+describe("Unit Tests for getAssignmentById", () => {
   const dbMock = db as jest.Mocked<typeof db>;
 
   describe("Given an existing assignment id", () => {
