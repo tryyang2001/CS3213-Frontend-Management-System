@@ -9,6 +9,7 @@ import DateUtils from "@/utils/dateUtils";
 import FieldLabel from "./FieldLabel";
 import Icons from "@/components/common/Icons";
 import { useToast } from "@/components/ui/use-toast";
+import { useAssignmentContext } from "@/contexts/assignment-context";
 
 export default function AssignmentEditor() {
   // states declaration
@@ -32,6 +33,8 @@ export default function AssignmentEditor() {
   const [isDescriptionInvalid, setIsDescriptionInvalid] = useState(false);
 
   const router = useRouter();
+
+  const { enableAddingQuestion } = useAssignmentContext();
 
   const { toast } = useToast();
 
@@ -77,6 +80,9 @@ export default function AssignmentEditor() {
         setIsTitleInvalid(false);
         setIsDeadlineInvalid(false);
         setIsDescriptionInvalid(false);
+
+        // enable adding questions
+        enableAddingQuestion(createdAssignment);
 
         // redirect to create questions page
         router.push(`/assignments/${createdAssignment.id}/questions/create`);
