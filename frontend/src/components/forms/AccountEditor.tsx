@@ -89,18 +89,18 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
         }
       />
       <Popover
-        color="danger"
+        color="primary"
         isOpen={accountMessage != ""}
         onOpenChange={() => setAccountMessage("")}
       >
         <PopoverTrigger>
-          <Button color="danger" onClick={handleAccountSubmit}>
+          <Button color="primary" onClick={handleAccountSubmit}>
             {" "}
             Update Password{" "}
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <p className="text-small" color="danger">
+          <p className="text-small" color="primary">
             {accountMessage}
           </p>
         </PopoverContent>

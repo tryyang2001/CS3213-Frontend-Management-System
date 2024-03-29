@@ -2,7 +2,7 @@
 
 import { Checkbox, Input, Radio, RadioGroup, Switch } from "@nextui-org/react";
 import FieldLabel from "./FieldLabel";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import DescriptionField from "./DescriptionField";
 import DateUtils from "@/utils/dateUtils";
 import FileUpload from "@/components/common/FileUpload";
@@ -92,8 +92,14 @@ function QuestionEditor({
     }
   };
 
+  const handleFormSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    // check
+  };
+
   return (
-    <form className="grid mx-4 px-4 gap-8">
+    <form className="grid mx-4 px-4 gap-8" onSubmit={handleFormSubmit}>
       {/* Question Title */}
       <div className="grid grid-cols-12">
         <FieldLabel isRequired>Question Title</FieldLabel>
