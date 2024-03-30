@@ -36,7 +36,7 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -59,7 +59,7 @@ const getAssignmentById = async (request: Request, response: Response) => {
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -103,7 +103,7 @@ const createAssignment = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -157,7 +157,7 @@ const updateAssignmentById = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -180,7 +180,7 @@ const deleteAssignmentById = async (request: Request, response: Response) => {
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
