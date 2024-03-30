@@ -10,6 +10,7 @@ export const getAssignmentByIdDbResponse = (
     title: "Assignment 1",
     deadline: deadline,
     authors: [userId ?? "existing-user-id"],
+    description: null,
     isPublished: true,
     numberOfQuestions: 2,
     createdOn: createdOn,
