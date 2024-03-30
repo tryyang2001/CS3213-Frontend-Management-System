@@ -63,7 +63,10 @@ export default function Page({ params }: Props) {
 
   const handleDeleteAssignment = (closeModal: () => void) => {
     AssignmentService.deleteAssignment(params.id)
-      .then(() => closeModal())
+      .then(() => {
+        closeModal();
+        router.push("/dashboard");
+      })
       .catch((_err) =>
         toast({
           title: "Failed to delete assignment",
