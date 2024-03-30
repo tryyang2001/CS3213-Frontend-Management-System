@@ -230,6 +230,14 @@ const updateQuestion = async (
   }
 };
 
+const deleteAssignment = async (assignmentId: string) => {
+  try {
+    await api.delete(`/assignments/${assignmentId}`);
+  } catch (_error) {
+    throw new Error("Failed to delete assignment");
+  }
+};
+
 const deleteQuestion = async (questionId: string) => {
   try {
     await api.delete(`/questions/${questionId}`);
@@ -262,6 +270,7 @@ const assignmentService = {
   createQuestions,
   updateAssignment,
   updateQuestion,
+  deleteAssignment,
   deleteQuestion,
 };
 

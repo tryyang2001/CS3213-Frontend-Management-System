@@ -15,6 +15,9 @@ function AssignmentList({ assignments }: Props) {
     router.push(`/assignments/${id}`);
   };
 
+  // TODO: consume user context to get the user role
+  const userRole = "tutor";
+
   return (
     <div>
       <b>Assignments</b>
@@ -27,8 +30,6 @@ function AssignmentList({ assignments }: Props) {
               shadow="sm"
               key={assignment.id}
               className="bg-white shadow-md"
-              // isPressable
-              // onPress={() => console.log("item pressed")}
             >
               <CardBody>
                 <div className="flex justify-between items-start">
@@ -44,7 +45,7 @@ function AssignmentList({ assignments }: Props) {
                     size="md"
                     onClick={() => handleButtonClick(assignment.id)}
                   >
-                    New Attempt
+                    {userRole === "tutor" ? "View" : "New Attempt"}
                   </Button>
                 </div>
               </CardBody>
