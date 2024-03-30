@@ -204,7 +204,7 @@ const updateQuestion = async (
     if (requestBody.testCases && requestBody.testCases.length > 0) {
       const existingTestCases = await getQuestionTestCases(questionId);
       const existingTestCaseIds = existingTestCases.map(
-        (testCase) => testCase.id as string
+        (testCase) => testCase.id!
       );
 
       // delete all existing test cases, and re-create them

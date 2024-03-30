@@ -58,13 +58,13 @@ export default function Page({ params }: Props) {
             <AssignmentPage assignment={assignment} />
 
             {/* Button for submission */}
-            {userRole === "student" && (
+            {/* {userRole === "student" && (
               <div className="ml-auto mr-4 my-2">
                 <Button className="px-6" color="primary">
                   Submit
                 </Button>
               </div>
-            )}
+            )} */}
             {
               // TODO: replace !== "student" with actual user role check, as for now not sure what the user role value is
               userRole === "tutor" && (

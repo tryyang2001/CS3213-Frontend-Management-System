@@ -17,7 +17,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -49,8 +49,8 @@ function Page({ params }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const fetchQuestions = async () => {
-    if (assignment && assignment.questions && assignment.questions.length > 0) {
-      const questionIds = assignment.questions.map((question) => question.id);
+    if (assignment?.questions?.length ?? 0 > 0) {
+      const questionIds = assignment!.questions!.map((question) => question.id);
 
       const referenceSolutions = await Promise.all(
         questionIds.map((questionId) =>
@@ -64,21 +64,23 @@ function Page({ params }: Props) {
         )
       );
 
-      // console.log("referenceSolutions", referenceSolutions);
-      // console.log("questionTestCases", questionTestCases);
+      const questions: CreateQuestionBody[] = assignment!.questions!.map(
+        (question, index) => {
+          const rawReferenceSolution = referenceSolutions[index];
+          const referenceSolution = rawReferenceSolution && {
+            language: rawReferenceSolution.language,
+            code: rawReferenceSolution.code,
+          };
 
-      const questions: CreateQuestionBody[] = assignment.questions.map(
-        (question, index) => ({
-          id: question.id,
-          title: question.title,
-          description: question.description,
-          deadline: question.deadline,
-          referenceSolution: referenceSolutions[index] && {
-            language: referenceSolutions[index].language,
-            code: referenceSolutions[index].code,
-          },
-          testCases: questionTestCases[index],
-        })
+          return {
+            id: question.id,
+            title: question.title,
+            description: question.description,
+            deadline: question.deadline,
+            referenceSolution: referenceSolution,
+            testCases: questionTestCases[index],
+          };
+        }
       );
 
       setUpdatedQuestions(questions);
@@ -93,7 +95,9 @@ function Page({ params }: Props) {
     }
 
     // obtain reference solution and test cases for each question in assignment
-    fetchQuestions();
+    fetchQuestions().catch((_error) => {
+      notFound();
+    });
 
     return () => {
       disableEditing();
@@ -111,21 +115,15 @@ function Page({ params }: Props) {
   };
 
   const handleDeleteQuestion = (index: number) => {
-    console.log("Updated questions", updatedQuestions);
-    console.log("Deleting question at index", index);
+    const deletedQuestionId = updatedQuestions[index].id;
 
-    if (updatedQuestions[index].id) {
-      setDeletedQuestionIds([
-        ...deletedQuestionIds,
-        updatedQuestions[index].id,
-      ]);
+    if (deletedQuestionId) {
+      setDeletedQuestionIds([...deletedQuestionIds, deletedQuestionId]);
     }
 
     setUpdatedQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
     );
-
-    console.log(deletedQuestionIds);
   };
 
   const handleQuestionChange = (
