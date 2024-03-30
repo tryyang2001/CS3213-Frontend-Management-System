@@ -4,7 +4,7 @@ import DateUtils from "../../utils/dateUtils";
 import { Button } from "@nextui-org/react";
 
 interface Props {
-  assignment?: Assignment;
+  assignment: Assignment | null | undefined;
 }
 
 function AssignmentPage({ assignment }: Props) {
@@ -44,7 +44,7 @@ function AssignmentPage({ assignment }: Props) {
       </div>
 
       {/* Assignment questions */}
-      {assignment.questions.map((question) => {
+      {assignment.questions!.map((question) => {
         return <AssignmentQuestion question={question} key={question.id} />;
       })}
     </div>
