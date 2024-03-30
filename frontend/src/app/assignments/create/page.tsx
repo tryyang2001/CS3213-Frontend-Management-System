@@ -9,7 +9,9 @@ export default function Create() {
       <b>Create a new assignment</b>
       <Spacer y={4} />
 
-      <AssignmentEditor />
+      <div className="my-[5%]">
+        <AssignmentEditor />
+      </div>
     </div>
   );
 }

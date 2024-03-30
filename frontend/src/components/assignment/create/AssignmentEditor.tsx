@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input, Switch, Tooltip } from "@nextui-org/react";
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import DescriptionField from "./DescriptionField";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { notFound, useRouter } from "next/navigation";
@@ -11,7 +11,11 @@ import Icons from "@/components/common/Icons";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 
-export default function AssignmentEditor() {
+interface Props {
+  isEditing?: boolean;
+}
+
+export default function AssignmentEditor({ isEditing = false }: Props) {
   // states declaration
   const [title, setTitle] = useState("");
   const nextWeekDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -34,7 +38,16 @@ export default function AssignmentEditor() {
 
   const router = useRouter();
 
-  const { enableAddingQuestion } = useAssignmentContext();
+  const { assignment, enableAddingQuestion } = useAssignmentContext();
+
+  useEffect(() => {
+    if (isEditing && assignment) {
+      setTitle(assignment.title);
+      setDeadline(new Date(assignment.deadline));
+      setDescription(assignment.description ?? "");
+      setIsPublished(assignment.isPublished);
+    }
+  }, []);
 
   const { toast } = useToast();
 
@@ -60,45 +73,74 @@ export default function AssignmentEditor() {
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    // create assignment
-    AssignmentService.createAssignment({
-      title,
-      deadline,
-      description,
-      isPublished,
-    })
-      .then((createdAssignment) => {
-        if (!createdAssignment) {
-          return notFound();
-        }
-
-        // reset form values
-        setTitle("");
-        setDeadline(defaultDeadline);
-        setDescription("");
-
-        setIsTitleInvalid(false);
-        setIsDeadlineInvalid(false);
-        setIsDescriptionInvalid(false);
-
-        // enable adding questions
-        enableAddingQuestion(createdAssignment);
-
-        // redirect to create questions page
-        router.push(`/assignments/${createdAssignment.id}/questions/create`);
+    if (isEditing) {
+      // update assignment
+      AssignmentService.updateAssignment(assignment!.id, {
+        title,
+        deadline,
+        description,
+        isPublished,
       })
-      .catch((_err) => {
-        return toast({
-          title: "Failed to create assignment",
-          description:
-            "An error occurred while creating the assignment. Please check the inputs and try again.",
-          variant: "destructive",
+        .then((updatedAssignment) => {
+          if (!updatedAssignment) {
+            return notFound();
+          }
+
+          return toast({
+            title: "Assignment updated successfully",
+            description: "The assignment has been updated successfully.",
+            variant: "success",
+          });
+        })
+        .catch((_err) => {
+          return toast({
+            title: "Failed to update assignment",
+            description:
+              "An error occurred while updating the assignment. Please check the inputs and try again.",
+            variant: "destructive",
+          });
         });
-      });
+    } else {
+      // create assignment
+      AssignmentService.createAssignment({
+        title,
+        deadline,
+        description,
+        isPublished,
+      })
+        .then((createdAssignment) => {
+          if (!createdAssignment) {
+            return notFound();
+          }
+
+          // reset form values
+          setTitle("");
+          setDeadline(defaultDeadline);
+          setDescription("");
+
+          setIsTitleInvalid(false);
+          setIsDeadlineInvalid(false);
+          setIsDescriptionInvalid(false);
+
+          // enable adding questions
+          enableAddingQuestion(createdAssignment);
+
+          // redirect to create questions page
+          router.push(`/assignments/${createdAssignment.id}/questions/create`);
+        })
+        .catch((_err) => {
+          return toast({
+            title: "Failed to create assignment",
+            description:
+              "An error occurred while creating the assignment. Please check the inputs and try again.",
+            variant: "destructive",
+          });
+        });
+    }
   };
 
   return (
-    <div className="mx-[10%] my-[5%]">
+    <div className="mx-[8%]">
       <form className="grid mx-4 px-4 gap-8" onSubmit={handleFormSubmit}>
         {/* Title */}
         <div className="grid grid-cols-12">
@@ -180,7 +222,7 @@ export default function AssignmentEditor() {
 
         <div className="my-4 flex justify-end">
           <Button type="submit" color="primary">
-            Create
+            {isEditing ? "Save" : "Create"}
           </Button>
         </div>
       </form>

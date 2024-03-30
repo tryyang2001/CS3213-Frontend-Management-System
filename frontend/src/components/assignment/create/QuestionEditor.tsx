@@ -49,7 +49,7 @@ function QuestionEditor({
     setLanguage(initialQuestion.referenceSolution?.language ?? "python");
     setReferenceSolutionCode(initialQuestion.referenceSolution?.code ?? "");
     setTestCases(initialQuestion.testCases ?? []);
-  }, [initialQuestion]);
+  }, []);
 
   useEffect(() => {
     const newQuestion = {
@@ -63,8 +63,11 @@ function QuestionEditor({
       testCases,
     };
 
-    // only emit the updated question if it has changed
-    if (JSON.stringify(newQuestion) !== JSON.stringify(initialQuestion)) {
+    // only emit the updated question if it has changed, omitting initial question id field
+    const initialQuestionWithoutId = { ...initialQuestion, id: undefined };
+    if (
+      JSON.stringify(newQuestion) !== JSON.stringify(initialQuestionWithoutId)
+    ) {
       onQuestionChange(newQuestion);
     }
   }, [
@@ -94,8 +97,6 @@ function QuestionEditor({
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    // check
   };
 
   return (

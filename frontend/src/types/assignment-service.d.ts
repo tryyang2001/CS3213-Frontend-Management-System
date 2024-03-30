@@ -7,6 +7,7 @@ interface CreateAssignmentBody {
 }
 
 interface CreateQuestionBody {
+  id?: string;
   title: string;
   description: string;
   deadline?: number | Date;

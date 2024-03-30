@@ -11,7 +11,7 @@ const deleteQuestion = async (questionId: string) => {
 };
 
 const deleteQuestionReferenceSolution = async (questionId: string) => {
-  const referenceSolution = await db.referenceSolution.deleteMany({
+  const referenceSolution = await db.referenceSolution.delete({
     where: {
       questionId: questionId,
     },
