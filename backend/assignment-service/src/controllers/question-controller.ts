@@ -3,7 +3,6 @@ import HttpStatusCode from "../libs/enums/HttpStatusCode";
 import { GetHandler } from "../services/questions/get-handler";
 import { PostHandler } from "../services/questions/post-handler";
 import { createReferenceSolutionValidator } from "../libs/validators/questions/create-reference-solution-validator";
-import db from "../models/db";
 import { ZodError } from "zod";
 import { CreateTestCasesValidator } from "../libs/validators/questions/create-test-cases-validator";
 import { PutHandler } from "../services/questions/put-handler";
@@ -12,6 +11,8 @@ import { UpdateQuestionValidator } from "../libs/validators/questions/update-que
 import { UpdateReferenceSolutionValidator } from "../libs/validators/questions/update-reference-solution-validator";
 import { DeleteTestCaseValidator } from "../libs/validators/questions/delete-test-case-validator";
 import { CreateQuestionValidator } from "../libs/validators/questions/create-question-validator";
+import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
+import DuplicateReferenceSolutionError from "../libs/errors/DuplicateReferenceSolutionError";
 
 const getQuestionById = async (request: Request, response: Response) => {
   try {
@@ -31,7 +32,7 @@ const getQuestionById = async (request: Request, response: Response) => {
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -57,7 +58,7 @@ const getQuestionTestCasesById = async (
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -84,7 +85,7 @@ const getQuestionReferenceSolutionById = async (
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -123,22 +124,22 @@ const createQuestion = async (request: Request, response: Response) => {
         error: "NOT FOUND",
         message: "Assignment not found",
       });
+
+      return;
     }
 
     response.status(HttpStatusCode.CREATED).json(question);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -175,13 +176,11 @@ const createQuestionReferenceSolution = async (
       return;
     }
 
-    const isQuestionExists = await db.question.findUnique({
-      where: {
-        id: questionId,
-      },
-    });
+    const referenceSolution = await PostHandler.createQuestionReferenceSolution(
+      createQuestionReferenceSolutionBody
+    );
 
-    if (!isQuestionExists) {
+    if (!referenceSolution) {
       response.status(HttpStatusCode.NOT_FOUND).json({
         error: "NOT FOUND",
         message: "Question not found",
@@ -189,24 +188,27 @@ const createQuestionReferenceSolution = async (
       return;
     }
 
-    const referenceSolution = await PostHandler.createQuestionReferenceSolution(
-      createQuestionReferenceSolutionBody
-    );
-
     response.status(HttpStatusCode.CREATED).json(referenceSolution);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
+        message: formatZodErrorMessage(error),
+      });
+      return;
+    }
+
+    if (error instanceof DuplicateReferenceSolutionError) {
+      response.status(HttpStatusCode.CONFLICT).json({
+        error: "CONFLICT",
         message: error.message,
       });
       return;
     }
+
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -246,32 +248,27 @@ const createQuestionTestCases = async (
       createQuestionTestCasesBody
     );
 
-    const totalTestCases = await db.testCase.count({
-      where: {
-        questionId: questionId,
-      },
-    });
+    if (!createdTestCaseResponse) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Question not found",
+      });
+      return;
+    }
 
-    response.status(HttpStatusCode.CREATED).json({
-      numberOfTestCases: totalTestCases,
-      added: {
-        ...createdTestCaseResponse,
-      },
-    });
+    response.status(HttpStatusCode.CREATED).json(createdTestCaseResponse);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
 
       return;
     }
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -316,19 +313,17 @@ const updateQuestionById = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.OK).json(updatedQuestion);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -370,21 +365,27 @@ const updateQuestionReferenceSolution = async (
         updateQuestionReferenceSolutionBody
       );
 
+    if (!updatedReferenceSolution) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Reference solution or question not found",
+      });
+      return;
+    }
+
     response.status(HttpStatusCode.OK).json(updatedReferenceSolution);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -407,7 +408,7 @@ const deleteQuestionById = async (request: Request, response: Response) => {
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -434,7 +435,7 @@ const deleteQuestionReferenceSolutionById = async (
   } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -492,7 +493,7 @@ const deleteQuestionTestCasesById = async (
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
