@@ -27,9 +27,7 @@ jest.mock("@tanstack/react-query", () => {
   return {
     __esModule: true,
     useQuery: () => {
-      const assignment = AssignmentService.getAssignmentById({
-        assignmentId: "1",
-      });
+      const assignment = AssignmentService.getAssignmentById("1");
       return {
         data: assignment,
         isLoading: assignment.then(() => false),
