@@ -169,21 +169,23 @@ describe("Account Editor", () => {
   });
 
   describe("Given correct fields", () => {
-    it("should have not have error popover", () => {
+    it("should have not have error popover", async () => {
       render(<AccountEditor userInfo={userInfo} />);
 
-      const password = screen.getByLabelText("Password");
+      const password : HTMLInputElement = screen.getByLabelText("Password");
       fireEvent.change(password, { target: { value: "12345678" } });
       const confirmInput = screen.getByLabelText("Confirm Password");
       fireEvent.change(confirmInput, { target: { value: "12345678" } });
       const updateButton = screen.getByRole("button", { expanded: false });
       fireEvent.click(updateButton);
 
-      const updateButtonWithError = screen.queryByRole("button", {
+      const updateButtonWithSuccess = await screen.findByRole("button", {
         hidden: true,
         expanded: true,
       });
-      expect(updateButtonWithError).not.toBeInTheDocument();
+      expect(updateButtonWithSuccess).toBeInTheDocument();
+      const rePassword : HTMLInputElement = screen.getByLabelText("Password");
+      expect(rePassword.value).toBe("")
     });
   });
 });
