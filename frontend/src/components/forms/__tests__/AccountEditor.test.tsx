@@ -172,7 +172,7 @@ describe("Account Editor", () => {
     it("should have not have error popover", async () => {
       render(<AccountEditor userInfo={userInfo} />);
 
-      const password : HTMLInputElement = screen.getByLabelText("Password");
+      const password: HTMLInputElement = screen.getByLabelText("Password");
       fireEvent.change(password, { target: { value: "12345678" } });
       const confirmInput = screen.getByLabelText("Confirm Password");
       fireEvent.change(confirmInput, { target: { value: "12345678" } });
@@ -184,8 +184,8 @@ describe("Account Editor", () => {
         expanded: true,
       });
       expect(updateButtonWithSuccess).toBeInTheDocument();
-      const rePassword : HTMLInputElement = screen.getByLabelText("Password");
-      expect(rePassword.value).toBe("")
+      const rePassword: HTMLInputElement = screen.getByLabelText("Password");
+      expect(rePassword.value).toBe("");
     });
   });
 });

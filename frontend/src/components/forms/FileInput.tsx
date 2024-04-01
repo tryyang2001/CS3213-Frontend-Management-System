@@ -57,25 +57,25 @@ export default function FileInput({ onFileChange }: FileInputProps) {
         Change
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChangeModal} size="2xl">
-      <ModalContent className="pt-12">
-        {(onClose) => (
-          <>
-            <ModalBody className="flex flex-col items-center">
-              {/* I can't get Avatar to limit image size to 200px */}
-              {photo ? (
-                <Image
-                  removeWrapper
-                  alt="Profile Picture"
-                  className="object-cover"
-                  src={photo}
-                  height={200}
-                  width={200}
-                />
-              ) : (
-                ""
-              )}
-            </ModalBody>
-            <ModalFooter className="justify-center items-center">
+        <ModalContent className="pt-12">
+          {(onClose) => (
+            <>
+              <ModalBody className="flex flex-col items-center">
+                {/* I can't get Avatar to limit image size to 200px */}
+                {photo ? (
+                  <Image
+                    removeWrapper
+                    alt="Profile Picture"
+                    className="object-cover"
+                    src={photo}
+                    height={200}
+                    width={200}
+                  />
+                ) : (
+                  ""
+                )}
+              </ModalBody>
+              <ModalFooter className="justify-center items-center">
                 <Button onClick={onChooseFile}> Choose File </Button>
                 <p>{file ? file.name : "Choose a profile picture"}</p>
                 <input
@@ -84,16 +84,20 @@ export default function FileInput({ onFileChange }: FileInputProps) {
                   onChange={handlePhotoChange}
                   ref={inputRef}
                 />
-                <Button onClick={() => {
-                  handleUpload() 
-                  onClose()
-                }}> Upload </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+                <Button
+                  onClick={() => {
+                    handleUpload();
+                    onClose();
+                  }}
+                >
+                  {" "}
+                  Upload{" "}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 }
-

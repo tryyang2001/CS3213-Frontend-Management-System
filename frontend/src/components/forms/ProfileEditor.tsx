@@ -52,9 +52,8 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
 
   const [message, setMessage] = useState<string>("");
   const handleProfileSubmit = async () => {
-
     if (isInvalidName) {
-      setMessage("Please fill in a name!")
+      setMessage("Please fill in a name!");
       return;
     }
 
