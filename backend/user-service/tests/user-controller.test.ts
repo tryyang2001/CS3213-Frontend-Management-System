@@ -2,8 +2,9 @@ import supertest from "supertest";
 import bcrypt from "bcrypt";
 import db from "../models/user-model";
 import createUnitTestServer from "./utils/create-test-server-utils";
-import { getUserRequestBody } from "./payload/request/create-user-request-body";
+import { getCreateUserRequestBody } from "./payload/request/create-user-request-body";
 import { QueryResult } from "pg";
+import { getCreateUserResponseBody } from "./payload/response/create-user-response-body";
 
 jest.mock("../psql", () => {
   return {
@@ -16,7 +17,7 @@ describe("Unit Tests for /user/register endpoint", () => {
   const app = createUnitTestServer();
   let reqBody: any;
   beforeEach(() => {
-    reqBody = getUserRequestBody();
+    reqBody = getCreateUserRequestBody();
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -38,7 +39,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ uid: 1 });
+      expect(response.body).toEqual(getCreateUserResponseBody());
       // expect(response.status).toBe(201);
     });
   });
