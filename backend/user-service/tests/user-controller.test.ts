@@ -3,7 +3,9 @@ import bcrypt from "bcrypt";
 import db from "../models/user-model";
 import createUnitTestServer from "./utils/create-test-server-utils";
 import { getCreateUserRequestBody } from "./payload/request/create-user-request-body";
+import { getLoginUserRequestBody } from './payload/request/login-user-request-body';
 import { QueryResult } from "pg";
+import { getLoginUserResponseBody } from "./payload/response/login-user-response-body";
 import { getCreateUserResponseBody } from "./payload/response/create-user-response-body";
 
 jest.mock("../psql", () => {
@@ -149,6 +151,90 @@ describe("Unit Tests for /user/register endpoint", () => {
         error: "Undefined error creating users.",
       });
       // expect(response.status).toBe(400);
+    });
+  });
+});
+
+describe('Unit Tests for /user/login endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody: any;
+
+  beforeEach(() => {
+    reqBody = getLoginUserRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid request body to login a user", () => {
+    it('Should return 200 and a token', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [getLoginUserResponseBody()] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(true);
+      jwt.sign = jest.fn().mockResolvedValue('fake_token');
+      process.env.JWT_SECRET_KEY = 'secretkey';
+
+      // Act
+      const response = await supertest(app)
+        .post('/user/login')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ user: getLoginUserResponseBody() });
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe("Given a non-existing email", () => {
+    it('Should return 400 and an error message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+
+      // Act
+      const response = await supertest(app)
+        .post('/user/login')
+        .send(reqBody);
+      
+      // Assert
+      expect(response.body).toEqual({ error: 'User does not exist.' });
+      // expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Given an incorrect password", () => {
+    it('Should return 400 and an error message', async () => {
+      // Arrange
+      reqBody.password = 'wrongpassword'
+      jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [{ email: reqBody.email, password: 'hashedpassword' }] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(false);
+      
+      
+      // Act
+      const response = await supertest(app)
+        .post('/user/login')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ error: 'Incorrect password.' });
+      // expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Given an error while checking the password", () => {
+    it('Should return 500 and an error message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [{ email: reqBody.email, password: 'hashedpassword' }] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockRejectedValue(new Error('Error checking password.'));
+
+      // Act
+      const response = await supertest(app)
+        .post('/user/login')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ message: 'Error checking password.' });
+      // expect(response.status).toBe(500);
     });
   });
 });
