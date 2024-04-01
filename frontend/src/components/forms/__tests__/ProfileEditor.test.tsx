@@ -123,25 +123,25 @@ describe("Profile Editor", () => {
       expect(discardButton).not.toBeInTheDocument();
     });
     it("should have an error popover if name is empty", async () => {
-        render(<ProfileEditor userInfo={userInfo} />);
-  
-        const nameInput: HTMLInputElement = screen.getByLabelText("Name");
-        fireEvent.change(nameInput, { target: { value: "" } });
-        const updateButton = screen.getByRole("button", { name: "Save Changes" });
-        fireEvent.click(updateButton);
-  
-        const updateButtonWithMessage = await screen.findByRole("button", {
-          name: "Save Changes",
-          hidden: true,
-          expanded: true,
-        });
-        expect(updateButtonWithMessage).toBeInTheDocument();
-        const discardButton = screen.getByRole("button", {
-          hidden: true,
-          name: "Discard Changes",
-        });
-        expect(discardButton).toBeInTheDocument();
+      render(<ProfileEditor userInfo={userInfo} />);
+
+      const nameInput: HTMLInputElement = screen.getByLabelText("Name");
+      fireEvent.change(nameInput, { target: { value: "" } });
+      const updateButton = screen.getByRole("button", { name: "Save Changes" });
+      fireEvent.click(updateButton);
+
+      const updateButtonWithMessage = await screen.findByRole("button", {
+        name: "Save Changes",
+        hidden: true,
+        expanded: true,
       });
+      expect(updateButtonWithMessage).toBeInTheDocument();
+      const discardButton = screen.getByRole("button", {
+        hidden: true,
+        name: "Discard Changes",
+      });
+      expect(discardButton).toBeInTheDocument();
+    });
   });
   describe("Given edited bio", () => {
     it("should have a discard button", () => {

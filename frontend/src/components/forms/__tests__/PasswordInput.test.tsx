@@ -79,8 +79,8 @@ describe("Password Input", () => {
         setIsInvalid={invalid.setValue}
       />
     );
-    
-    const eye = screen.getByRole("button", {name: ""})
+
+    const eye = screen.getByRole("button", { name: "" });
     fireEvent.click(eye);
     const visibleInput: HTMLInputElement = screen.getByLabelText("Password");
     expect(visibleInput.type).toBe("text");
@@ -93,8 +93,8 @@ describe("Password Input", () => {
         setIsInvalid={invalid.setValue}
       />
     );
-    
-    const eye = screen.getByRole("button", {name: ""})
+
+    const eye = screen.getByRole("button", { name: "" });
     fireEvent.click(eye);
     const passwordInput: HTMLInputElement = screen.getByLabelText("Password");
     expect(passwordInput.type).toBe("text");
