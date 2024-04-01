@@ -12,6 +12,7 @@ import { getCreateUserResponseBody } from "./payload/response/create-user-respon
 import { getGetUserResponseBody } from "./payload/response/get-user-response-body";
 import { getGetUserByEmailRequestBody } from "./payload/request/get-user-by-email-request-body";
 import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-email-response-body";
+import { getGetAllUsersResponseBody } from "./payload/response/get-all-users-response-body";
 
 jest.mock("../psql", () => {
   return {
@@ -350,6 +351,55 @@ describe('Unit Tests for /user/getUserByEmail endpoint', () => {
 
     // Assert
     expect(response.body).toEqual({ message: 'Error getting user by email.' });
+    // expect(response.status).toBe(500);
+  });
+});
+
+describe('Unit Tests for /user/getAllUsers endpoint', () => {
+  const app = createUnitTestServer();
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('If there are users, should return all users', async () => {
+    // Arrange
+
+    jest.spyOn(db, 'getAllUsers').mockResolvedValue(getGetAllUsersResponseBody());
+
+    // Act
+    const response = await supertest(app)
+      .get('/user/getAllUsers');
+
+    // Assert
+    expect(response.body).toEqual(getGetAllUsersResponseBody());
+    expect(response.status).toBe(200);
+  });
+
+  it('If there are no users, should return empty', async () => {
+    // Arrange
+
+    jest.spyOn(db, 'getAllUsers').mockResolvedValue([]);
+
+    // Act
+    const response = await supertest(app)
+      .get('/user/getAllUsers');
+
+    // Assert
+    expect(response.body).toEqual([]);
+    expect(response.status).toBe(200);
+  });
+
+  it('Should return an error message if there is an error getting all users', async () => {
+    // Arrange
+    jest.spyOn(db, 'getAllUsers').mockRejectedValue(new Error('Database error'));
+
+    // Act
+    const response = await supertest(app)
+      .get('/user/getAllUsers');
+
+    // Assert
+    expect(response.body).toEqual({ message: 'Error getting all users.' });
     // expect(response.status).toBe(500);
   });
 });
