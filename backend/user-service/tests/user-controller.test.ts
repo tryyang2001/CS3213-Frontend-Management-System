@@ -1,12 +1,15 @@
 import supertest from "supertest";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
 import db from "../models/user-model";
 import createUnitTestServer from "./utils/create-test-server-utils";
 import { getCreateUserRequestBody } from "./payload/request/create-user-request-body";
 import { getLoginUserRequestBody } from './payload/request/login-user-request-body';
+import { getGetUserRequestBody } from './payload/request/get-user-request-body';
 import { QueryResult } from "pg";
 import { getLoginUserResponseBody } from "./payload/response/login-user-response-body";
 import { getCreateUserResponseBody } from "./payload/response/create-user-response-body";
+import { getGetUserResponseBody } from "./payload/response/get-user-response-body";
 
 jest.mock("../psql", () => {
   return {
@@ -235,6 +238,64 @@ describe('Unit Tests for /user/login endpoint', () => {
       // Assert
       expect(response.body).toEqual({ message: 'Error checking password.' });
       // expect(response.status).toBe(500);
+    });
+  });
+});
+
+describe('Unit Tests for /user/getUserByUserId endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody: any;
+
+  beforeEach(() => {
+    reqBody = getGetUserRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid user ID", () => {
+    it('Should return the user object', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [getGetUserResponseBody()] } as unknown as QueryResult<any>);
+  
+      // Act
+      const response = await supertest(app)
+        .get('/user/getUserByUserId')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual(getGetUserResponseBody());
+    });
+  });
+
+  describe("Given a non-existing user ID", () => {
+    it('Should return an error message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+  
+      // Act
+      const response = await supertest(app)
+        .get('/user/getUserByUserId')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ error: 'User does not exist.' });
+    });
+  });
+
+  describe("Given an error while fetching user", () => {
+    it('Should return an error message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockRejectedValue(new Error('Database error'));
+  
+      // Act
+      const response = await supertest(app)
+        .get('/user/getUserByUserId')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ message: 'Error getting user by uid.' });
     });
   });
 });
