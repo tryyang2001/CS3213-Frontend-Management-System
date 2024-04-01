@@ -10,6 +10,8 @@ import { QueryResult } from "pg";
 import { getLoginUserResponseBody } from "./payload/response/login-user-response-body";
 import { getCreateUserResponseBody } from "./payload/response/create-user-response-body";
 import { getGetUserResponseBody } from "./payload/response/get-user-response-body";
+import { getGetUserByEmailRequestBody } from "./payload/request/get-user-by-email-request-body";
+import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-email-response-body";
 
 jest.mock("../psql", () => {
   return {
@@ -297,5 +299,57 @@ describe('Unit Tests for /user/getUserByUserId endpoint', () => {
       // Assert
       expect(response.body).toEqual({ message: 'Error getting user by uid.' });
     });
+  });
+});
+
+describe('Unit Tests for /user/getUserByEmail endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody: any;
+
+  beforeEach(() => {
+    reqBody = getGetUserByEmailRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('Should return user details if user exists', async () => {
+    jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [getGetUserByEmailResponseBody()] } as unknown as QueryResult<any>);
+
+    // Act
+    const response = await supertest(app)
+      .get(`/user/getUserByEmail`);
+
+    // Assert
+    expect(response.body).toEqual(getGetUserByEmailResponseBody());
+    expect(response.status).toBe(200);
+  });
+
+  it('Should return an error message if user does not exist', async () => {
+    // Arrange
+    reqBody.email = 'nonexistent@example.com';
+    jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+
+    // Act
+    const response = await supertest(app)
+      .get(`/user/getUserByEmail`);
+
+    // Assert
+    expect(response.body).toEqual({ error: 'User does not exist.' });
+    // expect(response.status).toBe(404);
+  });
+
+  it('Should return an error message if there is an error getting user by email', async () => {
+    // Arrange
+    jest.spyOn(db, 'getUserByEmail').mockRejectedValue(new Error('Database error'));
+
+    // Act
+    const response = await supertest(app)
+      .get(`/user/getUserByEmail`);
+
+    // Assert
+    expect(response.body).toEqual({ message: 'Error getting user by email.' });
+    // expect(response.status).toBe(500);
   });
 });
