@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import db from "../models/user-model";
 
 async function registerUser(req: Request, res: Response) {
-  let { email, password, name, major, course, role } = req.body;
+  const { email, password, name, major, course, role } = req.body;
 
   console.log("registering new user", req.body);
   try {
@@ -55,7 +55,7 @@ async function registerUser(req: Request, res: Response) {
 }
 
 async function loginUser(req: Request, res: Response) {
-  let { email, password } = req.body;
+  const { email, password } = req.body;
 
   const emailSearch = await db.getUserByEmail(email);
   if (emailSearch.rows.length == 0) {
@@ -107,7 +107,7 @@ async function loginUser(req: Request, res: Response) {
 }
 
 async function getUserByUserId(req: Request, res: Response) {
-  let { uid } = req.body;
+  const { uid } = req.body;
   try {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
@@ -128,7 +128,7 @@ async function getUserByUserId(req: Request, res: Response) {
 }
 
 async function getUserByEmail(req: Request, res: Response) {
-  let { email } = req.body;
+  const { email } = req.body;
   try {
     const emailSearch = await db.getUserByEmail(email);
     if (emailSearch.rows.length == 0) {
@@ -159,7 +159,7 @@ async function getAllUsers(req: Request, res: Response) {
 }
 
 async function updateUserPassword(req: Request, res: Response) {
-  let { uid, old_password, new_password } = req.body;
+  const { uid, old_password, new_password } = req.body;
   try {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
@@ -217,7 +217,7 @@ async function updateUserPassword(req: Request, res: Response) {
 }
 
 async function updateUserInfo(req: Request, res: Response) {
-  let { uid, email, name, major, course, role } = req.body;
+  const { uid, email, name, major, course, role } = req.body;
   try {
     await db.updateUserInfo(uid, email, name, major, course, role);
     return res.json({
@@ -231,7 +231,7 @@ async function updateUserInfo(req: Request, res: Response) {
 }
 
 async function deleteUser(req: Request, res: Response) {
-  let { uid } = req.body;
+  const { uid } = req.body;
   try {
     const result = await db.deleteUser(uid);
     console.log(result);
