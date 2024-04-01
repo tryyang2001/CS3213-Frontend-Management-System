@@ -27,7 +27,6 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
 
   // userInfo is constant, do not change for now
   const hasChanged = useMemo(() => {
-    console.log(info.name);
     if (name != info.name) return true;
     if (bio != info.bio) return true;
     if (photo != info.photo && !(photo == "" && info.photo == undefined))

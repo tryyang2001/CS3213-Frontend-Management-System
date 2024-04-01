@@ -5,7 +5,7 @@ import UserPage from "../user/page";
 import AssignmentPage from "../assignments/[id]/page";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 // Place all page's Snapshot tests here
 
@@ -56,8 +56,10 @@ describe("Page Snapshot tests", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("User Page Snapshot test", () => {
+  it("User Page Snapshot test", async () => {
     const { container } = render(<UserPage />);
+    const _title = await screen.findByText("Your Account");
+
     expect(container).toMatchSnapshot();
   });
 
