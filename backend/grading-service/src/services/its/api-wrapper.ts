@@ -8,6 +8,7 @@ import ITSPostFeedbackError from "../../libs/errors/ITSPostFeedbackError";
 import { ErrorFeedback } from "../../models/its/error-feedback";
 import CodeFunctionNameError from "../../libs/errors/CodeFunctionNameError";
 import HttpStatusCode from "../../libs/enums/HttpStatusCode";
+import NotExistingStudentError from "../../libs/errors/NotExistingStudentError";
 
 dotenv.config();
 
@@ -31,6 +32,8 @@ async function generateParserString(language: string, source_code: string) {
 
     const parserString = JSON.stringify(parser);
 
+    if (!parserString) throw new Error();
+
     return parserString;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -52,6 +55,17 @@ async function generateErrorFeedback(
   questionId: string,
   studentId: number
 ) {
+  // ensure that student exists
+  const student = await db.user.findUnique({
+    where: {
+      id: studentId,
+    },
+  });
+
+  if (!student) {
+    throw new NotExistingStudentError(studentId);
+  }
+
   // obtain referenced solution parser
   const referencedSolution = await db.referenceSolution.findFirst({
     where: {
@@ -96,7 +110,7 @@ async function generateErrorFeedback(
 
   // check if the student solution has the target function
   if (!JSON.parse(studentSolutionParserString).fncs[targetFunction]) {
-    throw new CodeFunctionNameError();
+    throw new CodeFunctionNameError(targetFunction);
   }
 
   // get a test case
@@ -124,7 +138,14 @@ async function generateErrorFeedback(
       args: args,
     });
 
-    const feedbacks = response.data as ErrorFeedback[];
+    const feedbacks: ErrorFeedback[] = response.data.map(
+      (feedback: { lineNumber: number; hintStrings: string[] }) => {
+        return {
+          line: feedback.lineNumber,
+          hints: feedback.hintStrings,
+        };
+      }
+    );
 
     // write to Submission table
     await saveSubmissionWithFeedbacks(
@@ -139,7 +160,6 @@ async function generateErrorFeedback(
     return feedbacks;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
       throw new ITSPostFeedbackError();
     }
 
@@ -194,8 +214,8 @@ async function saveSubmissionWithFeedbacks(
     data: feedbacks.map((feedback) => {
       return {
         submissionId: submission.id,
-        line: feedback.lineNumber,
-        hints: feedback.hintStrings,
+        line: feedback.line,
+        hints: feedback.hints,
       };
     }),
   });

@@ -1,9 +1,31 @@
 import db from "../../models/db";
 
 const deleteQuestion = async (questionId: string) => {
+  const questionExists = await db.question.findUnique({
+    where: {
+      id: questionId,
+    },
+  });
+
+  if (!questionExists) {
+    return null;
+  }
+
   const question = await db.question.delete({
     where: {
       id: questionId,
+    },
+  });
+
+  // update the number of questions in the assignment
+  await db.assignment.update({
+    where: {
+      id: question.assignmentId!,
+    },
+    data: {
+      numberOfQuestions: {
+        decrement: 1,
+      },
     },
   });
 
@@ -11,7 +33,27 @@ const deleteQuestion = async (questionId: string) => {
 };
 
 const deleteQuestionReferenceSolution = async (questionId: string) => {
-  const referenceSolution = await db.referenceSolution.deleteMany({
+  const questionExists = await db.question.findUnique({
+    where: {
+      id: questionId,
+    },
+  });
+
+  if (!questionExists) {
+    return null;
+  }
+
+  const solutionExists = await db.referenceSolution.findFirst({
+    where: {
+      questionId: questionId,
+    },
+  });
+
+  if (!solutionExists) {
+    return null;
+  }
+
+  const referenceSolution = await db.referenceSolution.delete({
     where: {
       questionId: questionId,
     },
@@ -34,6 +76,16 @@ const deleteQuestionTestCases = async (
   questionId: string,
   testCaseIds: string[]
 ) => {
+  const questionExists = await db.question.findUnique({
+    where: {
+      id: questionId,
+    },
+  });
+
+  if (!questionExists) {
+    return null;
+  }
+
   const deletedTestCases = await db.testCase.deleteMany({
     where: {
       questionId: questionId,

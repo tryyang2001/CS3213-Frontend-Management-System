@@ -7,6 +7,7 @@ export const UpdateQuestionValidator = z.object({
   deadline: z
     .number()
     .int()
+    .positive()
     .refine((deadline) => deadline > Date.now(), {
       message: "Deadline must be in the future",
     })
