@@ -1,3 +1,4 @@
+import DuplicateReferenceSolutionError from "../../libs/errors/DuplicateReferenceSolutionError";
 import { CreateQuestionBody } from "../../libs/validators/questions/create-question-validator";
 import { CreateQuestionReferenceSolutionBody } from "../../libs/validators/questions/create-reference-solution-validator";
 import { CreateQuestionTestCasesBody } from "../../libs/validators/questions/create-test-cases-validator";
@@ -54,12 +55,6 @@ const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
     });
   }
 
-  const createdQuestion = await db.question.findUnique({
-    where: {
-      id: question.id,
-    },
-  });
-
   await db.assignment.update({
     where: {
       id: createQuestionBody.assignmentId,
@@ -72,16 +67,14 @@ const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
   });
 
   const questionDto: Question = {
-    id: createdQuestion!.id,
-    title: createdQuestion!.title,
-    description: createdQuestion!.description,
-    deadline: createdQuestion!.deadline.getTime(),
-    numberOfTestCases: createdQuestion!.numberOfTestCases,
-    assignmentId: createdQuestion!.assignmentId
-      ? createdQuestion!.assignmentId
-      : undefined,
-    referenceSolutionId: createdQuestion!.referenceSolutionId
-      ? createdQuestion!.referenceSolutionId
+    id: question.id,
+    title: question.title,
+    description: question.description,
+    deadline: question.deadline.getTime(),
+    numberOfTestCases: question.numberOfTestCases,
+    assignmentId: question.assignmentId ? question.assignmentId : undefined,
+    referenceSolutionId: question.referenceSolution
+      ? question.referenceSolution.id
       : undefined,
   };
 
@@ -99,6 +92,10 @@ const createQuestionReferenceSolution = async (
 
   if (!questionExists) {
     return null;
+  }
+
+  if (questionExists.referenceSolutionId) {
+    throw new DuplicateReferenceSolutionError(questionExists.id);
   }
 
   const referenceSolution = await db.referenceSolution.create({
@@ -131,6 +128,16 @@ const createQuestionReferenceSolution = async (
 const createQuestionTestCases = async (
   createQuestionTestCasesBody: CreateQuestionTestCasesBody
 ) => {
+  const questionExists = await db.question.findUnique({
+    where: {
+      id: createQuestionTestCasesBody.questionId,
+    },
+  });
+
+  if (!questionExists) {
+    return null;
+  }
+
   const testCasesCreationResponse = await db.testCase.createMany({
     data: createQuestionTestCasesBody.testCases.map((testCase) => {
       return {

@@ -5,7 +5,7 @@ import UserPage from "../user/page";
 import AssignmentPage from "../assignments/[id]/page";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 // Place all page's Snapshot tests here
 
@@ -27,9 +27,7 @@ jest.mock("@tanstack/react-query", () => {
   return {
     __esModule: true,
     useQuery: () => {
-      const assignment = AssignmentService.getAssignmentById({
-        assignmentId: "1",
-      });
+      const assignment = AssignmentService.getAssignmentById("1");
       return {
         data: assignment,
         isLoading: assignment.then(() => false),
@@ -37,6 +35,10 @@ jest.mock("@tanstack/react-query", () => {
     },
   };
 });
+
+global.fetch = jest.fn(() =>
+  Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) })
+) as jest.Mock;
 
 describe("Page Snapshot tests", () => {
   it("Landing Page Snapshot test", () => {
@@ -54,8 +56,10 @@ describe("Page Snapshot tests", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("User Page Snapshot test", () => {
+  it("User Page Snapshot test", async () => {
     const { container } = render(<UserPage />);
+    const _title = await screen.findByText("Your Account");
+
     expect(container).toMatchSnapshot();
   });
 
