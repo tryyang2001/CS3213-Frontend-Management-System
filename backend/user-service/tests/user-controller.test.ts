@@ -13,6 +13,7 @@ import { getGetUserResponseBody } from "./payload/response/get-user-response-bod
 import { getGetUserByEmailRequestBody } from "./payload/request/get-user-by-email-request-body";
 import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-email-response-body";
 import { getGetAllUsersResponseBody } from "./payload/response/get-all-users-response-body";
+import { getUpdateUserPasswordRequestBody } from "./payload/request/update-user-password-request-body";
 
 jest.mock("../psql", () => {
   return {
@@ -401,5 +402,149 @@ describe('Unit Tests for /user/getAllUsers endpoint', () => {
     // Assert
     expect(response.body).toEqual({ message: 'Error getting all users.' });
     // expect(response.status).toBe(500);
+  });
+});
+
+describe('Unit Tests for /user/updateUserPassword endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody: any;
+  const user = { 
+    uid: 1,
+    email: 'test@example.com',
+    password: 'password12345',
+    name: 'Test',
+    major: 'Computer Science',
+    course: 'CS1101S',
+    role: 'student',
+   };
+
+  beforeEach(() => {
+    reqBody = getUpdateUserPasswordRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid request body to update user password", () => {
+    it('Should return a success message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(true);
+      bcrypt.hash = jest.fn().mockResolvedValue('newhashedpassword');
+      jest.spyOn(db, 'updateUserPassword').mockResolvedValue();
+
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserPassword')
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ message: 'Update password successfully.' });
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe("Given a non-existing user", () => {
+    it("Should return an error message", async () => {
+        // Arrange
+        jest.spyOn(db, "getUserByUserId").mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+
+        // Act
+        const response = await supertest(app)
+            .put("/user/updateUserPassword")
+            .send(reqBody);
+
+        // Assert
+        expect(response.body).toEqual({ error: "User does not exist." });
+        // expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Given an incorrect old password", () => {
+    it('Should return an error message', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(false);
+
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserPassword')
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ error: 'Incorrect password.' });
+      // expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Given a failure to update user password", () => {
+    it("Should return an error message", async () => {
+        // Arrange
+        jest.spyOn(db, "getUserByUserId").mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        bcrypt.compare = jest.fn().mockResolvedValue(true);
+        bcrypt.hash = jest.fn().mockResolvedValue('newhashedpassword');
+        jest.spyOn(db, "updateUserPassword").mockRejectedValue(new Error("Failed to update user password."));
+
+        // Act
+        const response = await supertest(app)
+            .put("/user/updateUserPassword")
+            .send(reqBody);
+
+        // Assert
+        expect(response.body).toEqual({ error: "Failed to update user password." });
+        // expect(response.status).toBe(500);
+    });
+  });
+
+  describe("Given an error while encrypting the new password", () => {
+    it('Should return a message indicating the error', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(true);
+      bcrypt.hash = jest.fn().mockRejectedValue(new Error('Error crypting password.'));
+
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserPassword')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ message: 'Error crypting password.' });
+      // expect(response.status).toBe(500);
+    });
+  });
+
+  describe("Given an error while checking the password", () => {
+    it('Should return a message indicating the error', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockRejectedValue(new Error('Error checking password.'));
+  
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserPassword')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ message: 'Error checking password.' });
+      // expect(response.status).toBe(500);
+    });
+  });
+  
+  describe("Given an error while getting the user by uid", () => {
+    it('Should return a message indicating the error', async () => {
+      // Arrange
+      jest.spyOn(db, 'getUserByUserId').mockRejectedValue(new Error('Error getting user by uid.'));
+  
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserPassword')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ message: 'Error getting user by uid.' });
+      // expect(response.status).toBe(500);
+    });
   });
 });
