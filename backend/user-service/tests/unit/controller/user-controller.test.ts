@@ -1,23 +1,23 @@
 import supertest from "supertest";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import db from "../models/user-model";
-import createUnitTestServer from "./utils/create-test-server-utils";
-import { getCreateUserRequestBody } from "./payload/request/create-user-request-body";
-import { getLoginUserRequestBody } from './payload/request/login-user-request-body';
-import { getGetUserRequestBody } from './payload/request/get-user-request-body';
+import db from "../../../models/user-model";
+import createUnitTestServer from "../../utils/create-test-server-utils";
+import { getCreateUserRequestBody } from "../../payload/request/create-user-request-body";
+import { getLoginUserRequestBody } from '../../payload/request/login-user-request-body';
+import { getGetUserRequestBody } from '../../payload/request/get-user-request-body';
 import { QueryResult } from "pg";
-import { getLoginUserResponseBody } from "./payload/response/login-user-response-body";
-import { getCreateUserResponseBody } from "./payload/response/create-user-response-body";
-import { getGetUserResponseBody } from "./payload/response/get-user-response-body";
-import { getGetUserByEmailRequestBody } from "./payload/request/get-user-by-email-request-body";
-import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-email-response-body";
-import { getGetAllUsersResponseBody } from "./payload/response/get-all-users-response-body";
-import { getUpdateUserPasswordRequestBody } from "./payload/request/update-user-password-request-body";
-import { getUpdateUserInfoRequestBody } from "./payload/request/update-user-info-request-body";
-import { getDeleteUserRequestBody } from "./payload/request/delete-user-request-body";
+import { getLoginUserResponseBody } from "../../payload/response/login-user-response-body";
+import { getCreateUserResponseBody } from "../../payload/response/create-user-response-body";
+import { getGetUserResponseBody } from "../../payload/response/get-user-response-body";
+import { getGetUserByEmailRequestBody } from "../../payload/request/get-user-by-email-request-body";
+import { getGetUserByEmailResponseBody } from "../../payload/response/get-user-by-email-response-body";
+import { getGetAllUsersResponseBody } from "../../payload/response/get-all-users-response-body";
+import { getUpdateUserPasswordRequestBody } from "../../payload/request/update-user-password-request-body";
+import { getUpdateUserInfoRequestBody } from "../../payload/request/update-user-info-request-body";
+import { getDeleteUserRequestBody } from "../../payload/request/delete-user-request-body";
 
-jest.mock("../psql", () => {
+jest.mock("../../../psql", () => {
   return {
     query: jest.fn(),
     connect: jest.fn(),
