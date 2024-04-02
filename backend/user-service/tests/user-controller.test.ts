@@ -14,6 +14,7 @@ import { getGetUserByEmailRequestBody } from "./payload/request/get-user-by-emai
 import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-email-response-body";
 import { getGetAllUsersResponseBody } from "./payload/response/get-all-users-response-body";
 import { getUpdateUserPasswordRequestBody } from "./payload/request/update-user-password-request-body";
+import { getUpdateUserInfoRequestBody } from "./payload/request/update-user-info-request-body";
 
 jest.mock("../psql", () => {
   return {
@@ -545,6 +546,52 @@ describe('Unit Tests for /user/updateUserPassword endpoint', () => {
       // Assert
       expect(response.body).toEqual({ message: 'Error getting user by uid.' });
       // expect(response.status).toBe(500);
+    });
+  });
+});
+
+describe('Unit Tests for /user/updateUserInfo endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody : any;
+
+  beforeEach(() => {
+    reqBody = getUpdateUserInfoRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid request body to update user info", () => {
+    it('Should return a success message', async () => {
+      // Arrange
+      jest.spyOn(db, 'updateUserInfo').mockResolvedValue();
+
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserInfo')
+        .send(reqBody);
+
+      // Assert
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: "User info updated." });
+    });
+  });
+
+  describe("Given an invalid request body to update user info", () => {
+    it('Should return an error message', async () => {
+      // Arrange
+      const reqBody = {};
+      jest.spyOn(db, 'updateUserInfo').mockRejectedValue(new Error('Failed to update user info.'));
+
+      // Act
+      const response = await supertest(app)
+        .put('/user/updateUserInfo')
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ error: "Failed to update user info." });
+      // expect(response.status).toBe(400);
     });
   });
 });
