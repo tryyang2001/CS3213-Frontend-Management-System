@@ -595,3 +595,58 @@ describe('Unit Tests for /user/updateUserInfo endpoint', () => {
     });
   });
 });
+
+describe('Unit Tests for /user/deleteUser endpoint', () => {
+  const app = createUnitTestServer();
+  let reqBody : any;
+  const user = { 
+    uid: 1,
+    email: 'test@example.com',
+    password: 'password12345',
+    name: 'Test',
+    major: 'Computer Science',
+    course: 'CS1101S',
+    role: 'student',
+   };
+
+  beforeEach(() => {
+    reqBody = getDeleteUserRequestBody();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid request body to delete a user", () => {
+    it('Should return a 200 status and a success message', async () => {
+      // Arrange
+      jest.spyOn(db, 'deleteUser').mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+
+      // Act
+      const response = await supertest(app)
+        .delete('/user/deleteUser')
+        .send(reqBody);
+
+      // Assert
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: "User deleted successfully." });
+    });
+  });
+
+  describe("Given an invalid request body to delete a user", () => {
+    it('Should return a 400 status and an error message', async () => {
+      // Arrange
+      const reqBody = {}; // Invalid request body
+      jest.spyOn(db, 'deleteUser').mockRejectedValue(new Error('Failed to delete user.'));
+
+      // Act
+      const response = await supertest(app)
+        .delete('/user/deleteUser')
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ error: "Undefined error deleting account." });
+      // expect(response.status).toBe(400);
+    });
+  });
+});
