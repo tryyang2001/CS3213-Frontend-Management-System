@@ -1,18 +1,7 @@
 "use client";
 
-import { MutableRefObject, useEffect, useRef, useState } from "react";
-import Editor from "@monaco-editor/react";
-import {
-  Tabs,
-  Tab,
-  Card,
-  CardBody,
-  Spacer,
-  Divider,
-  ButtonGroup,
-  Button,
-  Code,
-} from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { Spacer, ButtonGroup, Button } from "@nextui-org/react";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
@@ -97,7 +86,7 @@ export default function SubmissionPage({ params }: Props) {
             <div className="col-span-1 overflow-y-auto flex-1 max-w-1/2">
               <div>
                 <ButtonGroup>
-                  {assignment.questions.map((question, index) => (
+                  {assignment.questions?.map((question, index) => (
                     <Button
                       key={question.id}
                       onClick={() => handleQuestionChange(index, question.id)}
@@ -120,10 +109,12 @@ export default function SubmissionPage({ params }: Props) {
                   </div>
                 </div>
               </div>
-              <FeedbackQuestion
-                question={assignment.questions[currentQuestion]}
-                key={assignment.questions[currentQuestion].id}
-              />
+              {assignment.questions && (
+                <FeedbackQuestion
+                  question={assignment.questions[currentQuestion]}
+                  key={assignment.questions[currentQuestion].id}
+                />
+              )}
             </div>
             <div className="col-span-1">
               <div className="row-span-1 border border-black">
