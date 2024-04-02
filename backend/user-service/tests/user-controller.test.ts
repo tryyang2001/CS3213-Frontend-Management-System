@@ -15,6 +15,7 @@ import { getGetUserByEmailResponseBody } from "./payload/response/get-user-by-em
 import { getGetAllUsersResponseBody } from "./payload/response/get-all-users-response-body";
 import { getUpdateUserPasswordRequestBody } from "./payload/request/update-user-password-request-body";
 import { getUpdateUserInfoRequestBody } from "./payload/request/update-user-info-request-body";
+import { getDeleteUserRequestBody } from "./payload/request/delete-user-request-body";
 
 jest.mock("../psql", () => {
   return {
@@ -226,6 +227,24 @@ describe('Unit Tests for /user/login endpoint', () => {
       // Assert
       expect(response.body).toEqual({ error: 'Incorrect password.' });
       // expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Given JWT secret key is not defined", () => {
+    it('Should return a 500 status and an error message', async () => {
+      // Mock process.env.JWT_SECRET_KEY to be undefined
+      jest.spyOn(db, 'getUserByEmail').mockResolvedValue({ rows: [getLoginUserResponseBody()] } as unknown as QueryResult<any>);
+      bcrypt.compare = jest.fn().mockResolvedValue(true);
+      delete process.env.JWT_SECRET_KEY;
+  
+      // Act
+      const response = await supertest(app)
+        .post('/user/login')
+        .send(reqBody);
+  
+      // Assert
+      expect(response.body).toEqual({ error: "Internal server error." });
+      // expect(response.status).toBe(500);
     });
   });
 
@@ -648,5 +667,24 @@ describe('Unit Tests for /user/deleteUser endpoint', () => {
       expect(response.body).toEqual({ error: "Undefined error deleting account." });
       // expect(response.status).toBe(400);
     });
+  });
+});
+
+describe('Unit Tests for /user/clearCookie endpoint', () => {
+  const app = createUnitTestServer();
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('Should clear the "token" cookie and return a success message', async () => {
+    // Act
+    const response = await supertest(app)
+      .delete('/user/clearCookie');
+
+    // Assert
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ message: 'Cleared user cookie' });
+    expect(response.headers['set-cookie']).toEqual(['token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT']);
   });
 });
