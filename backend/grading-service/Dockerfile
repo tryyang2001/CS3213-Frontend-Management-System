@@ -6,6 +6,8 @@ RUN yarn install
 
 COPY . .
 
-EXPOSE 3001
+RUN yarn build
+
+EXPOSE 8088
 
 CMD ["yarn", "start"]
