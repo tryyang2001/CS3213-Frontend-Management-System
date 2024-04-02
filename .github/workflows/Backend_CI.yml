@@ -16,7 +16,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node-version: [18.x, 20.x]
-        service: [assignment-service]
+        service: [assignment-service, grading-service, user-service]
 
     steps:
       - name: Checkout Current Branch
