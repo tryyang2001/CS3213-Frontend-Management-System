@@ -3,3 +3,5 @@ class NotExistingStudentError extends Error {
     super(`Student with id ${studentId} does not exist`);
   }
 }
+
+export default NotExistingStudentError;

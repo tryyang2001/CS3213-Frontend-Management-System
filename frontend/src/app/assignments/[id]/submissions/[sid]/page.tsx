@@ -48,10 +48,10 @@ export default function SubmissionPage({ params }: Props) {
     isError,
   } = useQuery({
     queryKey: ["get-assignment", params.id],
-    queryFn: () => {
-      const assignment = AssignmentService.getAssignmentById({
-        assignmentId: params.id,
-      });
+    queryFn: async () => {
+      const assignment = await AssignmentService.getAssignmentById(params.id);
+
+      console.log(assignment);
 
       return assignment;
     },

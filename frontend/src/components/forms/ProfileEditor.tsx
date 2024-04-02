@@ -13,81 +13,82 @@ import {
   CardFooter,
   Avatar,
 } from "@nextui-org/react";
-import FileInput from "../common/FileInput";
+import FileInput from "./FileInput";
 
 export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
-  const [name, setName] = useState<string>(userInfo.name);
+  const [info, setInfo] = useState<UserInfo>(userInfo);
+  const [name, setName] = useState<string>(info.name);
   const isInvalidName = useMemo(() => {
     return name == "";
   }, [name]);
-  const [bio, setBio] = useState<string | undefined>(userInfo.bio);
-  const [photo, setPhoto] = useState<string | undefined>(userInfo.photo);
+  const [bio, setBio] = useState<string>(info.bio);
+  const [photo, setPhoto] = useState<string | undefined>(info.photo);
   const [newPhoto, setNewPhoto] = useState<File>();
 
   // userInfo is constant, do not change for now
   const hasChanged = useMemo(() => {
-    if (name != userInfo.name) return true;
-    if (bio != userInfo.bio && !(bio == "" && userInfo.bio == undefined))
-      return true;
-    if (
-      photo != userInfo.photo &&
-      !(photo == "" && userInfo.photo == undefined)
-    )
+    if (name != info.name) return true;
+    if (bio != info.bio) return true;
+    if (photo != info.photo && !(photo == "" && info.photo == undefined))
       return true;
     return false;
-  }, [name, bio, photo, userInfo]);
+  }, [name, bio, photo, info]);
 
   useEffect(() => {
     if (newPhoto) {
       setPhoto(URL.createObjectURL(newPhoto));
-      console.log("Recieved file!");
     } else {
       setNewPhoto(undefined);
-      setPhoto(userInfo.photo);
+      setPhoto(info.photo);
     }
-  }, [newPhoto, userInfo.photo]);
+  }, [newPhoto, info.photo]);
 
   const handleDiscard = () => {
-    setName(userInfo.name);
-    setBio(userInfo.bio ?? "");
-    setPhoto(userInfo.photo);
+    setName(info.name);
+    setBio(info.bio);
+    setPhoto(info.photo);
     setNewPhoto(undefined);
   };
 
-  const [profileMessage, setProfileMessage] = useState<string>("");
-  const handleProfileSubmit = () => {
-    void (async () => {
-      if (
-        name == userInfo.name &&
-        bio == userInfo.bio &&
-        photo == userInfo.photo
-      ) {
-        setProfileMessage("Profile saved!");
-        return;
-      }
+  const [message, setMessage] = useState<string>("");
+  const handleProfileSubmit = async () => {
+    if (isInvalidName) {
+      setMessage("Please fill in a name!");
+      return;
+    }
 
-      const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-        method: "PATCH",
-        body: JSON.stringify({
-          name: name,
-          bio: bio,
-          photo: newPhoto,
-          email: userInfo.email,
-        }),
-      }).catch((err) => {
-        console.log(err);
-        return {
-          status: 500,
-          ok: false,
-        };
-      });
+    if (name == info.name && bio == info.bio && photo == info.photo) {
+      setMessage("Profile saved!");
+      return;
+    }
 
-      if (!res.ok) {
-        setProfileMessage("An error occured, please try again later");
-      } else {
-        setProfileMessage("Profile saved!");
-      }
+    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
+      method: "PATCH",
+      body: JSON.stringify({
+        name: name,
+        bio: bio,
+        photo: newPhoto,
+        email: info.email,
+      }),
+    }).catch((err) => {
+      console.log(err);
+      return {
+        status: 500,
+        ok: false,
+      };
     });
+
+    if (!res.ok) {
+      setMessage("An error occured, please try again later");
+    } else {
+      setMessage("Profile saved!");
+      setInfo({
+        email: info.email,
+        name: name,
+        bio: bio,
+        photo: photo,
+      });
+    }
   };
   return (
     <form className="flex w-1/2 flex-col gap-4">
@@ -103,7 +104,7 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
           alt="Profile Picture"
           className="object-cover h-200 w-200"
           src={photo ? photo : "https://picsum.photos/200"}
-          name={userInfo.name}
+          name={info.name}
           fallback
         />
         <CardFooter
@@ -137,18 +138,18 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       )}
       <Popover
         color="danger"
-        isOpen={profileMessage != ""}
-        onOpenChange={() => setProfileMessage("")}
+        isOpen={message != ""}
+        onOpenChange={() => setMessage("")}
       >
         <PopoverTrigger>
-          <Button color="danger" onClick={handleProfileSubmit}>
+          <Button color="danger" onClick={() => void handleProfileSubmit()}>
             {" "}
             Save Changes{" "}
           </Button>
         </PopoverTrigger>
         <PopoverContent>
           <p className="text-small" color="danger">
-            {profileMessage}
+            {message}
           </p>
         </PopoverContent>
       </Popover>

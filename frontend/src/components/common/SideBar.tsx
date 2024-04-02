@@ -23,7 +23,7 @@ const menuItems: MenuItem[] = [
     id: 1,
     label: "Assignments",
     icon: <MdOutlineAssignment className="text-2xl" />,
-    link: "/assignments/dashboard",
+    link: "/dashboard",
   },
   {
     id: 2,
