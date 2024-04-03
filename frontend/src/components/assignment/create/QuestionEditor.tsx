@@ -186,11 +186,7 @@ function QuestionEditor({
         <div className="col-span-9">
           <div className="w-[40%]">
             <FileUpload
-              expectedFileTypes={
-                language === "python"
-                  ? [".py", "text/x-python"]
-                  : [".c", "text/plain"]
-              }
+              expectedFileTypes={language === "python" ? ["py"] : ["c"]}
               onFileUpload={setReferenceSolutionCode}
               // onError={() => setIsReferenceSolutionInvalid(true)}
               // isInvalid={isReferenceSolutionInvalid}

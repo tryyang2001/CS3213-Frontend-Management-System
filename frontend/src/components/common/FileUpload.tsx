@@ -15,7 +15,10 @@ const FileUpload = ({
 }: Props) => {
   const [isError, setIsError] = useState(false);
 
-  const acceptedFileTypes = expectedFileTypes.join(", ");
+  // add "." in front of the file types
+  const acceptedFileTypes = expectedFileTypes
+    .map((fileType) => `.${fileType}`)
+    .join(", ");
 
   const readFileContent = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -27,7 +30,18 @@ const FileUpload = ({
       return;
     }
 
-    if (!expectedFileTypes.includes(file.type)) {
+    // only the last "." is the file type
+    const fileType = file.name.split(".").pop();
+
+    if (!fileType) {
+      setIsError(true);
+      onFileUpload("");
+      return;
+    }
+
+    console.log(fileType);
+
+    if (!expectedFileTypes.includes(fileType)) {
       setIsError(true);
       onFileUpload("");
       return;
