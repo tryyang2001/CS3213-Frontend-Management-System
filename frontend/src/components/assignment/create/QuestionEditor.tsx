@@ -7,6 +7,7 @@ import DescriptionField from "./DescriptionField";
 import DateUtils from "@/utils/dateUtils";
 import FileUpload from "@/components/common/FileUpload";
 import { Editor } from "@monaco-editor/react";
+import TestCasesInput from "./TestCasesInput";
 
 interface Props {
   assignmentDeadline: number;
@@ -188,8 +189,6 @@ function QuestionEditor({
             <FileUpload
               expectedFileTypes={language === "python" ? ["py"] : ["c"]}
               onFileUpload={setReferenceSolutionCode}
-              // onError={() => setIsReferenceSolutionInvalid(true)}
-              // isInvalid={isReferenceSolutionInvalid}
               errorMessage="Invalid file type or file content"
             />
           </div>
@@ -222,17 +221,18 @@ function QuestionEditor({
         <div className="col-span-9">
           <div className="w-[40%]">
             <FileUpload
-              expectedFileTypes={[".json", "application/json"]}
+              expectedFileTypes={["json"]}
               onFileUpload={(fileContent) => {
                 const testCases = JSON.parse(fileContent) as TestCase[];
                 setTestCases(testCases);
               }}
-              // onError={() => setIsTestCasesInvalid(true)}
-              // isInvalid={isTestCasesInvalid}
               errorMessage="Invalid file type or file content"
             />
           </div>
-          <div className="mt-2">
+
+          <TestCasesInput testCases={testCases} setTestCases={setTestCases} />
+
+          {/* <div className="mt-2">
             {testCases.length > 0 &&
               testCases.map((testCase, index) => {
                 return (
@@ -288,7 +288,7 @@ function QuestionEditor({
                   </div>
                 );
               })}
-          </div>
+          </div> */}
         </div>
       </div>
     </form>
