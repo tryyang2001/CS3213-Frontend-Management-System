@@ -1,6 +1,6 @@
 "use client";
 
-import { Checkbox, Input, Radio, RadioGroup, Switch } from "@nextui-org/react";
+import { Checkbox, Input, Radio, RadioGroup } from "@nextui-org/react";
 import FieldLabel from "./FieldLabel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import DescriptionField from "./DescriptionField";
@@ -223,72 +223,20 @@ function QuestionEditor({
             <FileUpload
               expectedFileTypes={["json"]}
               onFileUpload={(fileContent) => {
+                if (fileContent === "") {
+                  setTestCases([]);
+                  return;
+                }
+
                 const testCases = JSON.parse(fileContent) as TestCase[];
                 setTestCases(testCases);
               }}
+              isTestCasesInput
               errorMessage="Invalid file type or file content"
             />
           </div>
 
           <TestCasesInput testCases={testCases} setTestCases={setTestCases} />
-
-          {/* <div className="mt-2">
-            {testCases.length > 0 &&
-              testCases.map((testCase, index) => {
-                return (
-                  <div className="flex gap-2 my-1" key={index}>
-                    <Input
-                      label={`Input for Test Case ${index + 1}`}
-                      value={testCase.input}
-                      onValueChange={(value) => {
-                        setTestCases(
-                          testCases.map((tc, i) => {
-                            if (i === index) {
-                              tc.input = value;
-                            }
-                            return tc;
-                          })
-                        );
-                      }}
-                      className="w-[40%]"
-                    />
-                    <Input
-                      className="w-[40%]"
-                      label={`Output for Test Case ${index + 1}`}
-                      value={testCase.output}
-                      onValueChange={(value) => {
-                        setTestCases(
-                          testCases.map((tc, i) => {
-                            if (i === index) {
-                              tc.output = value;
-                            }
-                            return tc;
-                          })
-                        );
-                      }}
-                    />
-                    <Switch
-                      isSelected={testCase.isPublic ?? true}
-                      onValueChange={(selection) => {
-                        setTestCases(
-                          testCases.map((tc, i) => {
-                            if (i === index) {
-                              tc.isPublic = selection;
-                            }
-                            return tc;
-                          })
-                        );
-                      }}
-                      color="primary"
-                    >
-                      {testCase.isPublic === undefined || testCase.isPublic
-                        ? "Public"
-                        : "Private"}
-                    </Switch>
-                  </div>
-                );
-              })}
-          </div> */}
         </div>
       </div>
     </form>

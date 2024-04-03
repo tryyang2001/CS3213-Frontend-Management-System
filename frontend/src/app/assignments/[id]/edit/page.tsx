@@ -147,8 +147,6 @@ function Page({ params }: Props) {
 
   const handleUpdateQuestions = () => {
     // for each question ids in deletedQuestionIds, delete the question
-    console.log(updatedQuestions);
-
     const deleteQuestionPromises = Promise.all(
       deletedQuestionIds.map((questionId) =>
         AssignmentService.deleteQuestion(questionId)

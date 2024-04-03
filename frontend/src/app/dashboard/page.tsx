@@ -14,8 +14,6 @@ export default function DashBoard() {
         "rui_yang_tan_user_id_1"
       );
 
-      console.log(assignments);
-
       return assignments;
     },
   });

@@ -4,13 +4,14 @@ import { Input } from "../ui/input";
 interface Props {
   expectedFileTypes: string[];
   onFileUpload: (fileContent: string) => void;
-  // onError: (error: string) => void;
+  isTestCasesInput?: boolean;
   errorMessage?: string;
 }
 
 const FileUpload = ({
   expectedFileTypes,
   onFileUpload,
+  isTestCasesInput,
   errorMessage,
 }: Props) => {
   const [isError, setIsError] = useState(false);
@@ -39,20 +40,53 @@ const FileUpload = ({
       return;
     }
 
-    console.log(fileType);
-
     if (!expectedFileTypes.includes(fileType)) {
       setIsError(true);
       onFileUpload("");
       return;
     }
 
-    reader.onload = (e) => {
-      const fileContent = e.target?.result as string;
+    if (isTestCasesInput) {
+      // ensure the received content is an array, and each object in the array has input and output keys
+      reader.onload = (e) => {
+        const fileContent = e.target?.result as string;
 
-      // emit the file content to the parent component
-      onFileUpload(fileContent);
-    };
+        try {
+          const parsedContent = JSON.parse(fileContent) as TestCase[];
+
+          if (!Array.isArray(parsedContent)) {
+            setIsError(true);
+            onFileUpload("");
+            return;
+          }
+
+          for (const obj of parsedContent) {
+            if (!obj.input || !obj.output) {
+              setIsError(true);
+              onFileUpload("");
+              return;
+            }
+
+            if (!obj.isPublic) {
+              obj.isPublic = true;
+            }
+          }
+
+          // emit the file content to the parent component
+          onFileUpload(fileContent);
+        } catch (_error) {
+          setIsError(true);
+          onFileUpload("");
+        }
+      };
+    } else {
+      reader.onload = (e) => {
+        const fileContent = e.target?.result as string;
+
+        // emit the file content to the parent component
+        onFileUpload(fileContent);
+      };
+    }
 
     reader.readAsText(file);
   };
