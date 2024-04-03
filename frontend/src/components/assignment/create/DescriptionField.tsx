@@ -19,7 +19,8 @@ const modules = {
       [{ size: [] }],
       ["bold", "italic", "underline", "strike", "blockquote"],
       [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
+      ["link"],
+      // ["link", "image"],
       ["clean"],
     ],
     handlers: {
@@ -44,7 +45,7 @@ const formats = [
   "bullet",
   "indent",
   "link",
-  "image",
+  // "image",
 ];
 
 function DescriptionField({

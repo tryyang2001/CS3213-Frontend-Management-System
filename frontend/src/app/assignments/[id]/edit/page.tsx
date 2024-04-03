@@ -49,8 +49,10 @@ function Page({ params }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const fetchQuestions = async () => {
+    // if assignment has questions, obtain the reference solution and test cases for each question
     if (assignment?.questions?.length ?? 0 > 0) {
-      const questionIds = assignment!.questions!.map((question) => question.id);
+      const assignmentQuestions = assignment!.questions!;
+      const questionIds = assignmentQuestions.map((question) => question.id);
 
       const referenceSolutions = await Promise.all(
         questionIds.map((questionId) =>
@@ -64,7 +66,7 @@ function Page({ params }: Props) {
         )
       );
 
-      const questions: CreateQuestionBody[] = assignment!.questions!.map(
+      const questions: CreateQuestionBody[] = assignmentQuestions.map(
         (question, index) => {
           const rawReferenceSolution = referenceSolutions[index];
           const referenceSolution = rawReferenceSolution && {
@@ -84,9 +86,9 @@ function Page({ params }: Props) {
       );
 
       setUpdatedQuestions(questions);
-
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
