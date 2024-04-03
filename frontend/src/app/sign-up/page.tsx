@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
-import { EyeSlashFilledIcon } from "../../components/auth/EyeSlashFilledIcon";
-import { EyeFilledIcon } from "../../components/auth/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "@/components/auth/EyeSlashFilledIcon";
+import { EyeFilledIcon } from "@/components/auth/EyeFilledIcon";
 import {
   Button,
   Input,

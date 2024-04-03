@@ -2,32 +2,22 @@
 
 import {
   Button,
-  Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { useMemo, useState } from "react";
-import { EyeSlashFilledIcon } from "../../components/auth/EyeSlashFilledIcon";
-import { EyeFilledIcon } from "../../components/auth/EyeFilledIcon";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import EmailInput from "@/components/forms/EmailInput";
+import PasswordInput from "@/components/forms/PasswordInput";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
-  const isInvalidEmail = useMemo<boolean>(() => {
-    if (email === "") return false;
-
-    return email.match(
-      /^.+@([A-Z0-9.-]+\.[A-Z]{2,4})|(\[[0-9.]+\])|(\[IPv6[A-Z0-9:]+)$/i
-    )
-      ? false
-      : true;
-  }, [email]);
 
   const [password, setPassword] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isVisible, setIsVisible] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -35,7 +25,7 @@ export default function Home() {
       setErrorMessage("Please enter the required fields");
       return;
     }
-    if (isInvalidEmail) {
+    if (isInvalid) {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
@@ -70,41 +60,15 @@ export default function Home() {
     }
   };
 
-  function Eye() {
-    return (
-      <button
-        className="focus:outline-none"
-        type="button"
-        onClick={() => setIsVisible(!isVisible)}
-      >
-        {isVisible ? <EyeSlashFilledIcon /> : <EyeFilledIcon />}
-      </button>
-    );
-  }
-
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4">
-        <Input
-          isRequired
-          type="email"
-          label="Email"
-          placeholder="Enter your email"
-          value={email}
-          onValueChange={setEmail}
-          color={isInvalidEmail ? "danger" : "default"}
-          isInvalid={isInvalidEmail}
-          errorMessage={isInvalidEmail && "Please enter a valid email"}
+        <EmailInput
+          email={email}
+          setEmail={setEmail}
+          setIsInvalid={setIsInvalid}
         />
-
-        <Input
-          label="Password"
-          isRequired
-          value={password}
-          onValueChange={setPassword}
-          type={isVisible ? "text" : "password"}
-          endContent={<Eye />}
-        />
+        <PasswordInput password={password} setPassword={setPassword} />
 
         <Popover
           color="danger"
