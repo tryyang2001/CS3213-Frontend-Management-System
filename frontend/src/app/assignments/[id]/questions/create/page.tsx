@@ -27,6 +27,10 @@ function Page({ params }: Props) {
     },
   ]);
 
+  const [isSubmittingQuestionForm, setIsSubmittingQuestionForm] =
+    useState(false);
+  const [areFormsValid, setAreFormsValid] = useState<Boolean[]>();
+
   const { toast } = useToast();
 
   const { assignment, isNewlyCreated, disableAddingQuestion } =
@@ -56,15 +60,21 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
+    setAreFormsValid((prevForms) => [...(prevForms ?? []), false]);
   };
 
   const handleDeleteQuestion = (index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
     );
+    setAreFormsValid((prevForms) => {
+      const updatedForms = [...(prevForms ?? [])];
+      updatedForms.splice(index, 1);
+      return updatedForms;
+    });
   };
 
-  const handleFinishQuestionsCreation = () => {
+  const handleSaveCreatedQuestions = () => {
     // create questions
     AssignmentService.createQuestions(assignment.id, questions)
       .then(() => {
@@ -81,6 +91,21 @@ function Page({ params }: Props) {
           variant: "destructive",
         });
       });
+  };
+
+  const handleFinishQuestionsCreation = () => {
+    setIsSubmittingQuestionForm(true);
+
+    if (areFormsValid?.every((isValid) => isValid)) {
+      handleSaveCreatedQuestions();
+    } else {
+      toast({
+        title: "Invalid form",
+        description:
+          "Please make sure all questions are filled out correctly before submitting.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -119,6 +144,14 @@ function Page({ params }: Props) {
                 onQuestionChange={(updatedQuestion) =>
                   handleQuestionChange(updatedQuestion, index)
                 }
+                isSubmittingQuestionForm={isSubmittingQuestionForm}
+                onFormSubmit={(isFormValid) => {
+                  setAreFormsValid((prevForms) => {
+                    const updatedForms = [...(prevForms ?? [])];
+                    updatedForms[index] = isFormValid;
+                    return updatedForms;
+                  });
+                }}
               />
 
               <Button

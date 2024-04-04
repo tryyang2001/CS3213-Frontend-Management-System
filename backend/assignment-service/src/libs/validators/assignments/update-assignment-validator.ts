@@ -11,7 +11,7 @@ export const UpdateAssignmentValidator = z.object({
     .positive()
     .refine((val) => val > Date.now(), "Deadline must be in the future")
     .optional(),
-  description: z.string().max(50000).optional(),
+  description: z.string().min(1).max(50000).optional(),
 });
 
 export type UpdateAssignmentBody = z.infer<typeof UpdateAssignmentValidator>;

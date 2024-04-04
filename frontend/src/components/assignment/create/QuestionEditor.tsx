@@ -12,13 +12,17 @@ import TestCasesInput from "./TestCasesInput";
 interface Props {
   assignmentDeadline: number;
   initialQuestion: CreateQuestionBody;
+  isSubmittingQuestionForm: boolean;
   onQuestionChange: (updatedQuestion: CreateQuestionBody) => void;
+  onFormSubmit: (isFormValid: boolean) => void;
 }
 
 function QuestionEditor({
   assignmentDeadline,
   initialQuestion,
+  isSubmittingQuestionForm,
   onQuestionChange,
+  onFormSubmit,
 }: Props) {
   // states declaration
 
@@ -80,28 +84,39 @@ function QuestionEditor({
     testCases,
   ]);
 
+  useEffect(() => {
+    const isFormValid =
+      checkFormInputValidity("title", title) &&
+      checkFormInputValidity("description", description) &&
+      checkFormInputValidity(
+        "deadline",
+        DateUtils.toLocalISOString(new Date(deadline)).slice(0, 16)
+      );
+
+    onFormSubmit(isFormValid);
+  }, [isSubmittingQuestionForm]);
+
   const checkFormInputValidity = (field: string, value: string) => {
     switch (field) {
       case "title":
-        setIsTitleInvalid(value.length === 0 || value.length > 255);
-        break;
+        const isTitleInvalid = value.length === 0 || value.length > 255;
+        setIsTitleInvalid(isTitleInvalid);
+        return isTitleInvalid;
       case "deadline":
-        setIsDeadlineInvalid(new Date(value) < new Date());
-        break;
+        const isDeadlineInvalid = new Date(value) < new Date();
+        setIsDeadlineInvalid(isDeadlineInvalid);
+        return isDeadlineInvalid;
       case "description":
-        setIsDescriptionInvalid(value.length > 50000);
-        break;
+        const isDescriptionInvalid = value.length === 0 || value.length > 50000;
+        setIsDescriptionInvalid(isDescriptionInvalid);
+        return isDescriptionInvalid;
       default:
-        break;
+        return false;
     }
   };
 
-  const handleFormSubmit = (e: FormEvent) => {
-    e.preventDefault();
-  };
-
   return (
-    <form className="grid mx-4 px-4 gap-8" onSubmit={handleFormSubmit}>
+    <form className="grid mx-4 px-4 gap-8">
       {/* Question Title */}
       <div className="grid grid-cols-12">
         <FieldLabel isRequired>Question Title</FieldLabel>
@@ -135,7 +150,7 @@ function QuestionEditor({
           }}
           placeholder="Enter the details, instructions, or provide a short description to the question"
           isInvalid={isDescriptionInvalid}
-          errorMessage="Description must be less than 50000 characters long"
+          errorMessage="Description must not be empty and should not be more than 50000 characters long"
         />
       </div>
 

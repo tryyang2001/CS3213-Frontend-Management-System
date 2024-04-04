@@ -44,6 +44,10 @@ function Page({ params }: Props) {
 
   const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
 
+  const [isSubmittingQuestionForm, setIsSubmittingQuestionForm] =
+    useState(false);
+  const [areFormsValid, setAreFormsValid] = useState<Boolean[]>();
+
   const { toast } = useToast();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -86,6 +90,10 @@ function Page({ params }: Props) {
       );
 
       setUpdatedQuestions(questions);
+
+      questions.forEach((_) =>
+        setAreFormsValid((prevForms) => [...(prevForms ?? []), true])
+      );
     }
 
     setIsLoading(false);
@@ -94,6 +102,7 @@ function Page({ params }: Props) {
   useEffect(() => {
     if (!assignment || !isEditing) {
       router.push(`/assignments/${params.id}`);
+      return;
     }
 
     // obtain reference solution and test cases for each question in assignment
@@ -114,6 +123,7 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
+    setAreFormsValid((prevForms) => [...(prevForms ?? []), false]);
   };
 
   const handleDeleteQuestion = (index: number) => {
@@ -126,6 +136,12 @@ function Page({ params }: Props) {
     setUpdatedQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
     );
+
+    setAreFormsValid((prevForms) => {
+      const updatedForms = [...(prevForms ?? [])];
+      updatedForms.splice(index, 1);
+      return updatedForms;
+    });
   };
 
   const handleQuestionChange = (
@@ -182,6 +198,20 @@ function Page({ params }: Props) {
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  const handleSaveQuestionUpdate = () => {
+    setIsSubmittingQuestionForm(true);
+    if (areFormsValid?.every((isValid) => isValid)) {
+      handleUpdateQuestions();
+    } else {
+      toast({
+        title: "Invalid form input",
+        description:
+          "Please ensure all form inputs are valid before updating the questions.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFinishEditing = () => {
@@ -260,6 +290,14 @@ function Page({ params }: Props) {
                   onQuestionChange={(updatedQuestion) =>
                     handleQuestionChange(updatedQuestion, index)
                   }
+                  isSubmittingQuestionForm={isSubmittingQuestionForm}
+                  onFormSubmit={(isFormValid) => {
+                    setAreFormsValid((prevForms) => {
+                      const updatedForms = [...(prevForms ?? [])];
+                      updatedForms[index] = isFormValid;
+                      return updatedForms;
+                    });
+                  }}
                 />
 
                 <Button
@@ -275,7 +313,11 @@ function Page({ params }: Props) {
             );
           })}
           <div className="flex justify-end">
-            <Button color="primary" onClick={handleUpdateQuestions}>
+            <Button
+              color="primary"
+              type="submit"
+              onClick={handleSaveQuestionUpdate}
+            >
               Save
             </Button>
           </div>
