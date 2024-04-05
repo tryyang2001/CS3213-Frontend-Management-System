@@ -7,6 +7,7 @@ import { PostHandler } from "../services/assignments/post-handler";
 import { DeleteHandler } from "../services/assignments/delete-handler";
 import { UpdateAssignmentValidator } from "../libs/validators/assignments/update-assignment-validator";
 import { PutHandler } from "../services/assignments/put-handler";
+import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
 
 const getAssignmentsByUserId = async (request: Request, response: Response) => {
   try {
@@ -32,10 +33,10 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json({ assignments: assignments });
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -55,10 +56,10 @@ const getAssignmentById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json(assignment);
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -92,18 +93,17 @@ const createAssignment = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.CREATED).json(assignment);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
+
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -125,7 +125,7 @@ const updateAssignmentById = async (request: Request, response: Response) => {
     });
 
     if (
-      Object.keys(updateAssignmentBody).length !==
+      Object.keys(updateAssignmentBody).length - 1 !==
       Object.keys(request.body).length
     ) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -147,19 +147,17 @@ const updateAssignmentById = async (request: Request, response: Response) => {
 
     response.status(HttpStatusCode.OK).json(assignment);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
-        message: error.message,
+        message: formatZodErrorMessage(error),
       });
       return;
     }
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };
@@ -179,10 +177,10 @@ const deleteAssignmentById = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.NO_CONTENT).send();
-  } catch (error) {
+  } catch (_error) {
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
-      message: "An unexpected error has ocurred. Please try again later",
+      message: "An unexpected error has occurred. Please try again later",
     });
   }
 };

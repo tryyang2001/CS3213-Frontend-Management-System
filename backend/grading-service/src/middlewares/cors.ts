@@ -1,12 +1,17 @@
-// @ts-ignore as there is no @types/cors package available for typescript
+// @ts-expect-error as there is no @types/cors package available for typescript
 import cors from "cors";
 
 // TODO: Add production site to allowed origins
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
   ? process.env.CORS_ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:8088"];
+  : ["http://localhost:3000"];
 
-const verifyOrigin = (origin: string | undefined, callback: any) => {
+type CustomOrigin = (
+  requestOrigin: string | undefined,
+  callback: (err: Error | null, origin?: boolean) => void
+) => void;
+
+const verifyOrigin: CustomOrigin = (origin, callback) => {
   //  when the call is made from the same origin
   if (!origin) {
     return callback(null, true);

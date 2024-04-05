@@ -1,0 +1,590 @@
+{
+	"info": {
+		"_postman_id": "fe8db646-95a8-430e-930f-e9233a600015",
+		"name": "Assignments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31847032",
+		"_collection_link": "https://planetary-equinox-492753.postman.co/workspace/FMDevs~76ee504e-4116-4c84-8e26-ffe363f82dc5/collection/31847032-fe8db646-95a8-430e-930f-e9233a600015?action=share&source=collection_link&creator=31847032"
+	},
+	"item": [
+		{
+			"name": "/health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/health",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// save assignment id to a variable\r",
+							"var responseBody = pm.response.json();\r",
+							"var assignment_id = responseBody.id;\r",
+							"\r",
+							"pm.collectionVariables.set(\"assignment_id\", assignment_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Assignment 6 Demo\",\r\n    \"deadline\": 1735689599999,\r\n    \"authors\": [\"rui_yang_tan_user_id_1\"],\r\n    \"isPublished\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments/{{assignment_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments/:id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Assignment 6 Demoo\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments/{{assignment_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments/:id/questions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// store question id\r",
+							"var responseBody = pm.response.json();\r",
+							"var question_id = responseBody.id;\r",
+							"\r",
+							"pm.collectionVariables.set(\"question_id\", question_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Implementing a Function to Check if a Number is Odd\",\r\n    \"description\": \"You are tasked with implementing a Python function that determines whether a given integer is an odd number or not. Your function should take an integer as input and return True if the number is odd, and False otherwise.\",\r\n    \"deadline\": 1735689599999,\r\n    \"testCases\": [\r\n        {\r\n            \"input\": \"2\",\r\n            \"output\": \"false\"\r\n        },\r\n        {\r\n            \"input\": \"1\",\r\n            \"output\": \"true\"\r\n        }\r\n    ],\r\n    \"referenceSolution\": {\r\n        \"language\": \"python\",\r\n        \"code\": \"def is_odd(x):\\r\\n    if x % 2 == 0:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n    } \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments/{{assignment_id}}/questions",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments",
+						"{{assignment_id}}",
+						"questions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"<p>You are tasked with implementing a Python function that determines whether a given integer is an odd number or not. Your function should take an integer as input and return True if the number is odd, and False otherwise.</p>\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/test-cases",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// store the first 2 test cases id for deletion later\r",
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"if (pm.response.code === 200) {\r",
+							"    var test_case_ids = [];\r",
+							"\r",
+							"    responseBody.forEach(testCase => {\r",
+							"        if (!testCase.isPublic) {\r",
+							"            test_case_ids.add(testCase.id);\r",
+							"        }\r",
+							"    })\r",
+							"\r",
+							"    pm.collectionVariables.set(\"test_case_ids\", JSON.stringify(test_case_ids));\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/test-cases",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"test-cases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/test-cases",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"testCases\": [\r\n        {\r\n            \"input\": \"4\",\r\n            \"output\": \"false\",\r\n            \"isPublic\": true\r\n        },\r\n        {\r\n            \"input\": \"3\",\r\n            \"output\": \"true\",\r\n            \"isPublic\": false\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/test-cases",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"test-cases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/test-cases",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"testCaseIds\": {{test_case_ids}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/test-cases",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"test-cases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/solution",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// store reference_solution_id\r",
+							"var responseBody = pm.response.json();\r",
+							"var reference_solution_id = responseBody.id;\r",
+							"\r",
+							"pm.collectionVariables.set(\"reference_solution_id\", reference_solution_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/solution",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"solution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/solution",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"py\",\r\n    \"code\": \"Just to showcase we can update the reference solution code.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/solution",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"solution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/solution",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/solution",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"solution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/solution",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"python\",\r\n    \"code\": \"def is_odd(x):\\r\\n    if x % 2 == 0:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}/solution",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"solution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/questions/{{question_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"questions",
+						"{{question_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments/:id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments/{{assignment_id}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments",
+						"{{assignment_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "ASSIGNMENT_API_URL",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "assignment_id",
+			"value": ""
+		},
+		{
+			"key": "question_id",
+			"value": ""
+		},
+		{
+			"key": "test_case_ids",
+			"value": ""
+		},
+		{
+			"key": "reference_solution_id",
+			"value": ""
+		}
+	]
+}
