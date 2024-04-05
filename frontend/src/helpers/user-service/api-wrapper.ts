@@ -1,5 +1,7 @@
-import axios, { AxiosError } from "axios";
+import { UseUserContext } from "@/contexts/user-context";
+import axios from "axios";
 import Cookies from 'js-cookie';
+import { UserInfo } from "../../components/common/ReadOnlyUserCard";
 
 const api = axios.create({
   baseURL:
@@ -10,12 +12,10 @@ const api = axios.create({
   },
 });
 
-interface GetUsersResponse {
-  users: User[];
-}
-
 const login = async (email: string, password: string) => {
-    const response = await api.post(
+    const { setUser } = UseUserContext();
+
+    await api.post(
         `/login`,
         {
             email: email,
@@ -23,12 +23,13 @@ const login = async (email: string, password: string) => {
         },
         { withCredentials: true}
     ).then((res) => {
-        if (res.status == 401) {
-            throw new Error("Invalid Email/Password");
-        } else {
-            Cookies.set('user', JSON.stringify(res.data.user), {expires: 7});
+        if (res.status == 200) {
             const user = res.data as User;
-            return user
+            setUser(user);
+            Cookies.set('user', JSON.stringify(user), {expires: 7});
+            return user;
+        } else {
+            throw new Error("Invalid Email/Password");
         }
     }).catch((err: Error) => {
         console.log(err);
@@ -40,7 +41,7 @@ const login = async (email: string, password: string) => {
 };
 
 const register = async (email: string, password: string) => {
-    const response = await api.post(
+    await api.post(
         `/register`,
         {
             email: email,
@@ -57,13 +58,35 @@ const register = async (email: string, password: string) => {
             throw new Error("We are currently encountering some issues, please try again later");
         }
     }).catch((err: Error) => {
-        throw err
+        throw err;
     });
 };
 
+const getUserInfo = async (uid: BigInteger): Promise<UserInfo | null> => {
+    await api.post(
+        `/getUserByUserId`,
+        {
+            uid: uid
+        },
+        { withCredentials: true}
+    ).then((res) => {
+        console.log(res);
+        if (res.status == 200) {
+            const userInfo = res.data as UserInfo;
+            return userInfo;
+        } else {
+            throw new Error("We are currently encountering some issues, please try again later");
+        }
+    }).catch((err: Error) => {
+        throw err;
+    });
+    return null
+}
+
 const userService = {
     login,
-    register
+    register,
+    getUserInfo
 };
 
 export default userService;

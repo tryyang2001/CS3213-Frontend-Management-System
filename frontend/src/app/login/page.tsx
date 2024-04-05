@@ -31,7 +31,7 @@ export default function Home() {
     }
     // mock for backend
     try {
-      userService.login(email, password);
+      await userService.login(email, password);
       router.push("/dashboard");
     } catch (err) {
       if (err instanceof Error) {

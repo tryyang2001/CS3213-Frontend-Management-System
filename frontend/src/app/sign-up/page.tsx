@@ -25,20 +25,20 @@ export default function Home() {
       : true;
   }, [email]);
 
-    const [password, setPassword] = useState<string>("");
-    const isInvalidPassword = useMemo<boolean>(() => {
-        if (password == "") return false;
-        return password.length < 10
-    }, [password]);
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [confirmation, setPasswordConfirmation] = useState<string>("");
-    const [errorMessage, setErrorMessage] = useState<string>("");
-    const isInvalidConfirmation = useMemo<boolean>(() => {
-        if (confirmation == "" || password == "") return false;
-        return confirmation != password
-    }, [confirmation, password])
-    
-    const router = useRouter();
+  const [password, setPassword] = useState<string>("");
+  const isInvalidPassword = useMemo<boolean>(() => {
+      if (password == "") return false;
+      return password.length < 10
+  }, [password]);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [confirmation, setPasswordConfirmation] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const isInvalidConfirmation = useMemo<boolean>(() => {
+      if (confirmation == "" || password == "") return false;
+      return confirmation != password
+  }, [confirmation, password])
+  
+  const router = useRouter();
   const handleSubmit = async () => {
     if (email == "" || password == "" || confirmation == "") {
       setErrorMessage("Please enter the required fields");
@@ -51,7 +51,7 @@ export default function Home() {
     }
 
     try {
-      userService.register(email, password);
+      await userService.register(email, password);
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
