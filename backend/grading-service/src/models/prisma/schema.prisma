@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("POSTGRESQL_DB_URL")
+    schemas  = ["assignments", "users", "grading"]
+}
+
+model Submission {
+    id String @id @default(cuid())
+
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    questionId String
+
+    student   User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    studentId Int
+
+    code       String
+    language   String
+    codeParser String
+
+    feedbacks Feedback[]
+
+    createdOn DateTime @default(now())
+
+    @@unique([questionId, studentId])
+    @@schema("grading")
+}
+
+model Feedback {
+    id String @id @default(cuid())
+
+    submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    submissionId String
+
+    line  Int
+    hints String[]
+
+    @@schema("grading")
+}
+
+// Question schemas
+
+model Question {
+    id          String   @id @default(cuid())
+    title       String
+    // description should contain all the details of the question, including examples, constraints, images, etc.
+    description String
+    deadline    DateTime
+
+    referenceSolutionId String?
+    referenceSolution   ReferenceSolution?
+
+    numberOfTestCases Int        @default(0)
+    testCases         TestCase[]
+
+    Assignment   Assignment?  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+    assignmentId String?
+    Submission   Submission[]
+
+    @@schema("assignments")
+}
+
+model TestCase {
+    id         String   @id @default(cuid())
+    questionId String
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+    input  String
+    output String
+
+    isPublic Boolean @default(true)
+
+    @@schema("assignments")
+}
+
+model ReferenceSolution {
+    id String @id @default(cuid())
+
+    language   String
+    code       String
+    codeParser String?
+
+    questionId String   @unique
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+    @@schema("assignments")
+}
+
+model Assignment {
+    id          String   @id @default(cuid())
+    title       String
+    deadline    DateTime
+    isPublished Boolean  @default(false)
+
+    numberOfQuestions Int        @default(0)
+    questions         Question[]
+
+    // string for now, will be replaced by user model
+    authors String[]
+
+    createdOn DateTime @default(now())
+    updatedOn DateTime @updatedAt
+
+    @@schema("assignments")
+}
+
+// User Schema
+model User {
+    id Int @id
+
+    name   String
+    email  String  @unique
+    major  String
+    course String?
+
+    password String
+
+    role       String
+    Submission Submission[]
+
+    @@schema("users")
+}

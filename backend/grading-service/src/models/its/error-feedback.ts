@@ -1,4 +1,4 @@
 export type ErrorFeedback = {
-  lineNumber: number;
-  hintStrings: string[];
+  line: number;
+  hints: string[];
 };

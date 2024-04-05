@@ -5,7 +5,7 @@ interface Props {
   question: Question;
 }
 
-const AssignmentQuestion = ({ question }: Props) => {
+export default function AssignmentQuestion({ question }: Props) {
   return (
     <div className="flex px-0 py-4 mb-6">
       <div className="w-full px-5">
@@ -27,6 +27,4 @@ const AssignmentQuestion = ({ question }: Props) => {
       </div>
     </div>
   );
-};
-
-export default AssignmentQuestion;
+}

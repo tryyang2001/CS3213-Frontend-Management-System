@@ -234,7 +234,7 @@ paths:
                 type: "string"
                 example: "Assignment not found"
 
-  /assignment/api/questions:
+  /assignment/api/assignments/:id/questions:
     post:
       tags:
         - "Question"
@@ -450,7 +450,7 @@ paths:
             $ref: "#/schemas/createTestCaseByQuestionId/CreateTestCasesBody"
       responses:
         201:
-          description: "Test case object"
+          description: "Total number of test cases after new insertion"
           schema:
             $ref: "#/schemas/responses/TestCase"
         400:
@@ -869,27 +869,12 @@ schemas:
           example: 1630000000000
 
     TestCase:
+      description: "Total number of test cases after new insertion"
       type: "object"
       properties:
-        id:
-          type: "string"
-          example: "test_case_id"
-        input:
-          type: "string"
-          example: "input"
-        output:
-          type: "string"
-          example: "output"
-        createdOn:
+        numberOfTestCases:
           type: "number"
-          description: "Creation date in timestamp format"
-          format: "int"
-          example: 1630000000000
-        updatedOn:
-          type: "number"
-          description: "Last updated date in timestamp format"
-          format: "int"
-          example: 1630000000000
+          example: 2
 
     ReferenceSolution:
       type: "object"

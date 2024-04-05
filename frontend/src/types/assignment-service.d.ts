@@ -1,37 +1,49 @@
-type Assignment = {
+interface CreateAssignmentBody {
+  title: string;
+  deadline: Date;
+  isPublished?: boolean;
+}
+
+interface CreateQuestionBody {
+  title: string;
+  description: string;
+  deadline?: Date;
+  testCases: TestCase[];
+  referenceSolution: ReferenceSolution;
+}
+
+interface Assignment {
   id: string;
   title: string;
   deadline: number;
   isPublished: boolean;
   numberOfQuestions: number;
-  questions: Question[];
+  questions?: Question[];
   authors: string[];
   createdOn: number;
   updatedOn: number;
-};
+}
 
-type Question = {
+interface Question {
   id: string;
   title: string;
   description: string;
-  deadline?: number;
+  deadline: number;
   numberOfTestCases: number;
-  testCases?: TestCase[];
-  referenceSolutionId?: string;
-  referenceSolution?: ReferenceSolution;
   assignmentId?: string;
-};
+  referenceSolutionId?: string;
+}
 
-type TestCase = {
+interface TestCase {
   id?: string;
   input: string;
   output: string;
-  isPublic: boolean = true;
-};
+  isPublic: boolean;
+}
 
-type ReferenceSolution = {
+interface ReferenceSolution {
   id?: string;
   language: string;
   code: string;
   questionId?: string;
-};
+}
