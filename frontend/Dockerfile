@@ -10,6 +10,8 @@ RUN yarn install
 # Copy rest of the application files
 COPY . .
 
+RUN yarn build
+
 # Expose port if necessary
 EXPOSE 3000
 

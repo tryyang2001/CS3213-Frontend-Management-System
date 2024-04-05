@@ -2,7 +2,7 @@ FROM node:latest
 
 COPY ./package.json ./yarn.lock ./
 
-RUN yarn install
+RUN yarn
 
 COPY . .
 
