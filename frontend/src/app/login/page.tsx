@@ -1,21 +1,28 @@
 "use client";
 
-import {Button, Input, Popover, PopoverContent, PopoverTrigger} from "@nextui-org/react";
-import Cookies from 'js-cookie';
-import { useMemo, useState } from "react";
-import { EyeSlashFilledIcon } from "./EyeSlashFilledIcon";
-import { EyeFilledIcon } from "./EyeFilledIcon";
-import { useRouter } from "next/navigation";
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@nextui-org/react";
+import { useState } from "react";
+import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
-import { USER_API_ENDPOINT } from "../../../config";
-
+import EmailInput from "@/components/forms/EmailInput";
+import PasswordInput from "@/components/forms/PasswordInput";
+import Cookies from "js-cookie";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { useUserContext } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
-
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { setUserContext } = useUserContext();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -27,35 +34,23 @@ export default function Home() {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
-    
-    const res = await fetch(USER_API_ENDPOINT + "/login", {
-        method: "Post",
-        headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        }),
-        credentials: 'include',
-    }).catch((err: Error) => {
-        console.log(err);
-        return {
-            ok: false,
-            status: 500
-        }
-    });
-
-    if (res.status == 401) {
-        setErrorMessage("Invalid Email/Password");
-    } else if (!res.ok) {
+    // mock for backend
+    try {
+      const user = await userService.login(email, password);
+      if (!user) {
+        throw new Error("Cannot logging in");
+      }
+      Cookies.set('user', JSON.stringify(user), {expires: 7});
+      setUserContext(user);
+      toast.success("Log in successfully!");
+      router.push('/dashboard');
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
+        setErrorMessage(errorMsg);
+      } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
-    } else {
-        const loginResponse : loginResponse = await (res as Response).json() as loginResponse;
-        console.log(loginResponse); // This will log the user object
-        Cookies.set('user', JSON.stringify({loginResponse}), { expires: 7 })
-        router.push("/dashboard");
+      }
     }
   };
 

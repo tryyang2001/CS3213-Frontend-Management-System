@@ -1,4 +1,4 @@
-interface loginResponse {
+interface User {
     uid: BigInteger;
     email: string;
     name: string;
