@@ -31,6 +31,7 @@ export default function Home() {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
+    
     const res = await fetch(USER_API_ENDPOINT + "/login", {
         method: "Post",
         headers: {
@@ -55,12 +56,10 @@ export default function Home() {
     } else if (!res.ok) {
         setErrorMessage("We are currently encountering some issues, please try again later");
     } else {
-        const responseData = await (res as Response).json();
-        const user = responseData.user;
-        console.log(user); // This will log the user object
-        Cookies.set('user', JSON.stringify({user}), { expires: 7 })
+        const loginResponse : loginResponse = await (res as Response).json() as loginResponse;
+        console.log(loginResponse); // This will log the user object
+        Cookies.set('user', JSON.stringify({loginResponse}), { expires: 7 })
         router.push("/dashboard");
-    }
     }
   };
 

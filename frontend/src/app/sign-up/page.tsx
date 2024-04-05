@@ -50,7 +50,7 @@ export default function Home() {
       return;
     }
 
-    const res = await fetch(USER_API_ENDPOINT + "/register", {
+    await fetch(USER_API_ENDPOINT + "/register", {
         method: "Post",
         headers: {
             Accept: "application/json, text/plain, */*",
