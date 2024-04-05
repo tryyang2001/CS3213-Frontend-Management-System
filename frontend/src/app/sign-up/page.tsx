@@ -50,35 +50,32 @@ export default function Home() {
       return;
     }
 
-        // mock for backend
-        const res = await fetch(USER_API_ENDPOINT + "/register", {
-            method: "Post",
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                name: "Username placeholder",           // To be changed in the future
-                major: "User's major placeholder",      // To be changed in the future
-                course : "",                            // To be changed in the future
-                role: "User role placeholder"           // To be changed in the future
-            }),
-            credentials: 'include',
-        }).then((res) => {
-            console.log(res);
-            if (!res.ok) {
-                setErrorMessage("We are currently encountering some issues, please try again later");
-            } else {
-                router.push("/dashboard");
-            }
-        }).catch((err: Error) => {
-            console.log(err);
-        });
-
-
-    }
+    await fetch(USER_API_ENDPOINT + "/register", {
+        method: "Post",
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password,
+            name: "Username placeholder",           // To be changed in the future
+            major: "User's major placeholder",      // To be changed in the future
+            course : "",                            // To be changed in the future
+            role: "User role placeholder"           // To be changed in the future
+        }),
+        credentials: 'include',
+    }).then((res) => {
+        console.log(res);
+        if (!res.ok) {
+            setErrorMessage("We are currently encountering some issues, please try again later");
+        } else {
+            router.push("/dashboard");
+        }
+    }).catch((err: Error) => {
+        console.log(err);
+    });
+  };
 
   function Eye() {
     return (

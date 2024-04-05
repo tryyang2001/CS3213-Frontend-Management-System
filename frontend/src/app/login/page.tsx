@@ -27,80 +27,81 @@ export default function Home() {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
-
-        // mock for backend
-        const res = await fetch(USER_API_ENDPOINT + "/login", {
-            method: "Post",
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            }),
-            credentials: 'include',
-        }).catch((err: Error) => {
-            console.log(err);
-            return {
-                ok: false,
-                status: 500
-            }
-        });
-
-        if (res.status == 401) {
-            setErrorMessage("Invalid Email/Password");
-        } else if (!res.ok) {
-            setErrorMessage("We are currently encountering some issues, please try again later");
-        } else {
-            const responseData = await (res as Response).json();
-            const user = responseData.user;
-            console.log(user); // This will log the user object
-            Cookies.set('user', JSON.stringify({user}), { expires: 7 })
-            router.push("/dashboard");
-        }
-
-    }
-
-    const Eye = () => {
-        return <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
-          {isVisible ? (
-            <EyeSlashFilledIcon />
-          ) : (
-            <EyeFilledIcon />
-          )}
-        </button>
-    }
     
-    return <div className="w-screen h-screen flex items-center justify-center">
-        <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4">  
-            <Input isRequired type="email" label="Email" 
-                placeholder="Enter your email" 
-                value={email} onValueChange={setEmail} 
-                color={isInvalidEmail ? "danger" : "default"}
-                isInvalid={isInvalidEmail}
-                errorMessage={isInvalidEmail && "Please enter a valid email"}
-                />
-            
-            <Input label="Password" isRequired 
-                value={password} onValueChange={setPassword}
-                type={isVisible ? "text" : "password"} endContent={<Eye />} />
+    const res = await fetch(USER_API_ENDPOINT + "/login", {
+        method: "Post",
+        headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        }),
+        credentials: 'include',
+    }).catch((err: Error) => {
+        console.log(err);
+        return {
+            ok: false,
+            status: 500
+        }
+    });
 
-            <Popover color="danger" isOpen={errorMessage != ""} onOpenChange={() => setErrorMessage("")}>
-                <PopoverTrigger>
-                    <Button type="submit" color="primary" className="w-full" onClick={handleSubmit}> Login </Button>
-                </PopoverTrigger>
-                <PopoverContent>
-                        <div className="text-tiny">{errorMessage}</div>
-                </PopoverContent>
-            </Popover>
-            
-            <div className="flex gap-3">
-                <div> <Link href="/login/recovery"> Forgot Password </Link> </div>
-                <div> | </div>
-                <div> <Link href="/sign-up"> Sign up</Link> </div>
-            </div>
+    if (res.status == 401) {
+        setErrorMessage("Invalid Email/Password");
+    } else if (!res.ok) {
+        setErrorMessage("We are currently encountering some issues, please try again later");
+    } else {
+        const loginResponse : loginResponse = await (res as Response).json() as loginResponse;
+        console.log(loginResponse); // This will log the user object
+        Cookies.set('user', JSON.stringify({loginResponse}), { expires: 7 })
+        router.push("/dashboard");
+    }
+  };
+
+  return (
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4">
+        <EmailInput
+          email={email}
+          setEmail={setEmail}
+          setIsInvalid={setIsInvalid}
+        />
+        <PasswordInput password={password} setPassword={setPassword} />
+
+        <Popover
+          color="danger"
+          isOpen={errorMessage != ""}
+          onOpenChange={() => setErrorMessage("")}
+        >
+          <PopoverTrigger>
+            <Button
+              type="submit"
+              color="primary"
+              className="w-full"
+              onClick={() => void handleSubmit()}
+            >
+              {" "}
+              Login{" "}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="text-tiny">{errorMessage}</div>
+          </PopoverContent>
+        </Popover>
+
+        <div className="flex gap-3">
+          <div>
+            {" "}
+            <Link href="/login/recovery"> Forgot Password </Link>{" "}
+          </div>
+          <div> | </div>
+          <div>
+            {" "}
+            <Link href="/sign-up"> Sign up</Link>{" "}
+          </div>
         </div>
+      </div>
     </div>
   );
 }
