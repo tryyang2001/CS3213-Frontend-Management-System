@@ -6,3 +6,9 @@ interface loginResponse {
     course: string;
     role: string;
 }
+
+interface User {
+    email: string,
+    uid: int,
+    role: string
+}

@@ -1,4 +1,6 @@
 "use client";
+
+import userService from "@/helpers/user-service/api-wrapper";
 import { useState, useMemo } from "react";
 import { EyeSlashFilledIcon } from "@/components/common/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "@/components/common/EyeFilledIcon";
@@ -11,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { USER_API_ENDPOINT } from "../../../config";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
@@ -38,7 +39,6 @@ export default function Home() {
     }, [confirmation, password])
     
     const router = useRouter();
-
   const handleSubmit = async () => {
     if (email == "" || password == "" || confirmation == "") {
       setErrorMessage("Please enter the required fields");
@@ -50,31 +50,17 @@ export default function Home() {
       return;
     }
 
-    await fetch(USER_API_ENDPOINT + "/register", {
-        method: "Post",
-        headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password,
-            name: "Username placeholder",           // To be changed in the future
-            major: "User's major placeholder",      // To be changed in the future
-            course : "",                            // To be changed in the future
-            role: "User role placeholder"           // To be changed in the future
-        }),
-        credentials: 'include',
-    }).then((res) => {
-        console.log(res);
-        if (!res.ok) {
-            setErrorMessage("We are currently encountering some issues, please try again later");
-        } else {
-            router.push("/dashboard");
-        }
-    }).catch((err: Error) => {
-        console.log(err);
-    });
+    try {
+      userService.register(email, password);
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
+        setErrorMessage(errorMsg);
+      } else {
+        setErrorMessage("We are currently encountering some issues, please try again later");
+      }
+    }
+    router.push("/dashboard");
   };
 
   function Eye() {
