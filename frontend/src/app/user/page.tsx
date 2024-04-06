@@ -8,41 +8,49 @@ import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { Popover } from "@nextui-org/react";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { user } = useUserContext();
-
-  const fetchUserInfo = async () => {
-    setIsLoading(true);
-    try {
-      if (user === null) {
-        setErrorMessage("You must login to view user page");
-        await Router.push("/dashboard");
-      } else {
-        const res = await userService.getUserInfo(user.uid);
-        if (res === null) {
-          setErrorMessage("Unable to get user data");
-          await Router.push("/dashboard");
-        } else {
-          setUserInfo(res);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching user info:", error);
-      setErrorMessage("An unexpected error occurred");
-      // Handle the error based on its type
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const router = useRouter();
 
   useEffect(() => {
-    fetchUserInfo().catch((err) => console.log(err));
-  }, []);
+    console.log(user);
+    const fetchUserInfo = async () => {
+      try {
+        if (user === null) {
+          toast.error("You must login to view user page");
+          router.push("/");
+        } else {
+          const userInfo = await userService.getUserInfo(user.uid);
+          console.log(userInfo);
+          if (userInfo === null) {
+            toast.error("Unable to get user data");
+            router.push("/");
+          } else {
+            setUserInfo(userInfo);
+          }
+        }
+        setIsLoading(false);
+      } catch (error) { 
+        console.error("Error fetching user info:", error);
+        toast.error("An unexpected error occurred");
+        // Handle the error based on its type
+        setIsLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchUserInfo().catch((err) => console.log(err));
+    } else {
+      router.push("/login");
+      return;
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-col items-center p-2">
