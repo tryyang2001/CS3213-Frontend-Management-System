@@ -1,5 +1,6 @@
 "use client";
 
+import { UserProvider } from "@/contexts/user-context";
 import { NextUIProvider } from "@nextui-org/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
@@ -9,7 +10,11 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextUIProvider>{children}</NextUIProvider>
+      <NextUIProvider>
+        <UserProvider>
+          {children}
+        </UserProvider>
+      </NextUIProvider>
     </QueryClientProvider>
   );
 }
