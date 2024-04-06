@@ -37,13 +37,11 @@ export default function Home() {
     // mock for backend
     try {
       const user = await userService.login(email, password);
-      console.log(user);
       if (!user) {
         throw new Error("Cannot logging in");
       }
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
-      console.log("logged in successfully!");
       toast.success("Log in successfully!");
       router.push('/user');
     } catch (err) {

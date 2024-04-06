@@ -19,7 +19,6 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(user);
     const fetchUserInfo = async () => {
       try {
         if (user === null) {
@@ -27,7 +26,6 @@ export default function Page() {
           router.push("/");
         } else {
           const userInfo = await userService.getUserInfo(user.uid);
-          console.log(userInfo);
           if (userInfo === null) {
             toast.error("Unable to get user data");
             router.push("/");
@@ -45,7 +43,7 @@ export default function Page() {
     };
 
     if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
+      fetchUserInfo().catch((err) => toast.error(err));
     } else {
       router.push("/login");
       return;
