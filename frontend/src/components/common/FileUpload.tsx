@@ -95,6 +95,8 @@ const FileUpload = ({
   const resetFileContent = (event: MouseEvent<HTMLInputElement>) => {
     const input = event.target as HTMLInputElement;
     input.value = "";
+
+    onFileUpload("");
     setIsError(false);
   };
 

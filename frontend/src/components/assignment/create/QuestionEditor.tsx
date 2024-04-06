@@ -238,7 +238,7 @@ function QuestionEditor({
             <FileUpload
               expectedFileTypes={["json"]}
               onFileUpload={(fileContent) => {
-                if (fileContent === "") {
+                if (!fileContent || fileContent.length === 0) {
                   setTestCases([]);
                   return;
                 }
