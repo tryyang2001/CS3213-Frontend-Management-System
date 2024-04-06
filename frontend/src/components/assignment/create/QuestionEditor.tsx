@@ -2,7 +2,7 @@
 
 import { Checkbox, Input, Radio, RadioGroup, Tooltip } from "@nextui-org/react";
 import FieldLabel from "./FieldLabel";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DescriptionField from "./DescriptionField";
 import DateUtils from "@/utils/dateUtils";
 import FileUpload from "@/components/common/FileUpload";

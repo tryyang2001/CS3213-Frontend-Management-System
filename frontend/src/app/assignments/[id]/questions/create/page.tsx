@@ -29,7 +29,7 @@ function Page({ params }: Props) {
 
   const [isSubmittingQuestionForm, setIsSubmittingQuestionForm] =
     useState(false);
-  const [areFormsValid, setAreFormsValid] = useState<Boolean[]>();
+  const [areFormsValid, setAreFormsValid] = useState<boolean[]>();
 
   const { toast } = useToast();
 
