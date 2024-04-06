@@ -6,7 +6,7 @@ import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
 import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
-import { UseUserContext } from "@/contexts/user-context";
+import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { Popover } from "@nextui-org/react";
 
@@ -14,7 +14,7 @@ export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const { user } = UseUserContext();
+  const { user } = useUserContext();
   const router = useRouter();
 
   const fetchUserInfo = async () => {

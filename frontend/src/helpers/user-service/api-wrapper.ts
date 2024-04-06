@@ -1,6 +1,4 @@
-import { UseUserContext } from "@/contexts/user-context";
 import axios from "axios";
-import Cookies from 'js-cookie';
 import { UserInfo } from "../../components/common/ReadOnlyUserCard";
 
 const api = axios.create({
@@ -12,9 +10,7 @@ const api = axios.create({
   },
 });
 
-const login = async (email: string, password: string) => {
-    const { setUser } = UseUserContext();
-
+const login = async (email: string, password: string): Promise<User | null> => {
     await api.post(
         `/login`,
         {
@@ -25,8 +21,6 @@ const login = async (email: string, password: string) => {
     ).then((res) => {
         if (res.status == 200) {
             const user = res.data as User;
-            setUser(user);
-            Cookies.set('user', JSON.stringify(user), {expires: 7});
             return user;
         } else {
             throw new Error("Invalid Email/Password");
@@ -38,6 +32,7 @@ const login = async (email: string, password: string) => {
             status: 500
         }
     });
+    return null;
 };
 
 const register = async (email: string, password: string) => {
@@ -49,7 +44,7 @@ const register = async (email: string, password: string) => {
             name: 'name placeholder',
             major: 'major placeholder',
             course: 'course placeholder',
-            role: 'role placeholder'
+            role: 'student'
         },
         { withCredentials: true}
     ).then((res) => {
