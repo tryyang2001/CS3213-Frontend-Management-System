@@ -1,6 +1,6 @@
 "use client";
 
-import { Checkbox, Input, Radio, RadioGroup } from "@nextui-org/react";
+import { Checkbox, Input, Radio, RadioGroup, Tooltip } from "@nextui-org/react";
 import FieldLabel from "./FieldLabel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import DescriptionField from "./DescriptionField";
@@ -8,6 +8,7 @@ import DateUtils from "@/utils/dateUtils";
 import FileUpload from "@/components/common/FileUpload";
 import { Editor } from "@monaco-editor/react";
 import TestCasesInput from "./TestCasesInput";
+import Icons from "@/components/common/Icons";
 
 interface Props {
   assignmentDeadline: number;
@@ -234,21 +235,58 @@ function QuestionEditor({
       <div className="grid grid-cols-12">
         <FieldLabel>Test Cases</FieldLabel>
         <div className="col-span-9">
-          <div className="w-[40%]">
-            <FileUpload
-              expectedFileTypes={["json"]}
-              onFileUpload={(fileContent) => {
-                if (!fileContent || fileContent.length === 0) {
-                  setTestCases([]);
-                  return;
-                }
+          <div className="flex">
+            <div className="w-[40%]">
+              <FileUpload
+                expectedFileTypes={["json"]}
+                onFileUpload={(fileContent) => {
+                  if (!fileContent || fileContent.length === 0) {
+                    setTestCases([]);
+                    return;
+                  }
 
-                const testCases = JSON.parse(fileContent) as TestCase[];
-                setTestCases(testCases);
-              }}
-              isTestCasesInput
-              errorMessage="Invalid file type or file content"
-            />
+                  const testCases = JSON.parse(fileContent) as TestCase[];
+                  setTestCases(testCases);
+                }}
+                isTestCasesInput
+                errorMessage="Invalid file type or file content"
+              />
+            </div>
+
+            <Tooltip
+              content={
+                <div>
+                  <div className="text-sm">
+                    The test cases should be a JSON file with the following
+                    format:
+                  </div>
+                  <div className="text-sm mt-2">
+                    <pre>
+                      {JSON.stringify(
+                        [
+                          {
+                            input: "input1",
+                            output: "output1",
+                            isPublic: true,
+                          },
+                          {
+                            input: "input2",
+                            output: "output2",
+                            isPublic: false,
+                          },
+                        ],
+                        null,
+                        2
+                      )}
+                    </pre>
+                  </div>
+                </div>
+              }
+            >
+              <div className="flex items-center ml-4">
+                <Icons.QuestionMark />
+              </div>
+            </Tooltip>
           </div>
 
           <TestCasesInput testCases={testCases} setTestCases={setTestCases} />
