@@ -68,9 +68,9 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       // Assert
       expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.OK);
-      expect(response.body).toEqual({
-        assignments: ExpectedAssignmentsFromGetAssignmentsByUserId(userId),
-      });
+      expect(response.body).toEqual(
+        ExpectedAssignmentsFromGetAssignmentsByUserId(userId)
+      );
     });
   });
 
