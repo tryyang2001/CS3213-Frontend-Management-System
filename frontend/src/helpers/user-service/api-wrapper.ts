@@ -57,7 +57,7 @@ const register = async (email: string, password: string) => {
     });
 };
 
-const getUserInfo = async (uid: BigInteger): Promise<UserInfo | null> => {
+const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
     await api.post(
         `/getUserByUserId`,
         {

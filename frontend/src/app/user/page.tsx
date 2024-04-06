@@ -7,14 +7,12 @@ import AccountEditor from "../../components/forms/AccountEditor";
 import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
-import { Popover } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const { user } = useUserContext();
   const router = useRouter();
 
@@ -43,9 +41,8 @@ export default function Page() {
     };
 
     if (user) {
-      fetchUserInfo().catch((err) => toast.error(err));
+      fetchUserInfo().catch((err) => console.log(err));
     } else {
-      router.push("/login");
       return;
     }
   }, [router]);
@@ -65,16 +62,6 @@ export default function Page() {
             <AccountEditor userInfo={userInfo} />
           </div>
         </div>
-      )}
-
-      {errorMessage && (
-        <Popover
-          color="danger"
-          isOpen={errorMessage !== ""}
-          onOpenChange={() => setErrorMessage("")}
-        >
-          {[<div key="error-message">{errorMessage}</div>]}
-        </Popover>
       )}
     </div>
   );
