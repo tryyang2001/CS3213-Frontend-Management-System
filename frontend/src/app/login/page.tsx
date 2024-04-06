@@ -7,13 +7,13 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
 import Cookies from "js-cookie";
 import { useUserContext } from "@/contexts/user-context";
+import Router from "next/router";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
@@ -21,7 +21,6 @@ export default function Home() {
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { setUserContext } = useUserContext();
-  const router = useRouter();
 
   const handleSubmit = async () => {
     if (email == "" || password == "") {
@@ -37,7 +36,7 @@ export default function Home() {
       const user = await userService.login(email, password);
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
-      router.push('/user/page');
+      Router.push('/user/page');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -45,7 +44,7 @@ export default function Home() {
       } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
       }
-      router.push("/dashboard");
+      Router.push("/dashboard");
     }
   };
 
