@@ -15,7 +15,6 @@ import Cookies from "js-cookie";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { useUserContext } from "@/contexts/user-context";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
@@ -23,7 +22,6 @@ export default function Home() {
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { setUserContext } = useUserContext();
-  const router = useRouter();
 
   const handleSubmit = async () => {
     if (email == "" || password == "") {
@@ -42,8 +40,7 @@ export default function Home() {
       }
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
-      toast.success("Log in successfully!");
-      router.push('/dashboard');
+      router.push('/user/page');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -51,6 +48,7 @@ export default function Home() {
       } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
       }
+      router.push("/dashboard");
     }
   };
 
