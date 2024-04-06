@@ -12,12 +12,15 @@ import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
+import Cookies from "js-cookie";
+import { useUserContext } from "@/contexts/user-context";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { setUserContext } = useUserContext();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -31,8 +34,10 @@ export default function Home() {
     }
     // mock for backend
     try {
-      await userService.login(email, password);
-      router.push("/dashboard");
+      const user = await userService.login(email, password);
+      Cookies.set('user', JSON.stringify(user), {expires: 7});
+      setUserContext(user);
+      router.push('/user/page');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -40,6 +45,7 @@ export default function Home() {
       } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
       }
+      router.push("/dashboard");
     }
   };
 

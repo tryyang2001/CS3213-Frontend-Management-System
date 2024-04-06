@@ -4,29 +4,32 @@ import { createContext, useContext, ReactNode, useState } from "react";
 
 interface UserContextType {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setUserContext: (user: User | null) => void;
 }
 
 const initialUser: User | null = null;
 
-/* eslint-disable @typescript-eslint/no-empty-function */
 const UserContext = createContext<UserContextType>({
   user: initialUser,
-  setUser: () => {} // Placeholder function
+  setUserContext: () => {
+    throw new Error("Not implemented");
+  }
 });
-/* eslint-enable @typescript-eslint/no-empty-function */
 
 function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(initialUser);
+  const setUserContext = (user: User | null) => {
+    setUser(user);
+  }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUserContext }}>
       {children}
     </UserContext.Provider>
   );
 }
 
-const UseUserContext = () => {
+const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error('useUser must be used within a UserProvider');
@@ -34,4 +37,4 @@ const UseUserContext = () => {
   return context;
 };
 
-export { UserProvider, UseUserContext };
+export { UserProvider, useUserContext };
