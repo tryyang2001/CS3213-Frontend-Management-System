@@ -7,6 +7,15 @@ import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
 import { render, screen } from "@testing-library/react";
 
+const mockUser: User = {
+  uid: 9,
+  email: "testtest@gmail.com",
+  name: "name placeholder",
+  major: "major placeholder",
+  course: "course placeholder",
+  role: "student",
+};
+
 // Place all page's Snapshot tests here
 
 jest.mock("next/navigation", () => {
@@ -23,6 +32,15 @@ jest.mock("next/navigation", () => {
   };
 });
 
+jest.mock("@/contexts/user-context", () => {
+  return {
+    __esModule: true,
+    useUserContext: () => ({
+      user: mockUser, // Inject the mockUser as the user context
+      setUserContext: jest.fn(), // Mock setUserContext as a Jest mock function
+    }),
+  }
+})
 jest.mock("@tanstack/react-query", () => {
   return {
     __esModule: true,

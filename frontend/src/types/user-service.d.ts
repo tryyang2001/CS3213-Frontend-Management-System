@@ -1,5 +1,5 @@
 interface User {
-    uid: BigInteger;
+    uid: number;
     email: string;
     name: string;
     major: string;
