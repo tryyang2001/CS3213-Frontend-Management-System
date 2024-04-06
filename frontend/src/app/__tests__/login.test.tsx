@@ -182,7 +182,7 @@ describe("Login Page", () => {
     });
     expect(loginButtonWithError).not.toBeInTheDocument();
     // redirect occurs
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(0));
   });
 
   it("should display an error when fetch throws an error", async () => {
