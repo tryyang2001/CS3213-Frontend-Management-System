@@ -196,7 +196,8 @@ describe("Login Page", () => {
     const loginButton = screen.getByRole("button", { expanded: false });
     fireEvent.click(loginButton);
 
-    expect(fetch).toHaveBeenCalled();
+    //no router.push("/user") if logging in fail
+    expect(mockPush).toHaveBeenCalledTimes(0);
     const loginButtonWithError = await screen.findByRole("button", {
       hidden: true,
       expanded: true,

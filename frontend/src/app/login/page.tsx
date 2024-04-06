@@ -43,7 +43,7 @@ export default function Home() {
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
       toast.success("Log in successfully!");
-      router.push('/user');
+      router.push('/dashboard');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
