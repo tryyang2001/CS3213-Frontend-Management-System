@@ -12,8 +12,10 @@ import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
 import Cookies from "js-cookie";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useUserContext } from "@/contexts/user-context";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
@@ -21,6 +23,7 @@ export default function Home() {
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { setUserContext } = useUserContext();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (email == "" || password == "") {
@@ -34,9 +37,15 @@ export default function Home() {
     // mock for backend
     try {
       const user = await userService.login(email, password);
+      console.log(user);
+      if (!user) {
+        throw new Error("Cannot logging in");
+      }
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
-      await Router.push('/user/page');
+      console.log("logged in successfully!");
+      toast.success("Log in successfully!");
+      router.push('/user');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -44,7 +53,6 @@ export default function Home() {
       } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
       }
-      await Router.push("/dashboard");
     }
   };
 

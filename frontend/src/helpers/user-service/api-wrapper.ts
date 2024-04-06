@@ -10,8 +10,8 @@ const api = axios.create({
   },
 });
 
-const login = async (email: string, password: string): Promise<User | null> => {
-    await api.post(
+const login = async (email: string, password: string): Promise<User> => {
+    const response = await api.post(
         `/login`,
         {
             email: email,
@@ -20,19 +20,19 @@ const login = async (email: string, password: string): Promise<User | null> => {
         { withCredentials: true}
     ).then((res) => {
         if (res.status == 200) {
+            console.log(res);
             const user = res.data as User;
+            console.log(user);
             return user;
         } else {
+            console.log("invaliad email/password");
             throw new Error("Invalid Email/Password");
         }
     }).catch((err: Error) => {
         console.log(err);
-        return {
-            ok: false,
-            status: 500
-        }
+        throw err;
     });
-    return null;
+    return response;
 };
 
 const register = async (email: string, password: string) => {
