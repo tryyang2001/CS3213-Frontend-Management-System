@@ -7,27 +7,26 @@ import AccountEditor from "../../components/forms/AccountEditor";
 import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
-import { useRouter } from "next/navigation";
 import { Popover } from "@nextui-org/react";
+import Router from "next/router";
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { user } = useUserContext();
-  const router = useRouter();
 
   const fetchUserInfo = async () => {
     setIsLoading(true);
     try {
       if (user === null) {
         setErrorMessage("You must login to view user page");
-        router.push("/dashboard");
+        await Router.push("/dashboard");
       } else {
         const res = await userService.getUserInfo(user.uid);
         if (res === null) {
           setErrorMessage("Unable to get user data");
-          router.push("/dashboard");
+          await Router.push("/dashboard");
         } else {
           setUserInfo(res);
         }

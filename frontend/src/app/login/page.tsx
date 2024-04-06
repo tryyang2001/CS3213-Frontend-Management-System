@@ -36,7 +36,7 @@ export default function Home() {
       const user = await userService.login(email, password);
       Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
-      Router.push('/user/page');
+      await Router.push('/user/page');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -44,7 +44,7 @@ export default function Home() {
       } else {
         setErrorMessage("We are currently encountering some issues, please try again later");
       }
-      Router.push("/dashboard");
+      await Router.push("/dashboard");
     }
   };
 
