@@ -20,7 +20,7 @@ jest.mock("next/navigation", () => {
 });
 
 describe("Login Page", () => {
-  const [correctEmail, correctPassword] = ["email@email.com", "password"];
+  const [correctEmail, correctPassword] = ["email@email.com", "password123"];
   const [serverDownEmail, serverDownEmailPassword] = ["down@down.com", "down"];
   let hasFetchError = false;
   global.fetch = jest.fn((_, { body: body }: { body: string }) => {
