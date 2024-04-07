@@ -106,7 +106,7 @@ async function loginUser(req: Request, res: Response) {
   }
 }
 
-async function getUserByUserId(req: Request, res: Response) {
+async function getUserInfo(req: Request, res: Response) {
   const { uid } = req.body;
   try {
     const userIdSearch = await db.getUserByUserId(uid);
@@ -257,7 +257,7 @@ async function clearCookie(req: Request, res: Response) {
 export default {
   registerUser,
   loginUser,
-  getUserByUserId,
+  getUserInfo,
   getUserByEmail,
   getAllUsers,
   updateUserPassword,
