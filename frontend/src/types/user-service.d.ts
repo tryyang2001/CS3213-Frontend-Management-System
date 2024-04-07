@@ -6,3 +6,10 @@ interface User {
     course: string;
     role: string;
 }
+
+interface UserInfo {
+    name: string;
+    email: string;
+    bio: string;
+    photo?: string;
+}
