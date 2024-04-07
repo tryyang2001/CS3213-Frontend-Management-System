@@ -19,7 +19,7 @@ const login = async (email: string, password: string): Promise<User> => {
         },
         { withCredentials: true}
     ).then((res) => {
-        if (res.status == HttpStatusCode.OK) {
+        if (res.status === HttpStatusCode.OK) {
             console.log(res);
             const user = res.data as User;
             console.log(user);
@@ -49,7 +49,7 @@ const register = async (email: string, password: string) => {
         { withCredentials: true}
     ).then((res) => {
         console.log(res);
-        if (res.status != HttpStatusCode.OK) {
+        if (res.status !== HttpStatusCode.OK) {
             throw new Error("We are currently encountering some issues, please try again later");
         }
     }).catch((err: Error) => {
@@ -66,7 +66,7 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
         { withCredentials: true}
     ).then((res) => {
         console.log(res);
-        if (res.status == HttpStatusCode.OK) {
+        if (res.status === HttpStatusCode.OK) {
             const userInfo = res.data as UserInfo;
             return userInfo;
         } else {
