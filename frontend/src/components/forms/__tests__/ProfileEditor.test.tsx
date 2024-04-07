@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
 import ProfileEditor from "../ProfileEditor";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { UserInfo } from "@/components/common/ReadOnlyUserCard";
 
 const mockPush = jest.fn((str: string) => str);
 
