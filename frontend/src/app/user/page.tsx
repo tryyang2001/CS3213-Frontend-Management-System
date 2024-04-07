@@ -1,6 +1,4 @@
 "use client";
-
-import { UserInfo } from "../../components/common/ReadOnlyUserCard";
 import userService from "@/helpers/user-service/api-wrapper";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
