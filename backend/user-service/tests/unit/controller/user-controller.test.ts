@@ -266,7 +266,7 @@ describe('Unit Tests for /user/login endpoint', () => {
   });
 });
 
-describe('Unit Tests for /user/getUserByUserId endpoint', () => {
+describe('Unit Tests for /user/getUserInfo endpoint', () => {
   const app = createUnitTestServer();
   let reqBody: any;
 
@@ -285,7 +285,7 @@ describe('Unit Tests for /user/getUserByUserId endpoint', () => {
   
       // Act
       const response = await supertest(app)
-        .get('/user/getUserByUserId')
+        .get('/user/getUserInfo')
         .send(reqBody);
   
       // Assert
@@ -300,7 +300,7 @@ describe('Unit Tests for /user/getUserByUserId endpoint', () => {
   
       // Act
       const response = await supertest(app)
-        .get('/user/getUserByUserId')
+        .get('/user/getUserInfo')
         .send(reqBody);
   
       // Assert
@@ -315,7 +315,7 @@ describe('Unit Tests for /user/getUserByUserId endpoint', () => {
   
       // Act
       const response = await supertest(app)
-        .get('/user/getUserByUserId')
+        .get('/user/getUserInfo')
         .send(reqBody);
   
       // Assert
