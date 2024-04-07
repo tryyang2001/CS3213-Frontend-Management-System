@@ -1,26 +1,49 @@
 "use client";
-
-import { UserInfo } from "../../components/common/ReadOnlyUserCard";
+import userService from "@/helpers/user-service/api-wrapper";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
 import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
+import { useUserContext } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const getUserData = async () => {
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
-    const userInfo: UserInfo = (await res.json()) as UserInfo;
-    setUserInfo(userInfo);
-    setIsLoading(false);
-    return userInfo;
-  };
+  const { user } = useUserContext();
+  const router = useRouter();
 
   useEffect(() => {
-    getUserData().catch((err) => console.log(err));
-  }, []);
+    const fetchUserInfo = async () => {
+      try {
+        if (user === null) {
+          toast.error("You must login to view user page");
+          router.push("/");
+        } else {
+          const userInfo = await userService.getUserInfo(user.uid);
+          if (userInfo === null) {
+            toast.error("Unable to get user data");
+            router.push("/");
+          } else {
+            setUserInfo(userInfo);
+          }
+        }
+        setIsLoading(false);
+      } catch (error) { 
+        console.error("Error fetching user info:", error);
+        toast.error("An unexpected error occurred");
+        // Handle the error based on its type
+        setIsLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchUserInfo().catch((err) => console.log(err));
+    } else {
+      return;
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-col items-center p-2">
