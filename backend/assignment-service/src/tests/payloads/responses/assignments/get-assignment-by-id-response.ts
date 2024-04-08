@@ -1,6 +1,6 @@
 export const getAssignmentByIdDbResponse = (
   assignmentId?: string,
-  userId?: string
+  userId?: number
 ) => {
   const deadline = new Date("2024-12-31T00:00:00.000Z");
   const createdOn = new Date("2024-03-12T00:00:00.000Z");
@@ -9,7 +9,7 @@ export const getAssignmentByIdDbResponse = (
     id: assignmentId ?? "existing-assignment-id",
     title: "Assignment 1",
     deadline: deadline,
-    authors: [userId ?? "existing-user-id"],
+    authors: [userId ?? 1],
     description: null,
     isPublished: true,
     numberOfQuestions: 2,
@@ -38,7 +38,7 @@ export const getAssignmentByIdDbResponse = (
 
 export const getAssignmentByIdExpectedResponse = (
   assignmentId?: string,
-  userId?: string
+  userId?: number
 ) => {
   const deadline = new Date("2024-12-31T00:00:00.000Z").getTime();
   const createdOn = new Date("2024-03-12T00:00:00.000Z").getTime();
@@ -47,7 +47,7 @@ export const getAssignmentByIdExpectedResponse = (
     id: assignmentId ?? "existing-assignment-id",
     title: "Assignment 1",
     deadline: deadline,
-    authors: [userId ?? "existing-user-id"],
+    authors: [userId ?? 1],
     isPublished: true,
     numberOfQuestions: 2,
     createdOn: createdOn,

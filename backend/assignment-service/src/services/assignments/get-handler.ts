@@ -22,6 +22,8 @@ const getAssignmentsByUserId = async (userId: number) => {
     },
   });
 
+  // TODO: search user under courses, what assignments are there
+
   const assignmentsDto: Assignment[] = assignments.map((assignment) => {
     return {
       id: assignment.id,

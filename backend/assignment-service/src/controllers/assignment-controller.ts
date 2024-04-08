@@ -12,12 +12,21 @@ import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
 const getAssignmentsByUserId = async (request: Request, response: Response) => {
   try {
     // obtain userId from the query param
-    const userId = request.query.userId as string;
 
-    if (!userId) {
+    if (!request.query.userId) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
         error: "BAD REQUEST",
         message: "userId is required in the query params",
+      });
+      return;
+    }
+
+    const userId = parseInt(request.query.userId as string);
+
+    if (isNaN(userId)) {
+      response.status(HttpStatusCode.BAD_REQUEST).json({
+        error: "BAD REQUEST",
+        message: "Invalid userId format",
       });
       return;
     }

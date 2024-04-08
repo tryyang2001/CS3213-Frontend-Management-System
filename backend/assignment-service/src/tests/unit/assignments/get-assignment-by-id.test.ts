@@ -189,7 +189,7 @@ function assertAssignment(assignment: Assignment | null) {
     expect(assignment.deadline).toEqual(
       new Date("2024-12-31T00:00:00.000Z").getTime()
     );
-    expect(assignment.authors).toEqual(["existing-user-id"]);
+    expect(assignment.authors).toEqual([1]);
     expect(assignment.isPublished).toBeTruthy();
     expect(assignment.numberOfQuestions).toEqual(2);
     expect(assignment.createdOn).toEqual(
