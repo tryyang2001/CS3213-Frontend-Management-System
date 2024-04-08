@@ -2,7 +2,18 @@ import db from "../../models/db";
 import { Assignment } from "../../models/types/assignment";
 import { Question } from "../../models/types/question";
 
-const getAssignmentsByUserId = async (userId: string) => {
+const getAssignmentsByUserId = async (userId: number) => {
+  // check if the user exists
+  const user = await db.user.findUnique({
+    where: {
+      uid: userId,
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
   const assignments = await db.assignment.findMany({
     where: {
       authors: {

@@ -24,10 +24,10 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
 
     const assignments = await GetHandler.getAssignmentsByUserId(userId);
 
-    if (!assignments || assignments.length === 0) {
+    if (!assignments) {
       response.status(HttpStatusCode.NOT_FOUND).json({
         error: "NOT FOUND",
-        message: "Assignments not found",
+        message: "User not found",
       });
       return;
     }
