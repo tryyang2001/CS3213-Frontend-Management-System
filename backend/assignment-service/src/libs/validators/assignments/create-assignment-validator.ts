@@ -10,7 +10,9 @@ export const CreateAssignmentValidator = z.object({
       message: "Deadline must be in the future",
     }),
   description: z.string().max(50000).optional(),
-  authors: z.array(z.string()).nonempty("At least one author is required"),
+  authors: z
+    .array(z.number().int().positive())
+    .nonempty("At least one author is required"),
   isPublished: z.boolean(),
 });
 

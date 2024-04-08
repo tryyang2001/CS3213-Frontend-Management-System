@@ -3,7 +3,10 @@ import { z } from "zod";
 export const UpdateAssignmentValidator = z.object({
   assignmentId: z.string(),
   title: z.string().min(1).max(255).optional(),
-  authors: z.array(z.string()).min(1).optional(),
+  authors: z
+    .array(z.number().int().positive())
+    .nonempty("At least one author is required")
+    .optional(),
   isPublished: z.boolean().optional(),
   deadline: z
     .number()
