@@ -6,36 +6,48 @@ import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
-import { toast } from 'react-toastify';
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const { user } = useUserContext();
+
   const router = useRouter();
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         if (user === null) {
-          toast.error("You must login to view user page");
-          router.push("/");
+          router.push("/login");
         } else {
           const userInfo = await userService.getUserInfo(user.uid);
+
           if (userInfo === null) {
-            toast.error("Unable to get user data");
-            router.push("/");
+            toast({
+              title: "User not found",
+              description: "Please login again",
+              variant: "destructive",
+            });
+
+            router.push("/dashboard");
           } else {
             setUserInfo(userInfo);
           }
         }
-        setIsLoading(false);
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching user info:", error);
-        toast.error("An unexpected error occurred");
-        // Handle the error based on its type
-        setIsLoading(false);
+        toast({
+          title: "Error fetching user info",
+          description: "Please try again later",
+          variant: "destructive",
+        });
       }
+
+      setIsLoading(false);
     };
 
     if (user) {

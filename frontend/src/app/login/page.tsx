@@ -12,45 +12,53 @@ import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
 import Cookies from "js-cookie";
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const { setUserContext } = useUserContext();
+
   const router = useRouter();
 
+  const { toast } = useToast();
+
   const handleSubmit = async () => {
-    if (email == "" || password == "") {
-      setErrorMessage("Please enter the required fields");
-      return;
+    if (email === "" || password === "" || isInvalid) {
+      return toast({
+        title: "Invalid input",
+        description: "Please check your input and try again",
+        variant: "destructive",
+      });
     }
-    if (isInvalid) {
-      setErrorMessage("Please correct the invalid fields");
-      return;
-    }
-    // mock for backend
+
     try {
       const user = await userService.login(email, password);
       if (!user) {
         throw new Error("Cannot logging in");
       }
-      Cookies.set('user', JSON.stringify(user), {expires: 7});
+
+      Cookies.set("user", JSON.stringify(user), { expires: 7 });
       setUserContext(user);
-      toast.success("Log in successfully!");
-      router.push('/dashboard');
-    } catch (err) {
-      if (err instanceof Error) {
-        const errorMsg = err.message;
-        setErrorMessage(errorMsg);
-      } else {
-        setErrorMessage("We are currently encountering some issues, please try again later");
-      }
+
+      toast({
+        title: "Login successfully",
+        description: "Welcome back to ITS, " + user.name,
+        variant: "success",
+      });
+
+      router.push("/dashboard");
+    } catch (_err) {
+      toast({
+        title: "Login failed",
+        description:
+          "We are currently encountering some issues, please try again later",
+        variant: "destructive",
+      });
     }
   };
 
@@ -62,28 +70,12 @@ export default function Home() {
           setEmail={setEmail}
           setIsInvalid={setIsInvalid}
         />
+
         <PasswordInput password={password} setPassword={setPassword} />
 
-        <Popover
-          color="danger"
-          isOpen={errorMessage != ""}
-          onOpenChange={() => setErrorMessage("")}
-        >
-          <PopoverTrigger>
-            <Button
-              type="submit"
-              color="primary"
-              className="w-full"
-              onClick={() => void handleSubmit()}
-            >
-              {" "}
-              Login{" "}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="text-tiny">{errorMessage}</div>
-          </PopoverContent>
-        </Popover>
+        <Button type="submit" onClick={handleSubmit} color="primary">
+          Login
+        </Button>
 
         <div className="flex gap-3">
           <div>

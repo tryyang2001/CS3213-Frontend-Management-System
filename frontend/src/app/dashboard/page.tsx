@@ -19,7 +19,8 @@ export default function DashBoard() {
       }
       const assignments = await AssignmentService.getAssignmentsByUserId(
         // TODO: Retrieve the actual logged in user ID from a user context or any equivalent
-        user?.uid.toString()
+        // user?.uid.toString()
+        "rui_yang_tan_user_id_1"
       );
 
       return assignments;
