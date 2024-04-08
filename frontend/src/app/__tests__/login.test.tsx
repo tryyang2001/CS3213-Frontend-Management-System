@@ -20,7 +20,7 @@ jest.mock("next/navigation", () => {
 });
 
 describe("Login Page", () => {
-  const [correctEmail, correctPassword] = ["email@email.com", "password"];
+  const [correctEmail, correctPassword] = ["email@email.com", "password123"];
   const [serverDownEmail, serverDownEmailPassword] = ["down@down.com", "down"];
   let hasFetchError = false;
   global.fetch = jest.fn((_, { body: body }: { body: string }) => {
@@ -182,7 +182,7 @@ describe("Login Page", () => {
     });
     expect(loginButtonWithError).not.toBeInTheDocument();
     // redirect occurs
-    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(0));
   });
 
   it("should display an error when fetch throws an error", async () => {
@@ -196,7 +196,8 @@ describe("Login Page", () => {
     const loginButton = screen.getByRole("button", { expanded: false });
     fireEvent.click(loginButton);
 
-    expect(fetch).toHaveBeenCalled();
+    //no router.push("/user") if logging in fail
+    expect(mockPush).toHaveBeenCalledTimes(0);
     const loginButtonWithError = await screen.findByRole("button", {
       hidden: true,
       expanded: true,

@@ -7,17 +7,22 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
+import Cookies from "js-cookie";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { useUserContext } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
-
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { setUserContext } = useUserContext();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -29,34 +34,23 @@ export default function Home() {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
-
     // mock for backend
-    const res = await fetch("https://jsonplaceholder.typicode.com/session", {
-      method: "Post",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    }).catch((err: Error) => {
-      console.log(err);
-      return {
-        ok: false,
-        status: 500,
-      };
-    });
-
-    if (res.status == 401) {
-      setErrorMessage("Invalid Email/Password");
-    } else if (!res.ok) {
-      setErrorMessage(
-        "We are currently encountering some issues, please try again later"
-      );
-    } else {
-      router.push("/dashboard");
+    try {
+      const user = await userService.login(email, password);
+      if (!user) {
+        throw new Error("Cannot logging in");
+      }
+      Cookies.set('user', JSON.stringify(user), {expires: 7});
+      setUserContext(user);
+      toast.success("Log in successfully!");
+      router.push('/dashboard');
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
+        setErrorMessage(errorMsg);
+      } else {
+        setErrorMessage("We are currently encountering some issues, please try again later");
+      }
     }
   };
 

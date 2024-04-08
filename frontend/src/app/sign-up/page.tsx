@@ -1,4 +1,6 @@
 "use client";
+
+import userService from "@/helpers/user-service/api-wrapper";
 import { useState, useMemo } from "react";
 import { EyeSlashFilledIcon } from "@/components/auth/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "@/components/auth/EyeFilledIcon";
@@ -25,20 +27,18 @@ export default function Home() {
 
   const [password, setPassword] = useState<string>("");
   const isInvalidPassword = useMemo<boolean>(() => {
-    if (password == "") return false;
-    return password.length < 8;
+      if (password == "") return false;
+      return password.length < 10
   }, [password]);
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const [confirmation, setPasswordConfirmation] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const isInvalidConfirmation = useMemo<boolean>(() => {
-    if (confirmation == "" || password == "") return false;
-    return confirmation != password;
-  }, [confirmation, password]);
-
+      if (confirmation == "" || password == "") return false;
+      return confirmation != password
+  }, [confirmation, password])
+  
   const router = useRouter();
-
   const handleSubmit = async () => {
     if (email == "" || password == "" || confirmation == "") {
       setErrorMessage("Please enter the required fields");
@@ -50,32 +50,17 @@ export default function Home() {
       return;
     }
 
-    // mock for backend
-    const res = await fetch("https://jsonplaceholder.typicode.com/user", {
-      method: "Post",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    }).catch((err: Error) => {
-      console.log(err);
-      return {
-        ok: false,
-        status: 500,
-      };
-    });
-
-    if (!res.ok) {
-      setErrorMessage(
-        "We are currently encountering some issues, please try again later"
-      );
-    } else {
-      router.push("/dashboard");
+    try {
+      await userService.register(email, password);
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
+        setErrorMessage(errorMsg);
+      } else {
+        setErrorMessage("We are currently encountering some issues, please try again later");
+      }
     }
+    router.push("/dashboard");
   };
 
   function Eye() {
