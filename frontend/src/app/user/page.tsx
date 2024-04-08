@@ -22,7 +22,6 @@ export default function Page() {
           router.push("/");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
-          console.log(retrievedUserInfo);
           if (retrievedUserInfo === null) {
             toast.error("Unable to get user data");
             router.push("/");

@@ -19,10 +19,8 @@ const login = async (email: string, password: string): Promise<User> => {
         },
         { withCredentials: true}
     ).then((res) => {
-        if (res.status === HttpStatusCode.OK.valueOf()) {
-            console.log(res.data.user);
+        if (res.status === HttpStatusCode.OK.valueOf() && res.data.user) {
             const user = res.data.user as User;
-            console.log(user);
             return user;
         } else {
             console.log("invaliad email/password");
@@ -47,7 +45,6 @@ const register = async (email: string, password: string) => {
             role: 'student'
         },
     ).then((res) => {
-        console.log(res);
         if (res.status !== HttpStatusCode.OK.valueOf()) {
             throw new Error("We are currently encountering some issues, please try again later");
         }
@@ -57,8 +54,6 @@ const register = async (email: string, password: string) => {
 };
 
 const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
-    console.log("this is the uid");
-    console.log(uid);
     const response = await api.get(
         `/getUserInfo?uid=${uid}`,
         { withCredentials: true}
