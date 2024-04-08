@@ -11,7 +11,6 @@ import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
-import Cookies from "js-cookie";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { useUserContext } from "@/contexts/user-context";
@@ -34,16 +33,15 @@ export default function Home() {
       setErrorMessage("Please correct the invalid fields");
       return;
     }
-    // mock for backend
+
     try {
       const user = await userService.login(email, password);
       if (!user) {
         throw new Error("Cannot logging in");
       }
-      Cookies.set('user', JSON.stringify(user), {expires: 7});
       setUserContext(user);
       toast.success("Log in successfully!");
-      router.push('/dashboard');
+      router.push('/user');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;

@@ -12,10 +12,11 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void | Re
         }
 
         if (token) {
-            const decode: any = jwt.verify(token, jwtSecretKey);
-            if (decode) {
+            const decoded: any = jwt.verify(token, jwtSecretKey);
+            if (decoded) {
                 console.log("verified");
-                next();
+                // You can perform further validation or processing here if needed
+                return next();
             }
         } else {
             console.log("Access Denied");

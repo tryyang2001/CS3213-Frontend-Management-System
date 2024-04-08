@@ -72,7 +72,7 @@ async function loginUser(req: Request, res: Response) {
       .then((result) => {
         if (!result) {
           console.log("Incorrect password.");
-          return res.json({
+          return res.status(201).json({
             error: "Incorrect password.",
           });
         } else {
@@ -107,8 +107,14 @@ async function loginUser(req: Request, res: Response) {
 }
 
 async function getUserInfo(req: Request, res: Response) {
-  const { uid } = req.body;
+  const queryUidString = req.query.uid;
+  console.log(queryUidString);
+  if (typeof queryUidString !== 'string') {
+    return res.status(400).json({ error: 'Invalid uid' });
+}
   try {
+    const uid = parseInt(queryUidString, 10);
+    console.log(uid);
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");

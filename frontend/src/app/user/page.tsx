@@ -21,12 +21,13 @@ export default function Page() {
           toast.error("You must login to view user page");
           router.push("/");
         } else {
-          const userInfo = await userService.getUserInfo(user.uid);
-          if (userInfo === null) {
+          const retrievedUserInfo = await userService.getUserInfo(user.uid);
+          console.log(retrievedUserInfo);
+          if (retrievedUserInfo === null) {
             toast.error("Unable to get user data");
             router.push("/");
           } else {
-            setUserInfo(userInfo);
+            setUserInfo(retrievedUserInfo);
           }
         }
         setIsLoading(false);
@@ -41,9 +42,9 @@ export default function Page() {
     if (user) {
       fetchUserInfo().catch((err) => console.log(err));
     } else {
-      return;
+      setIsLoading(false);
     }
-  }, [router]);
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center p-2">

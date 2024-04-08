@@ -1,5 +1,5 @@
 import { useUserContext } from "@/contexts/user-context";
-import userService from "@/helpers/user-service/api-wrapper";
+import Cookies from 'js-cookie';
 import { NextRequest, NextResponse } from "next/server";
 import { toast } from "react-toastify";
 
@@ -7,12 +7,12 @@ export const config = {
   matchers: "/:path*",
 };
 
-export default async function middleware(request: NextRequest) {
+export default function Middleware(request: NextRequest) {
   const publicRoutes = ["/_next", "/public"];
-  const loggedInRequiredRoutes = ["/user", "/assignments", "/dashboard"];
+  const loggedInRequiredRoutes = ["/user", "/assignments"];
   const redirectRoutes = ["/"];
   const { user } = useUserContext();
-
+  console.log(user);
   const path = request.nextUrl.pathname;
 
   // public routes do not need to be authenticated/reroute
@@ -20,10 +20,12 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // redirect to login page if no user context is found when accessing authentication-required route
   if (loggedInRequiredRoutes.some((route) => path.startsWith(route))) {
-    if (!user) {
+    console.log("u reached middleware");
+    if (!user || !Cookies.get('token')) {
         toast.error("You must login first to access this page");
-        return NextResponse.redirect(new URL("/login"));
+        return NextResponse.redirect(new URL("/login", request.url));
     }
     return NextResponse.next();
   }

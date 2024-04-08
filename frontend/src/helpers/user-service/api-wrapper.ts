@@ -20,8 +20,8 @@ const login = async (email: string, password: string): Promise<User> => {
         { withCredentials: true}
     ).then((res) => {
         if (res.status === HttpStatusCode.OK.valueOf()) {
-            console.log(res);
-            const user = res.data as User;
+            console.log(res.data.user);
+            const user = res.data.user as User;
             console.log(user);
             return user;
         } else {
@@ -46,7 +46,6 @@ const register = async (email: string, password: string) => {
             course: 'course placeholder',
             role: 'student'
         },
-        { withCredentials: true}
     ).then((res) => {
         console.log(res);
         if (res.status !== HttpStatusCode.OK.valueOf()) {
@@ -58,16 +57,19 @@ const register = async (email: string, password: string) => {
 };
 
 const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
-    await api.post(
-        `/getUserInfo`,
-        {
-            uid: uid
-        },
+    console.log("this is the uid");
+    console.log(uid);
+    const response = await api.get(
+        `/getUserInfo?uid=${uid}`,
         { withCredentials: true}
     ).then((res) => {
-        console.log(res);
         if (res.status === HttpStatusCode.OK.valueOf()) {
-            const userInfo = res.data as UserInfo;
+            const userInfo : UserInfo = {
+                name: res.data.name,
+                email: res.data.email,
+                bio: res.data.bio || "This person doesn't have bio",
+                photo: res.data.photo
+            }
             return userInfo;
         } else {
             throw new Error("We are currently encountering some issues, please try again later");
@@ -75,7 +77,7 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
     }).catch((err: Error) => {
         throw err;
     });
-    return null
+    return response;
 }
 
 const userService = {
