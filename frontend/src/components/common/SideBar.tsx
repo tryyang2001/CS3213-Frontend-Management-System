@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Avatar, Button, User, Spacer } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import classNames from "classnames";
 import Icons from "./Icons";
 import UserDropdown from "./UserDropdown";
@@ -61,6 +61,13 @@ export default function SideBar() {
   const handleNavigate = (route: string) => {
     router.push(route);
   };
+
+  // obtain current path, if is login/sign up, don't render SideBar
+  const currentPath = usePathname();
+
+  if (currentPath === "/login" || currentPath === "/sign-up") {
+    return null;
+  }
 
   return (
     <div
