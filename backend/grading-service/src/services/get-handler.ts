@@ -21,6 +21,7 @@ const getSubmissionByQuestionIdAndStudentId = async (
           hints: true,
         },
       },
+      createdOn: true,
     },
   });
 
@@ -42,6 +43,7 @@ const getSubmissionByQuestionIdAndStudentId = async (
         };
       }
     ),
+    createdOn: submission.createdOn.getTime(),
   };
 };
 

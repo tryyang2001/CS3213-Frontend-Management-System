@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { UserInfo } from "../common/ReadOnlyUserCard";
 import {
   Button,
   Input,

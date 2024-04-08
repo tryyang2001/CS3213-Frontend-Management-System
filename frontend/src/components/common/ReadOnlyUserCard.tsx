@@ -1,13 +1,6 @@
 import { Avatar } from "@nextui-org/react";
 import { ReactNode } from "react";
 
-export interface UserInfo {
-  name: string;
-  email: string;
-  bio: string;
-  photo?: string;
-}
-
 function Card({ children }: { children: ReactNode }) {
   return <div className="flex items-center gap-4">{children}</div>;
 }

@@ -462,7 +462,10 @@ describe("Unit Tests for Grading Controller", () => {
 
         const spy = jest
           .spyOn(GetHandler, "getSubmissionByQuestionIdAndStudentId")
-          .mockResolvedValue(StudentSolution.submission);
+          .mockResolvedValue({
+            ...StudentSolution.submission,
+            createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
+          });
 
         // Act
         const response = await supertest(app)
@@ -471,14 +474,17 @@ describe("Unit Tests for Grading Controller", () => {
 
         // Assert
         expect(response.status).toBe(HttpStatusCode.OK);
-        expect(Object.keys(response.body).length).toBe(6);
+        expect(Object.keys(response.body).length).toBe(7);
         expect(response.body).toHaveProperty("id");
         expect(response.body).toHaveProperty("questionId");
         expect(response.body).toHaveProperty("studentId");
         expect(response.body).toHaveProperty("language");
         expect(response.body).toHaveProperty("code");
         expect(response.body).toHaveProperty("feedbacks");
-        expect(response.body).toEqual(StudentSolution.submission);
+        expect(response.body).toEqual({
+          ...StudentSolution.submission,
+          createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
+        });
 
         // reset the mocks
         spy.mockRestore();
