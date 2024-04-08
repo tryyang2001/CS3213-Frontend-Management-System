@@ -19,8 +19,9 @@ const login = async (email: string, password: string): Promise<User> => {
         },
         { withCredentials: true}
     ).then((res) => {
-        if (res.status === HttpStatusCode.OK.valueOf() && res.data.user) {
-            const user = res.data.user as User;
+        if (res.status === HttpStatusCode.OK.valueOf()) {
+            const responseData = res.data as LoginResponse;
+            const user = responseData.user;
             return user;
         } else {
             console.log("invaliad email/password");
@@ -59,11 +60,12 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
         { withCredentials: true}
     ).then((res) => {
         if (res.status === HttpStatusCode.OK.valueOf()) {
+            const responseData = res.data as UserInfo
             const userInfo : UserInfo = {
-                name: res.data.name,
-                email: res.data.email,
-                bio: res.data.bio || "This person doesn't have bio",
-                photo: res.data.photo
+                name: responseData.name,
+                email: responseData.email,
+                bio: responseData.bio || "This person doesn't have bio",
+                photo: responseData.photo
             }
             return userInfo;
         } else {

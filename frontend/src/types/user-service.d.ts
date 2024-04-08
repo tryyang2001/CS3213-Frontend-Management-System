@@ -13,3 +13,7 @@ interface UserInfo {
     bio: string;
     photo?: string;
 }
+
+interface LoginResponse {
+    user: User;
+}
