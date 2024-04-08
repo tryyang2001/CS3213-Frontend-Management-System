@@ -18,7 +18,7 @@ model Submission {
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId String
 
-    student   User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    student   User @relation(fields: [studentId], references: [uid], onDelete: Cascade)
     studentId Int
 
     code       String
@@ -98,6 +98,7 @@ model Assignment {
     title       String
     deadline    DateTime
     isPublished Boolean  @default(false)
+    description String?
 
     numberOfQuestions Int        @default(0)
     questions         Question[]
@@ -113,7 +114,7 @@ model Assignment {
 
 // User Schema
 model User {
-    id Int @id
+    uid Int @id @default(autoincrement())
 
     name   String
     email  String  @unique
