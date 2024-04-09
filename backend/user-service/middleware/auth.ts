@@ -8,7 +8,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
         const token = await req.cookies.token;
 
         if (!jwtSecretKey) {
-            return res.status(403).send({ error: "No defined JWT secret key" });
+            return res.status(HttpStatusCode.FORBIDDEN.valueOf()).send({ error: "No defined JWT secret key" });
         }
 
         if (token) {
@@ -19,20 +19,20 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
                 return next();
             } else {
                 console.log("Unauthorized, invalid token");
-                return res.status(401).json({
+                return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                     login: false,
                     data: token
                 });
             }
         } else {
             console.log("Unauthorized, no authentication token");
-            return res.status(401).json({
+            return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                 login: false,
                 data: "Unauthorized, no authentication token"
             });
         }
     } catch (err) {
-        return res.status(401).json({
+        return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
             login: false,
             data: "Unauthorize"
         });

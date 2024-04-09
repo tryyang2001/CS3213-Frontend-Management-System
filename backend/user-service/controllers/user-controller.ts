@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt, { Secret } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../models/user-model";
+import HttpStatusCode from "../libs/enums/HttpStatusCode";
 
 async function registerUser(req: Request, res: Response) {
   const { email, password, name, major, course, role } = req.body;
@@ -72,14 +73,14 @@ async function loginUser(req: Request, res: Response) {
       .then((result) => {
         if (!result) {
           console.log("Incorrect password.");
-          return res.status(201).json({
+          return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
             error: "Incorrect password.",
           });
         } else {
           const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
           if (!jwtSecretKey) {
             console.error("JWT secret key is not defined.");
-            return res.status(500).json({
+            return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
               error: "Internal server error.",
             });
           }
@@ -110,7 +111,7 @@ async function getUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
   if (typeof queryUidString !== 'string') {
-    return res.status(400).json({ error: 'Invalid uid' });
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid' });
 }
   try {
     const uid = parseInt(queryUidString, 10);
@@ -170,7 +171,7 @@ async function updateUserPassword(req: Request, res: Response) {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.status(403).json({
+      return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
         error: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
@@ -181,7 +182,7 @@ async function updateUserPassword(req: Request, res: Response) {
         .then((result) => {
           if (!result) {
             console.log("Incorrect password.");
-            return res.status(403).json({
+            return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
               error: "Incorrect password.",
             });
           } else {
@@ -194,7 +195,7 @@ async function updateUserPassword(req: Request, res: Response) {
                     message: "Update password successfully.",
                   });
                 } catch (err) {
-                  return res.status(404).json({
+                  return res.status(HttpStatusCode.NOT_FOUND.valueOf()).json({
                     error: "Failed to update user password.",
                   });
                 }
