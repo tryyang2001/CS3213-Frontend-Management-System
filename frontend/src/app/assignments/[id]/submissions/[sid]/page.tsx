@@ -120,7 +120,11 @@ export default function SubmissionPage({ params }: Props) {
               </div>
               <Spacer y={4} />
               <div className="row-span-1">
-                <FeedbackTabs />
+                {submissions ? (
+                  <FeedbackTabs submission={submissions[selectedSubmission]} />
+                ) : (
+                  <FeedbackTabs />
+                )}
               </div>
             </div>
           </div>
