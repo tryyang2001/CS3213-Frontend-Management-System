@@ -160,7 +160,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
               setTitle(value);
               checkFormValidity("title", value);
             }}
-            placeholder="Enter you assignment title here"
+            placeholder="Enter your assignment title here"
             isInvalid={isTitleInvalid}
             errorMessage={
               isTitleInvalid &&

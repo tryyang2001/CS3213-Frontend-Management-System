@@ -111,7 +111,7 @@ function QuestionEditor({
             setTitle(value);
             checkFormInputValidity("title", value);
           }}
-          placeholder="Enter you assignment title here"
+          placeholder="Enter your question title here"
           isInvalid={isTitleInvalid}
           errorMessage={
             isTitleInvalid && "Title must be between 1 and 255 characters long"
