@@ -6,6 +6,7 @@ import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
+import { useUserContext } from "@/contexts/user-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import {
   Button,
@@ -36,7 +37,8 @@ export default function Page({ params }: Props) {
   const { toast } = useToast();
 
   // TODO: replace below code with actual user context to check for user role
-  const userRole = "tutor";
+  const { user } = useUserContext();
+  const userRole = user.role;
 
   const {
     data: assignment,
@@ -88,13 +90,13 @@ export default function Page({ params }: Props) {
             <AssignmentPage assignment={assignment} />
 
             {/* Button for submission */}
-            {/* {userRole === "student" && (
+            {userRole === "student" && (
               <div className="ml-auto mr-4 my-2">
                 <Button className="px-6" color="primary">
                   Submit
                 </Button>
               </div>
-            )} */}
+            )}
             {
               // TODO: replace !== "student" with actual user role check, as for now not sure what the user role value is
               userRole === "tutor" && (
