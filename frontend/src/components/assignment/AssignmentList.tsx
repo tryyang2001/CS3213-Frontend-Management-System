@@ -10,11 +10,11 @@ interface Props {
 }
 
 function AssignmentList({ assignments, userRole }: Props) {
+  const router = useRouter();
+
   if (!assignments) {
     return notFound();
   }
-
-  const router = useRouter();
 
   const handleButtonClick = (id: string) => {
     router.push(`/assignments/${id}`);
@@ -25,9 +25,9 @@ function AssignmentList({ assignments, userRole }: Props) {
       <b>Assignments</b>
       <Spacer y={4} />
       <div className="gap-2 grid grid-cols-1 sm:grid-cols-1">
-        {assignments!.length === 0 && <div>There is no assignment due</div>}
-        {assignments!.length > 0 &&
-          assignments!.map((assignment) => (
+        {assignments.length === 0 && <div>There is no assignment due</div>}
+        {assignments.length > 0 &&
+          assignments.map((assignment) => (
             <Card
               shadow="sm"
               key={assignment.id}

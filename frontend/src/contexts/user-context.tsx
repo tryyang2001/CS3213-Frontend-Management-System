@@ -49,7 +49,7 @@ function UserProvider({ children }: { children: ReactNode }) {
     const user = Cookies.get("user");
 
     if (user) {
-      setUser(JSON.parse(user));
+      setUser(JSON.parse(user) as User);
     }
   };
 

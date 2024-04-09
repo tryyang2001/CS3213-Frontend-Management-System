@@ -20,12 +20,11 @@ const login = async (email: string, password: string): Promise<User> => {
       { withCredentials: true }
     )
     .then((res) => {
-      if (res.status === HttpStatusCode.OK) {
+      if (res.status === HttpStatusCode.OK.valueOf()) {
         // the response from login is {user: user: {}}, hence we need to destructure this way
-        const user = res.data.user as User;
+        const user = (res.data as LoginResponse).user;
         return user;
       } else {
-        console.log("invaliad email/password");
         throw new Error("Invalid Email/Password");
       }
     });

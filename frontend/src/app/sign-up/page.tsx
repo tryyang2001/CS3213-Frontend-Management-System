@@ -4,14 +4,7 @@ import userService from "@/helpers/user-service/api-wrapper";
 import { useState, useMemo } from "react";
 import { EyeSlashFilledIcon } from "@/components/auth/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "@/components/auth/EyeFilledIcon";
-import {
-  Button,
-  Input,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@nextui-org/react";
+import { Button, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -46,7 +39,7 @@ export default function Home() {
 
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
       return toast({
         title: "Invalid input",
@@ -55,27 +48,28 @@ export default function Home() {
       });
     }
 
-    try {
-      await userService.register(email, password);
+    userService
+      .register(email, password)
+      .then(() => {
+        toast({
+          title: "Sign Up successfully",
+          description:
+            "Welcome to ITS, you may proceed to login with your registered email and password.",
+          variant: "success",
+        });
 
-      toast({
-        title: "Sign Up successfully",
-        description:
-          "Welcome to ITS, you may proceed to login with your registered email and password.",
-        variant: "success",
+        // push to login page since we haven't set up the cookie yet
+        router.push("/login");
+      })
+      .catch((_err) => {
+        console.log("Sign up failed,", _err);
+        toast({
+          title: "Sign Up failed",
+          description:
+            "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
       });
-
-      // push to login page since we haven't set up the cookie yet
-      router.push("/login");
-    } catch (_err) {
-      console.log("Sign up failed,", _err);
-      toast({
-        title: "Sign Up failed",
-        description:
-          "We are currently encountering some issues, please try again later",
-        variant: "destructive",
-      });
-    }
   };
 
   function Eye() {

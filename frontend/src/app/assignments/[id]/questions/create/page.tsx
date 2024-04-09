@@ -145,12 +145,15 @@ function Page({ params }: Props) {
         title: "Invalid form",
         description: (
           <div>
-            {invalidQuestions.map((index) => (
-              <div key={index} className="my-2">
-                Question {index + 1} has invalid input.
-                <div>{areFormsValid[index]?.errorMessage}</div>
-              </div>
-            ))}
+            {invalidQuestions.map(
+              (index) =>
+                index !== null && (
+                  <div key={index} className="my-2">
+                    Question {index + 1} has invalid input.
+                    <div>{areFormsValid[index]?.errorMessage}</div>
+                  </div>
+                )
+            )}
           </div>
         ),
         variant: "destructive",

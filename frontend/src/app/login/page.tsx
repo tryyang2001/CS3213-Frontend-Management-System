@@ -22,40 +22,40 @@ export default function Home() {
 
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (email === "" || password === "" || isInvalid) {
-      return toast({
+      toast({
         title: "Invalid input",
         description: "Please check your input and try again",
         variant: "destructive",
       });
     }
 
-    try {
-      const user = await userService.login(email, password);
+    userService
+      .login(email, password)
+      .then((user) => {
+        if (!user) {
+          throw new Error("Cannot logging in");
+        }
 
-      if (!user) {
-        throw new Error("Cannot logging in");
-      }
+        Cookies.set("user", JSON.stringify(user), { expires: 7 });
+        setUser(user);
 
-      Cookies.set("user", JSON.stringify(user), { expires: 7 });
-      setUser(user);
+        toast({
+          title: "Login successfully",
+          description: "Welcome back to ITS, " + user.name,
+          variant: "success",
+        });
 
-      toast({
-        title: "Login successfully",
-        description: "Welcome back to ITS, " + user.name,
-        variant: "success",
+        router.push("/dashboard");
+      })
+      .catch((_err) => {
+        toast({
+          title: "Login failed",
+          description: "Please check your email and password",
+          variant: "destructive",
+        });
       });
-
-      router.push("/dashboard");
-    } catch (_err) {
-      toast({
-        title: "Login failed",
-        description:
-          "We are currently encountering some issues, please try again later",
-        variant: "destructive",
-      });
-    }
   };
 
   return (
