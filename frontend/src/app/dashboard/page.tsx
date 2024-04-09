@@ -9,7 +9,14 @@ import { useRouter } from "next/navigation";
 
 export default function DashBoard() {
   const { user } = useUserContext();
+
   const router = useRouter();
+
+  if (!user) {
+    router.push("/login");
+    return null;
+  }
+
   const { data: assignments, isLoading } = useQuery({
     queryKey: ["get-assignments", user?.uid],
     queryFn: async () => {
@@ -19,8 +26,7 @@ export default function DashBoard() {
       }
       const assignments = await AssignmentService.getAssignmentsByUserId(
         // TODO: Retrieve the actual logged in user ID from a user context or any equivalent
-        // user?.uid.toString()
-        "rui_yang_tan_user_id_1"
+        user.uid
       );
 
       return assignments;
@@ -32,7 +38,7 @@ export default function DashBoard() {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList assignments={assignments} />
+        <AssignmentList assignments={assignments} userRole={user.role} />
       )}
     </div>
   );

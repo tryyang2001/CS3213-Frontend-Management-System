@@ -35,7 +35,7 @@ const getAssignmentById = async (assignmentId: string) => {
   }
 };
 
-const getAssignmentsByUserId = async (userId: string) => {
+const getAssignmentsByUserId = async (userId: number | string) => {
   try {
     const response = await api.get<GetAssignmentsResponse>(
       `/assignments?userId=${userId}`

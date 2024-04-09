@@ -15,8 +15,6 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // TODO: check if user is authenticated, and redirect to login page if not
-
   // redirect to dashboard page if home page is accessed
   if (redirectRoutes.includes(path)) {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin));

@@ -2,21 +2,23 @@
 
 import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 
 interface Props {
   assignments: Assignment[] | undefined;
+  userRole: string;
 }
 
-function AssignmentList({ assignments }: Props) {
+function AssignmentList({ assignments, userRole }: Props) {
+  if (!assignments) {
+    return notFound();
+  }
+
   const router = useRouter();
 
   const handleButtonClick = (id: string) => {
     router.push(`/assignments/${id}`);
   };
-
-  // TODO: consume user context to get the user role
-  const userRole = "tutor";
 
   return (
     <div>

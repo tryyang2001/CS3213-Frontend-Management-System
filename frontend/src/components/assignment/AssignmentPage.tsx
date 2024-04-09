@@ -4,7 +4,7 @@ import parse from "html-react-parser";
 
 interface Props {
   assignment: Assignment | null | undefined;
-  showNumberOfQuestions?: boolean;
+  showNumberOfQuestions?: boolean; //important as this component is reused in question creation form
 }
 
 function AssignmentPage({ assignment, showNumberOfQuestions = true }: Props) {
