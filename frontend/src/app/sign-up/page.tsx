@@ -27,17 +27,17 @@ export default function Home() {
 
   const [password, setPassword] = useState<string>("");
   const isInvalidPassword = useMemo<boolean>(() => {
-      if (password == "") return false;
-      return password.length < 10
+    if (password == "") return false;
+    return password.length < 10;
   }, [password]);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [confirmation, setPasswordConfirmation] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const isInvalidConfirmation = useMemo<boolean>(() => {
-      if (confirmation == "" || password == "") return false;
-      return confirmation != password
-  }, [confirmation, password])
-  
+    if (confirmation == "" || password == "") return false;
+    return confirmation != password;
+  }, [confirmation, password]);
+
   const router = useRouter();
   const handleSubmit = async () => {
     if (email == "" || password == "" || confirmation == "") {
@@ -57,7 +57,9 @@ export default function Home() {
         const errorMsg = err.message;
         setErrorMessage(errorMsg);
       } else {
-        setErrorMessage("We are currently encountering some issues, please try again later");
+        setErrorMessage(
+          "We are currently encountering some issues, please try again later"
+        );
       }
     }
     router.push("/dashboard");

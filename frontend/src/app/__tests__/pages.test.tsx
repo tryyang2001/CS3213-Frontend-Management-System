@@ -39,8 +39,8 @@ jest.mock("@/contexts/user-context", () => {
       user: mockUser, // Inject the mockUser as the user context
       setUserContext: jest.fn(), // Mock setUserContext as a Jest mock function
     }),
-  }
-})
+  };
+});
 jest.mock("@tanstack/react-query", () => {
   return {
     __esModule: true,

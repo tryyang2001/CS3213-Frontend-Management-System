@@ -63,15 +63,14 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
     }
 
     // upload files
-    let photoUrl = photo
+    let photoUrl = photo;
     if (newPhoto) {
       const fileResponse = await uploadFiles("imageUploader", {
-        files: [newPhoto]
-      })
-      photoUrl = fileResponse[0].url
-      setPhoto(photoUrl)
+        files: [newPhoto],
+      });
+      photoUrl = fileResponse[0].url;
+      setPhoto(photoUrl);
     }
-    
 
     const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
       method: "PATCH",

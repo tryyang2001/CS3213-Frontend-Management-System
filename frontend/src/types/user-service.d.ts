@@ -1,15 +1,15 @@
 interface User {
-    uid: number;
-    email: string;
-    name: string;
-    major: string;
-    course: string;
-    role: string;
+  uid: number;
+  email: string;
+  name: string;
+  major: string;
+  course: string;
+  role: string;
 }
 
 interface UserInfo {
-    name: string;
-    email: string;
-    bio: string;
-    photo?: string;
+  name: string;
+  email: string;
+  bio: string;
+  photo?: string;
 }

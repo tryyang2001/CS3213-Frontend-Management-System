@@ -20,14 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-white">
       <body className={inter.className + " min-h-screen"}>
-      <ToastContainer
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
+        <ToastContainer
+          style={{
+            position: "fixed",
+            top: 0,
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
         <Providers>
           <div className="flex flex-row justify-start">
             <div>

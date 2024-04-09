@@ -12,8 +12,8 @@ import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
 import Cookies from "js-cookie";
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 
@@ -40,16 +40,18 @@ export default function Home() {
       if (!user) {
         throw new Error("Cannot logging in");
       }
-      Cookies.set('user', JSON.stringify(user), {expires: 7});
+      Cookies.set("user", JSON.stringify(user), { expires: 7 });
       setUserContext(user);
       toast.success("Log in successfully!");
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
         setErrorMessage(errorMsg);
       } else {
-        setErrorMessage("We are currently encountering some issues, please try again later");
+        setErrorMessage(
+          "We are currently encountering some issues, please try again later"
+        );
       }
     }
   };

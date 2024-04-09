@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
@@ -30,7 +30,7 @@ export default function Page() {
           }
         }
         setIsLoading(false);
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching user info:", error);
         toast.error("An unexpected error occurred");
         // Handle the error based on its type
