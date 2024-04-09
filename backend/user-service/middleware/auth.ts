@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
+import HttpStatusCode from '../libs/enums/HttpStatusCode';
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
     const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
