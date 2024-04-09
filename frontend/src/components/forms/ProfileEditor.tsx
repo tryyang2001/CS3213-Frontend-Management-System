@@ -13,6 +13,7 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import FileInput from "./FileInput";
+import { uploadFiles } from "@/utils/uploadthing";
 
 export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
   const [info, setInfo] = useState<UserInfo>(userInfo);
@@ -61,12 +62,23 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
+    // upload files
+    let photoUrl = photo
+    if (newPhoto) {
+      const fileResponse = await uploadFiles("imageUploader", {
+        files: [newPhoto]
+      })
+      photoUrl = fileResponse[0].url
+      setPhoto(photoUrl)
+    }
+    
+
     const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
       method: "PATCH",
       body: JSON.stringify({
         name: name,
         bio: bio,
-        photo: newPhoto,
+        photo: photoUrl,
         email: info.email,
       }),
     }).catch((err) => {
@@ -85,7 +97,7 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
         email: info.email,
         name: name,
         bio: bio,
-        photo: photo,
+        photo: photoUrl,
       });
     }
   };
