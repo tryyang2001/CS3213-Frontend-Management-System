@@ -8,6 +8,7 @@ interface User {
 }
 
 interface UserInfo {
+    uid: number;
     name: string;
     email: string;
     bio: string;

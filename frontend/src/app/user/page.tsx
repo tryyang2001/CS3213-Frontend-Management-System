@@ -7,6 +7,7 @@ import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import Cookies from "js-cookie";
 
 export default function Page() {
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
@@ -17,14 +18,15 @@ export default function Page() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        if (user === null) {
+        if (user === null || Cookies.get('token')) {
           toast.error("You must login to view user page");
           router.push("/");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
+          console.log("retrieved", retrievedUserInfo);
           if (retrievedUserInfo === null) {
-            toast.error("Unable to get user data");
-            router.push("/");
+            toast.error("Unauthorized, please log in again");
+            router.push("/login");
           } else {
             setUserInfo(retrievedUserInfo);
           }
@@ -41,7 +43,9 @@ export default function Page() {
     if (user) {
       fetchUserInfo().catch((err) => console.log(err));
     } else {
+      console.log("no user context");
       setIsLoading(false);
+      router.push("/");
     }
   }, [user]);
 

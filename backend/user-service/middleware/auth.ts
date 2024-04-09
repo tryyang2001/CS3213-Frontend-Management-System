@@ -32,9 +32,10 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
             });
         }
     } catch (err) {
-        console.log("Error verifying token");
-        const token = req.cookies.token;
-        return res.status(402).send({ error: token });
+        return res.status(401).json({
+            login: false,
+            data: "Unauthorize"
+        });
     }
 };
 

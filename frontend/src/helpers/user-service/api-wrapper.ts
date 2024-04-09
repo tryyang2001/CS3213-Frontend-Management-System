@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import HttpStatusCode from "@/types/HttpStatusCode";
 
 const api = axios.create({
@@ -59,9 +59,11 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
         `/getUserInfo?uid=${uid}`,
         { withCredentials: true}
     ).then((res) => {
+        console.log("response", res);
         if (res.status === HttpStatusCode.OK.valueOf()) {
             const responseData = res.data as UserInfo
             const userInfo : UserInfo = {
+                uid: responseData.uid,
                 name: responseData.name,
                 email: responseData.email,
                 bio: responseData.bio || "This person doesn't have bio",
@@ -69,18 +71,52 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
             }
             return userInfo;
         } else {
-            throw new Error("We are currently encountering some issues, please try again later");
+            return null;
         }
-    }).catch((err: Error) => {
-        throw err;
+    }).catch((_err: Error) => {
+        return null;
     });
     return response;
 }
 
+const updateUserPassword = async (uid: number, oldPassword: string, newPassword: string) => {
+    try {
+        const response = await api.put(
+            `/updateUserPassword`,
+            {
+                uid: uid,
+                old_password: oldPassword,
+                new_password: newPassword,
+            },
+            { withCredentials: true}
+        );
+        
+        console.log(response.status);
+        if (response.status === HttpStatusCode.OK.valueOf()) {
+            return;
+        } else {
+            return  new Error("Unknown error updating password, please try again");
+        }
+    } catch (error) {
+        console.log(error);
+        if (isAxiosError(error)) {
+            if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+                throw new Error("Unauthorize");
+            } else if (error.response?.status === HttpStatusCode.FORBIDDEN.valueOf()) {
+                throw new Error("Incorrect password");
+            } else {
+                throw new Error(error.message);
+            }
+        }
+        throw new Error("Unknown error updating password, please try again");
+    };
+};
+
 const userService = {
     login,
     register,
-    getUserInfo
+    getUserInfo,
+    updateUserPassword
 };
 
 export default userService;

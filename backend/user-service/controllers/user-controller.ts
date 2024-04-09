@@ -170,7 +170,7 @@ async function updateUserPassword(req: Request, res: Response) {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.json({
+      return res.status(403).json({
         error: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
@@ -181,7 +181,7 @@ async function updateUserPassword(req: Request, res: Response) {
         .then((result) => {
           if (!result) {
             console.log("Incorrect password.");
-            return res.json({
+            return res.status(403).json({
               error: "Incorrect password.",
             });
           } else {
@@ -194,7 +194,7 @@ async function updateUserPassword(req: Request, res: Response) {
                     message: "Update password successfully.",
                   });
                 } catch (err) {
-                  return res.json({
+                  return res.status(404).json({
                     error: "Failed to update user password.",
                   });
                 }

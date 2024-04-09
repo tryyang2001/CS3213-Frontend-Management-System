@@ -10,11 +10,12 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextUIProvider>
-        <UserProvider>
+      <UserProvider>
+        <NextUIProvider>
+        
           {children}
-        </UserProvider>
-      </NextUIProvider>
+        </NextUIProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

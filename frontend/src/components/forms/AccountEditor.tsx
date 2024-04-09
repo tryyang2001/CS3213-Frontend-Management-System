@@ -10,14 +10,16 @@ import {
 } from "@nextui-org/react";
 import PasswordInput from "./PasswordInput";
 import ConfirmPasswordInput from "./ConfirmPasswordInput";
+import userService from "@/helpers/user-service/api-wrapper";
 
 export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
+  const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
   const [isInvalidConfirm, setIsInvalidConfirm] = useState<boolean>(false);
   const [accountMessage, setAccountMessage] = useState<string>("");
   const [updateCount, setUpdateCount] = useState<number>(2);
-
+  
   const handleAccountSubmit = async () => {
     if (newPassword == "") {
       setAccountMessage("Please fill in the required fields");
@@ -28,32 +30,35 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-      method: "PATCH",
-      body: JSON.stringify({
-        email: userInfo.email,
-        password: newPassword,
-      }),
-    }).catch((err) => {
-      console.log(err);
-      return {
-        status: 500,
-        ok: false,
-      };
-    });
-
-    if (!res.ok) {
-      setAccountMessage("An error occured, please try again later");
-    } else {
-      setAccountMessage("Password Updated!");
-      setNewPassword("");
+    try {
+      await userService.updateUserPassword(
+        userInfo.uid,
+        oldPassword,
+        newPassword,
+      );
       setUpdateCount(updateCount + 1);
+      setAccountMessage("Update password successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message;
+        setAccountMessage(errorMessage);
+      } else {
+        setAccountMessage("Unknown error updating password, please try again");
+      }
+    } finally {
+      setNewPassword("");
+      setOldPassword("");
     }
   };
 
   return (
     <form className="flex w-1/2 flex-col gap-4" key={updateCount}>
       <Input type="email" isDisabled label="Email" value={userInfo.email} />
+      <PasswordInput
+        password={oldPassword}
+        setPassword={setOldPassword}
+        setIsInvalid={setIsInvalidPassword}
+      />
       <PasswordInput
         password={newPassword}
         setPassword={setNewPassword}

@@ -21,11 +21,13 @@ jest.mock("next/navigation", () => {
 
 describe("Account Editor", () => {
   const userInfo: UserInfo = {
+    uid: 1,
     email: "email@email.com",
     name: "Abc",
     bio: "Hello!",
   };
   const errorInfo: UserInfo = {
+    uid: 2,
     email: "bad@email.com",
     name: "Abc",
     bio: "Hello!",

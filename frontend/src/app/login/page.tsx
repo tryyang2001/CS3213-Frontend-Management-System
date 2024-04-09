@@ -40,7 +40,8 @@ export default function Home() {
         throw new Error("Cannot logging in");
       }
       setUserContext(user);
-      toast.success("Log in successfully!");
+      console.log(user);
+      toast.error("Log in successfully!");
       router.push('/user');
     } catch (err) {
       if (err instanceof Error) {
