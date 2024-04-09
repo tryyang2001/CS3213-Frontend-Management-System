@@ -18,44 +18,36 @@ export default function Page() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        if (user === null) {
-          router.push("/login");
-        } else {
-          const userInfo = await userService.getUserInfo(user.uid);
+  const fetchUserInfo = async () => {
+    try {
+      const userInfo = await userService.getUserInfo(user.uid);
 
-          if (userInfo === null) {
-            toast({
-              title: "User not found",
-              description: "Please login again",
-              variant: "destructive",
-            });
-
-            router.push("/dashboard");
-          } else {
-            setUserInfo(userInfo);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user info:", error);
+      if (userInfo === null) {
         toast({
-          title: "Error fetching user info",
-          description: "Please try again later",
+          title: "User not found",
+          description: "Please login again",
           variant: "destructive",
         });
+
+        router.push("/dashboard");
+      } else {
+        setUserInfo(userInfo);
       }
-
-      setIsLoading(false);
-    };
-
-    if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
-    } else {
-      return;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      toast({
+        title: "Error fetching user info",
+        description: "Please try again later",
+        variant: "destructive",
+      });
     }
-  }, [router]);
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   return (
     <div className="flex flex-col items-center p-2">

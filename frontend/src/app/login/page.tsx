@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
 import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
@@ -21,7 +16,7 @@ export default function Home() {
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
-  const { setUserContext } = useUserContext();
+  const { setUser } = useUserContext();
 
   const router = useRouter();
 
@@ -38,12 +33,13 @@ export default function Home() {
 
     try {
       const user = await userService.login(email, password);
+
       if (!user) {
         throw new Error("Cannot logging in");
       }
 
       Cookies.set("user", JSON.stringify(user), { expires: 7 });
-      setUserContext(user);
+      setUser(user);
 
       toast({
         title: "Login successfully",
@@ -73,19 +69,23 @@ export default function Home() {
 
         <PasswordInput password={password} setPassword={setPassword} />
 
-        <Button type="submit" onClick={handleSubmit} color="primary">
+        <Button
+          type="submit"
+          onClick={handleSubmit}
+          color="primary"
+          className="w-full"
+        >
           Login
         </Button>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 text-center">
           <div>
-            {" "}
-            <Link href="/login/recovery"> Forgot Password </Link>{" "}
+            <Link href="/login/recovery">Forgot Password</Link>{" "}
           </div>
-          <div> | </div>
+
+          <Divider orientation="vertical" />
           <div>
-            {" "}
-            <Link href="/sign-up"> Sign up</Link>{" "}
+            <Link href="/sign-up">Sign up</Link>{" "}
           </div>
         </div>
       </div>
