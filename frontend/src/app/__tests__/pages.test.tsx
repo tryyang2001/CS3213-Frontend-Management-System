@@ -5,7 +5,7 @@ import UserPage from "../user/page";
 import AssignmentPage from "../assignments/[id]/page";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 const mockUser: User = {
   uid: 9,
