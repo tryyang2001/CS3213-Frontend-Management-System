@@ -279,7 +279,8 @@ describe("Unit Tests for /user/login endpoint", () => {
 describe('Unit Tests for /user/getUserInfo endpoint', () => {
   const app = createUnitTestServer();
   let uid: any;
-
+  const existingUserId = 1;
+  const nonExistingUserId = -1;
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -287,14 +288,14 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
   describe("Given a valid user ID", () => {
     it("Should return the user object", async () => {
       // Arrange
+      uid = existingUserId
       jest.spyOn(db, "getUserByUserId").mockResolvedValue({
         rows: [getGetUserResponseBody()],
       } as unknown as QueryResult<any>);
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserUserInfo")
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${uid}`)
       // Assert
       expect(response.body).toEqual(getGetUserResponseBody());
     });
@@ -303,14 +304,14 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
   describe("Given a non-existing user ID", () => {
     it("Should return an error message", async () => {
       // Arrange
+      uid = nonExistingUserId;
       jest
         .spyOn(db, "getUserByUserId")
         .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserUserInfo")
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${uid}`)
       
       // Assert
       expect(response.body).toEqual({ error: "User does not exist." });
@@ -320,14 +321,14 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
   describe("Given an error while fetching user", () => {
     it("Should return an error message", async () => {
       // Arrange
+      uid = existingUserId;
       jest
         .spyOn(db, "getUserByUserId")
         .mockRejectedValue(new Error("Database error"));
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserUserInfo")
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${uid}`)
 
       // Assert
       expect(response.body).toEqual({ message: "Error getting user by uid." });
