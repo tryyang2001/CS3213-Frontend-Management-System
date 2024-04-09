@@ -84,12 +84,12 @@ async function loginUser(req: Request, res: Response) {
             });
           }
 
-          const data = {
+          const payload = {
             email: email,
-            password: hash,
+            uid: user.uid,
           };
 
-          const token = jwt.sign(data, jwtSecretKey, { expiresIn: "5d" });
+          const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "5d" });
           res
             .cookie("token", token, {
               path: "/",

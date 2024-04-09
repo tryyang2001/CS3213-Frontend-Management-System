@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
 
-const verifyToken = (req: Request, res: Response, next: NextFunction): void | Response<any, Record<string, any>> => {
+const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
     const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
 
     try {
-        const token = req.cookies.token;
+        const token = await req.cookies.token;
 
         if (!jwtSecretKey) {
-            throw new Error('JWT secret key is not defined');
+            return res.status(403).send({ error: "No defined JWT secret key" });
         }
 
         if (token) {
@@ -17,17 +17,24 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void | Re
                 console.log("verified");
                 // You can perform further validation or processing here if needed
                 return next();
+            } else {
+                console.log("Unauthorized, invalid token");
+                return res.status(401).json({
+                    login: false,
+                    data: token
+                });
             }
         } else {
-            console.log("Access Denied");
-            return res.json({
+            console.log("Unauthorized, no authentication token");
+            return res.status(401).json({
                 login: false,
-                data: 'error'
+                data: "Unauthorized, no authentication token"
             });
         }
     } catch (err) {
-        console.log("Invalid token");
-        return res.send({ err: 'Invalid token' });
+        console.log("Error verifying token");
+        const token = req.cookies.token;
+        return res.status(402).send({ error: token });
     }
 };
 

@@ -16,12 +16,21 @@ import { getGetAllUsersResponseBody } from "../../payload/response/get-all-users
 import { getUpdateUserPasswordRequestBody } from "../../payload/request/update-user-password-request-body";
 import { getUpdateUserInfoRequestBody } from "../../payload/request/update-user-info-request-body";
 import { getDeleteUserRequestBody } from "../../payload/request/delete-user-request-body";
+import { NextFunction } from "express";
+import auth from '../../../middleware/auth';
 
 jest.mock("../../../psql", () => {
   return {
     query: jest.fn(),
     connect: jest.fn(),
   };
+});
+
+jest.mock('../../../middleware/auth', () => {
+  return jest.fn(async (req: Request, res: Response, next: NextFunction) => {
+    // Always call next() without performing any authentication checks
+    next();
+  });
 });
 
 describe("Unit Tests for /user/register endpoint", () => {
@@ -268,11 +277,7 @@ describe('Unit Tests for /user/login endpoint', () => {
 
 describe('Unit Tests for /user/getUserInfo endpoint', () => {
   const app = createUnitTestServer();
-  let reqBody: any;
-
-  beforeEach(() => {
-    reqBody = getGetUserRequestBody();
-  });
+  let uid: any;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -282,11 +287,11 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
     it('Should return the user object', async () => {
       // Arrange
       jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [getGetUserResponseBody()] } as unknown as QueryResult<any>);
-  
+      const existingUserId = 1;
+
       // Act
       const response = await supertest(app)
-        .get('/user/getUserInfo')
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${existingUserId}`);
   
       // Assert
       expect(response.body).toEqual(getGetUserResponseBody());
@@ -297,11 +302,10 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
     it('Should return an error message', async () => {
       // Arrange
       jest.spyOn(db, 'getUserByUserId').mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
-  
+      const unexistUserId = -2;
       // Act
       const response = await supertest(app)
-        .get('/user/getUserInfo')
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${unexistUserId}`);
   
       // Assert
       expect(response.body).toEqual({ error: 'User does not exist.' });
@@ -315,11 +319,10 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
   
       // Act
       const response = await supertest(app)
-        .get('/user/getUserInfo')
-        .send(reqBody);
+        .get('/user/getUserInfo');
   
       // Assert
-      expect(response.body).toEqual({ message: 'Error getting user by uid.' });
+      expect(response.body).toEqual({ error: 'Invalid uid' });
     });
   });
 });
@@ -657,7 +660,7 @@ describe('Unit Tests for /user/deleteUser endpoint', () => {
       // Arrange
       const reqBody = {}; // Invalid request body
       jest.spyOn(db, 'deleteUser').mockRejectedValue(new Error('Failed to delete user.'));
-
+  
       // Act
       const response = await supertest(app)
         .delete('/user/deleteUser')
