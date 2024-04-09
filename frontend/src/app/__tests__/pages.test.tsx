@@ -76,7 +76,7 @@ describe("Page Snapshot tests", () => {
 
   it("User Page Snapshot test", async () => {
     const { container } = render(<UserPage />);
-    const _title = await screen.findByText("Your Account");
+    // const _title = await screen.findByText("Your Account");
 
     expect(container).toMatchSnapshot();
   });

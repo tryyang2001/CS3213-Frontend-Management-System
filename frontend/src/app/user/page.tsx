@@ -15,11 +15,7 @@ export default function Page() {
 
   const { toast } = useToast();
 
-  const {
-    data: userInfo,
-    isLoading,
-    isFetched,
-  } = useQuery({
+  const { data: userInfo, isLoading } = useQuery({
     queryKey: ["get-user-info", user.uid],
     queryFn: async () => {
       const userInfo = await userService.getUserInfo(user.uid);
@@ -41,7 +37,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center p-2">
-      {isLoading && !isFetched ? (
+      {isLoading ? (
         <LogoLoading />
       ) : (
         <div className="w-full">
