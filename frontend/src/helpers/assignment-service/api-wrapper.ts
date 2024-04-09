@@ -37,6 +37,11 @@ const getAssignmentById = async (assignmentId: string) => {
 
 const getAssignmentsByUserId = async (userId: number | string) => {
   try {
+    // default user id is 0, which means no user is logged in
+    if (userId === 0) {
+      return [];
+    }
+
     const response = await api.get<GetAssignmentsResponse>(
       `/assignments?userId=${userId}`
     );
@@ -103,11 +108,6 @@ const createAssignment = async (requestBody: CreateAssignmentBody) => {
       requestBody.deadline = requestBody.deadline.getTime();
     }
 
-    if (requestBody.authors === undefined) {
-      // TODO: create user context, and get the id from there
-      requestBody.authors = ["rui_yang_tan_user_id_1"];
-    }
-
     if (requestBody.isPublished === undefined) {
       // default to not publishing the assignment
       requestBody.isPublished = false;
@@ -131,11 +131,6 @@ const updateAssignment = async (
     if (requestBody.deadline instanceof Date) {
       // cast Date to timestamp
       requestBody.deadline = requestBody.deadline.getTime();
-    }
-
-    if (requestBody.authors === undefined) {
-      // TODO: create user context, and get the id from there
-      requestBody.authors = ["rui_yang_tan_user_id_1"];
     }
 
     const response = await api.put(`/assignments/${assignmentId}`, requestBody);
@@ -260,7 +255,7 @@ const deleteTestCases = async (questionId: string, testCaseIds: string[]) => {
   }
 };
 
-const assignmentService = {
+const AssignmentService = {
   getAssignmentById,
   getAssignmentsByUserId,
   getQuestionReferenceSolution,
@@ -274,4 +269,4 @@ const assignmentService = {
   deleteQuestion,
 };
 
-export default assignmentService;
+export default AssignmentService;

@@ -10,6 +10,7 @@ import FieldLabel from "./FieldLabel";
 import Icons from "@/components/common/Icons";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
+import { useUserContext } from "@/contexts/user-context";
 
 interface Props {
   isEditing?: boolean;
@@ -49,6 +50,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
     }
   }, []);
 
+  const { user } = useUserContext();
+
   const { toast } = useToast();
 
   const checkFormValidity = useCallback(
@@ -80,6 +83,10 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         deadline,
         description,
         isPublished,
+        // if uid is alr in authors, don't add it again
+        authors: assignment!.authors.includes(user.uid)
+          ? assignment!.authors
+          : [...assignment!.authors, user.uid],
       })
         .then((updatedAssignment) => {
           if (!updatedAssignment) {
@@ -107,6 +114,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         deadline,
         description,
         isPublished,
+        authors: [user.uid],
       })
         .then((createdAssignment) => {
           if (!createdAssignment) {

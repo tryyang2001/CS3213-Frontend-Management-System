@@ -13,20 +13,15 @@ import Icons from "@/components/common/Icons";
 interface Props {
   assignmentDeadline: number;
   initialQuestion: CreateQuestionBody;
-  isSubmittingQuestionForm: boolean;
   onQuestionChange: (updatedQuestion: CreateQuestionBody) => void;
-  onFormSubmit: (isFormValid: boolean) => void;
 }
 
 function QuestionEditor({
   assignmentDeadline,
   initialQuestion,
-  isSubmittingQuestionForm,
   onQuestionChange,
-  onFormSubmit,
 }: Props) {
   // states declaration
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -85,32 +80,20 @@ function QuestionEditor({
     testCases,
   ]);
 
-  useEffect(() => {
-    const isFormValid =
-      checkFormInputValidity("title", title) &&
-      checkFormInputValidity("description", description) &&
-      checkFormInputValidity(
-        "deadline",
-        DateUtils.toLocalISOString(new Date(deadline)).slice(0, 16)
-      );
-
-    onFormSubmit(isFormValid);
-  }, [isSubmittingQuestionForm]);
-
   const checkFormInputValidity = (field: string, value: string) => {
     switch (field) {
       case "title":
         const isTitleInvalid = value.length === 0 || value.length > 255;
         setIsTitleInvalid(isTitleInvalid);
-        return isTitleInvalid;
+        return !isTitleInvalid;
       case "deadline":
         const isDeadlineInvalid = new Date(value) < new Date();
         setIsDeadlineInvalid(isDeadlineInvalid);
-        return isDeadlineInvalid;
+        return !isDeadlineInvalid;
       case "description":
         const isDescriptionInvalid = value.length === 0 || value.length > 50000;
         setIsDescriptionInvalid(isDescriptionInvalid);
-        return isDescriptionInvalid;
+        return !isDescriptionInvalid;
       default:
         return false;
     }

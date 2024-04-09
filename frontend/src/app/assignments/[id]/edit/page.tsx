@@ -44,10 +44,6 @@ function Page({ params }: Props) {
 
   const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
 
-  const [isSubmittingQuestionForm, setIsSubmittingQuestionForm] =
-    useState(false);
-  const [areFormsValid, setAreFormsValid] = useState<boolean[]>();
-
   const { toast } = useToast();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -90,10 +86,6 @@ function Page({ params }: Props) {
       );
 
       setUpdatedQuestions(questions);
-
-      questions.forEach((_) =>
-        setAreFormsValid((prevForms) => [...(prevForms ?? []), true])
-      );
     }
 
     setIsLoading(false);
@@ -123,7 +115,6 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
-    setAreFormsValid((prevForms) => [...(prevForms ?? []), false]);
   };
 
   const handleDeleteQuestion = (index: number) => {
@@ -136,12 +127,6 @@ function Page({ params }: Props) {
     setUpdatedQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
     );
-
-    setAreFormsValid((prevForms) => {
-      const updatedForms = [...(prevForms ?? [])];
-      updatedForms.splice(index, 1);
-      return updatedForms;
-    });
   };
 
   const handleQuestionChange = (
@@ -195,20 +180,89 @@ function Page({ params }: Props) {
           variant: "success",
         });
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((_error) => {
+        toast({
+          title: "Failed to update questions",
+          description:
+            "An error occurred while updating questions. Please check the inputs and try again.",
+          variant: "destructive",
+        });
       });
   };
 
+  const checkQuestionInputValidity = (question: CreateQuestionBody) => {
+    if (question.title.length === 0 || question.title.length > 255) {
+      return {
+        isValid: false,
+        errorMessage: "Title must be between 1 and 255 characters.",
+      };
+    }
+
+    const strippedDescription = question.description.replace(/<[^>]*>/g, "");
+
+    if (
+      strippedDescription.length === 0 ||
+      strippedDescription.length > 50000
+    ) {
+      return {
+        isValid: false,
+        errorMessage: "Description must be between 1 and 50000 characters.",
+      };
+    }
+
+    if (new Date(question.deadline as number) < new Date()) {
+      return {
+        isValid: false,
+        errorMessage: "Deadline must be in the future.",
+      };
+    }
+
+    if (question.referenceSolution?.code.length === 0) {
+      return {
+        isValid: false,
+        errorMessage: "Reference solution code must not be empty.",
+      };
+    }
+
+    if (question.testCases?.length === 0) {
+      return {
+        isValid: false,
+        errorMessage: "At least one test case is required.",
+      };
+    }
+
+    return {
+      isValid: true,
+      errorMessage: "",
+    };
+  };
+
   const handleSaveQuestionUpdate = () => {
-    setIsSubmittingQuestionForm(true);
-    if (areFormsValid?.every((isValid) => isValid)) {
+    // for each question in updatedQuestions, check if the input is valid
+    const areFormsValid = updatedQuestions.map((question) =>
+      checkQuestionInputValidity(question)
+    );
+
+    if (areFormsValid?.every((result) => result.isValid)) {
       handleUpdateQuestions();
     } else {
+      // see which question index is invalid
+      const invalidQuestions = areFormsValid
+        .map((result, index) => (result.isValid ? null : index))
+        .filter((index) => index !== null);
+
       toast({
-        title: "Invalid form input",
-        description:
-          "Please ensure all form inputs are valid before updating the questions.",
+        title: "Invalid form",
+        description: (
+          <div>
+            {invalidQuestions.map((index) => (
+              <div key={index} className="my-2">
+                Question {index + 1} has invalid input.
+                <div>{areFormsValid[index]?.errorMessage}</div>
+              </div>
+            ))}
+          </div>
+        ),
         variant: "destructive",
       });
     }
@@ -290,14 +344,6 @@ function Page({ params }: Props) {
                   onQuestionChange={(updatedQuestion) =>
                     handleQuestionChange(updatedQuestion, index)
                   }
-                  isSubmittingQuestionForm={isSubmittingQuestionForm}
-                  onFormSubmit={(isFormValid) => {
-                    setAreFormsValid((prevForms) => {
-                      const updatedForms = [...(prevForms ?? [])];
-                      updatedForms[index] = isFormValid;
-                      return updatedForms;
-                    });
-                  }}
                 />
 
                 <Button

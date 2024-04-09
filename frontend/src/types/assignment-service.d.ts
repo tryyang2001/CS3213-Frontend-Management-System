@@ -2,7 +2,7 @@ interface CreateAssignmentBody {
   title: string;
   deadline: number | Date;
   description?: string;
-  authors?: string[];
+  authors?: number[];
   isPublished?: boolean;
 }
 
@@ -23,7 +23,7 @@ interface Assignment {
   isPublished: boolean;
   numberOfQuestions: number;
   questions?: Question[];
-  authors: string[];
+  authors: number[];
   createdOn: number;
   updatedOn: number;
 }

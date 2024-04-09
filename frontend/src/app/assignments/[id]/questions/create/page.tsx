@@ -27,10 +27,6 @@ function Page({ params }: Props) {
     },
   ]);
 
-  const [isSubmittingQuestionForm, setIsSubmittingQuestionForm] =
-    useState(false);
-  const [areFormsValid, setAreFormsValid] = useState<boolean[]>();
-
   const { toast } = useToast();
 
   const { assignment, isNewlyCreated, disableAddingQuestion } =
@@ -60,18 +56,12 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
-    setAreFormsValid((prevForms) => [...(prevForms ?? []), false]);
   };
 
   const handleDeleteQuestion = (index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
     );
-    setAreFormsValid((prevForms) => {
-      const updatedForms = [...(prevForms ?? [])];
-      updatedForms.splice(index, 1);
-      return updatedForms;
-    });
   };
 
   const handleSaveCreatedQuestions = () => {
@@ -93,16 +83,76 @@ function Page({ params }: Props) {
       });
   };
 
-  const handleFinishQuestionsCreation = () => {
-    setIsSubmittingQuestionForm(true);
+  const checkQuestionInputValidity = (question: CreateQuestionBody) => {
+    if (question.title.length === 0 || question.title.length > 255) {
+      return {
+        isValid: false,
+        errorMessage: "Title must be between 1 and 255 characters",
+      };
+    }
 
-    if (areFormsValid?.every((isValid) => isValid)) {
+    if (
+      question.description.length === 0 ||
+      question.description.length > 50000
+    ) {
+      return {
+        isValid: false,
+        errorMessage: "Description must be between 1 and 50000 characters",
+      };
+    }
+
+    if (new Date(question.deadline as number) < new Date()) {
+      return {
+        isValid: false,
+        errorMessage: "Deadline must be in the future",
+      };
+    }
+
+    if (question.referenceSolution?.code.length === 0) {
+      return {
+        isValid: false,
+        errorMessage: "Reference solution code must not be empty",
+      };
+    }
+
+    if (question.testCases?.length === 0) {
+      return {
+        isValid: false,
+        errorMessage: "Test cases must not be empty",
+      };
+    }
+
+    return {
+      isValid: true,
+      errorMessage: "",
+    };
+  };
+
+  const handleFinishQuestionsCreation = () => {
+    const areFormsValid = questions.map((question) => {
+      return checkQuestionInputValidity(question);
+    });
+
+    if (areFormsValid?.every((result) => result.isValid)) {
       handleSaveCreatedQuestions();
     } else {
+      // see which question index is invalid
+      const invalidQuestions = areFormsValid
+        .map((result, index) => (result.isValid ? null : index))
+        .filter((index) => index !== null);
+
       toast({
         title: "Invalid form",
-        description:
-          "Please make sure all questions are filled out correctly before submitting.",
+        description: (
+          <div>
+            {invalidQuestions.map((index) => (
+              <div key={index} className="my-2">
+                Question {index + 1} has invalid input.
+                <div>{areFormsValid[index]?.errorMessage}</div>
+              </div>
+            ))}
+          </div>
+        ),
         variant: "destructive",
       });
     }
@@ -144,14 +194,6 @@ function Page({ params }: Props) {
                 onQuestionChange={(updatedQuestion) =>
                   handleQuestionChange(updatedQuestion, index)
                 }
-                isSubmittingQuestionForm={isSubmittingQuestionForm}
-                onFormSubmit={(isFormValid) => {
-                  setAreFormsValid((prevForms) => {
-                    const updatedForms = [...(prevForms ?? [])];
-                    updatedForms[index] = isFormValid;
-                    return updatedForms;
-                  });
-                }}
               />
 
               <Button
