@@ -11,6 +11,9 @@ interface Submission {
   studentId: number;
   code: string;
   language: string;
-  codeParser: string;
+  feedbacks: {
+    line: number;
+    hints: string[];
+  }[];
   createdOn: number;
 }

@@ -5,32 +5,39 @@ import Editor from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 
 interface Props {
-  code?: string;
-  feedback?: {
-    line: number;
-    hints: string[];
-  };
+  submission?: Submission;
 }
 
-export default function FeedbackCodeEditor({ code, feedback }: Props) {
+export default function FeedbackCodeEditor({ submission }: Props) {
   const editorRef: MutableRefObject<monaco.editor.IStandaloneCodeEditor | null> =
     useRef(null);
 
-  const newDecoration: monaco.editor.IModelDeltaDecoration[] = feedback
-    ? [
-        {
-          range: new monaco.Range(feedback.line, 1, feedback.line, 1),
+  // const newDecoration: monaco.editor.IModelDeltaDecoration[] = feedback
+  //   ? [
+  //       {
+  //         range: new monaco.Range(feedback.line, 1, feedback.line, 1),
+  //         options: {
+  //           isWholeLine: true,
+  //           className: "bg-yellow-200",
+  //         },
+  //       },
+  //     ]
+  //   : [];
+
+  const newDecoration: monaco.editor.IModelDeltaDecoration[] =
+    submission && submission.feedbacks
+      ? submission.feedbacks.map((item) => ({
+          range: new monaco.Range(item.line, 1, item.line, 1),
           options: {
             isWholeLine: true,
             className: "bg-yellow-200",
           },
-        },
-      ]
-    : [];
+        }))
+      : [];
 
   const onMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
-    if (feedback) {
+    if (submission && submission.feedbacks) {
       editor.createDecorationsCollection(newDecoration);
       editor.focus();
     }
@@ -46,9 +53,9 @@ export default function FeedbackCodeEditor({ code, feedback }: Props) {
           readOnly: true,
         }}
         height="55vh"
-        language="python"
+        language={submission ? submission.language : "python"}
         onMount={onMount}
-        value={code}
+        value={submission ? submission.code : ""}
       />
     </div>
   );

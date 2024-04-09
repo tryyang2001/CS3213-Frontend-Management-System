@@ -21,8 +21,9 @@ interface Props {
 export default function SubmissionPage({ params }: Props) {
   // const [value, setValue] = useState("");
   // const [language, setLanguage] = useState("python");
+  const userId = "1";
 
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0); // Start from the first question
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
 
   const [currentQuestionId, setCurrentQuestionId] = useState("");
 
@@ -47,8 +48,8 @@ export default function SubmissionPage({ params }: Props) {
   });
 
   useEffect(() => {
-    if (assignment && assignment.questions && assignment.questions.length > 0) {
-      setCurrentQuestionId(assignment.questions[0].id);
+    if (assignment && assignment.questions) {
+      setCurrentQuestionId(assignment.questions[0]?.id ?? null);
     }
   }, [assignment]);
 
@@ -58,7 +59,7 @@ export default function SubmissionPage({ params }: Props) {
       const submission =
         await GradingService.getSubmissionByQuestionIdAndStudentId({
           questionId: currentQuestionId,
-          studentId: "1",
+          studentId: userId,
         });
 
       return submission;
@@ -120,9 +121,8 @@ export default function SubmissionPage({ params }: Props) {
               <div className="row-span-1 border border-black">
                 {submission ? (
                   <FeedbackCodeEditor
+                    submission={submission}
                     key={submission.questionId}
-                    code={submission.code}
-                    feedback={feedback}
                   />
                 ) : (
                   <FeedbackCodeEditor key={"0"} />
