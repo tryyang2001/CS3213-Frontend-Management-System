@@ -40,8 +40,21 @@ const getSubmissionByQuestionIdAndStudentId = async ({
   }
 };
 
+const postFeedback = async (requestBody: PostFeedbackBody) => {
+  try {
+    const response = await api.post("/feedback/generate", requestBody);
+
+    const postedFeedback = response.data as Feedback;
+
+    return postedFeedback;
+  } catch (_error) {
+    throw new Error("Failed to create assignment");
+  }
+};
+
 const GradingService = {
   getSubmissionByQuestionIdAndStudentId,
+  postFeedback,
 };
 
 export default GradingService;

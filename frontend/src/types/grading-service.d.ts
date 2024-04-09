@@ -1,3 +1,10 @@
+interface PostFeedbackBody {
+  language: string;
+  sourceCode: string;
+  questionId: string;
+  studentId: number;
+}
+
 interface Feedback {
   id: string;
   submissionId: string;
