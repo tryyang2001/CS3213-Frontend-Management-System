@@ -5,7 +5,7 @@ export const config = {
 };
 
 export default function middleware(request: NextRequest) {
-  const publicRoutes = ["/_next", "/public"];
+  const publicRoutes = ["/_next", "/public", "/login", "/sign-up"];
   const redirectRoutes = ["/"];
 
   const path = request.nextUrl.pathname;
@@ -13,6 +13,13 @@ export default function middleware(request: NextRequest) {
   // public routes do not need to be authenticated/reroute
   if (publicRoutes.some((route) => path.startsWith(route))) {
     return NextResponse.next();
+  }
+
+  const userCookie =
+    request.cookies.get("user") && request.cookies.get("token");
+
+  if (!userCookie) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
   }
 
   // redirect to dashboard page if home page is accessed
