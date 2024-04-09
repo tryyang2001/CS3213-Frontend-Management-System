@@ -29,4 +29,7 @@ const PORT = process.env.PORT || 8088;
 
 app.listen(PORT, async () => {
   console.log("Grading Service is running on port 8088.");
+  console.log(
+    `Swagger API documentation is available at http://localhost:${PORT}/grading/api/docs`
+  );
 });
