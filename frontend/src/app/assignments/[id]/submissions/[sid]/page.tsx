@@ -19,17 +19,15 @@ interface Props {
 }
 
 export default function SubmissionPage({ params }: Props) {
-  // const [value, setValue] = useState("");
-  // const [language, setLanguage] = useState("python");
-  const userId = "1";
-
+  const userId = 1;
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-
   const [currentQuestionId, setCurrentQuestionId] = useState("");
+  const [selectedSubmission, setSelectedSubmission] = useState<number>(0);
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
     setCurrentQuestionId(questionId);
+    setSelectedSubmission(0);
   };
 
   const {
@@ -40,9 +38,6 @@ export default function SubmissionPage({ params }: Props) {
     queryKey: ["get-assignment", params.id],
     queryFn: async () => {
       const assignment = await AssignmentService.getAssignmentById(params.id);
-
-      console.log(assignment);
-
       return assignment;
     },
   });
@@ -53,16 +48,16 @@ export default function SubmissionPage({ params }: Props) {
     }
   }, [assignment]);
 
-  const { data: submission, refetch: refetchSubmissions } = useQuery({
+  const { data: submissions, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
-      const submission =
+      const submissions =
         await GradingService.getSubmissionByQuestionIdAndStudentId({
           questionId: currentQuestionId,
           studentId: userId,
         });
 
-      return submission;
+      return submissions;
     },
   });
 
@@ -73,11 +68,6 @@ export default function SubmissionPage({ params }: Props) {
   if (isError) {
     return notFound();
   }
-
-  const feedback = {
-    line: 2,
-    hints: ["Incorrect else block for if ( ((x % 2) == 1) )"],
-  };
 
   return (
     <div>
@@ -119,10 +109,10 @@ export default function SubmissionPage({ params }: Props) {
             </div>
             <div className="col-span-1">
               <div className="row-span-1 border border-black">
-                {submission ? (
+                {submissions ? (
                   <FeedbackCodeEditor
-                    submission={submission}
-                    key={submission.questionId}
+                    submission={submissions[selectedSubmission]}
+                    key={`${submissions[selectedSubmission].questionId}_${selectedSubmission}`}
                   />
                 ) : (
                   <FeedbackCodeEditor key={"0"} />
