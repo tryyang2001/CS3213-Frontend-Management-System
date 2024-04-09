@@ -58,7 +58,7 @@ async function generateErrorFeedback(
   // ensure that student exists
   const student = await db.user.findUnique({
     where: {
-      id: studentId,
+      uid: studentId,
     },
   });
 

@@ -38,7 +38,10 @@ describe("Unit Tests for Get Handler", () => {
 
         // Assert
         expect(dbMock.submission.findFirst).toHaveBeenCalledTimes(1);
-        expect(submission).toEqual(StudentSolution.submission);
+        expect(submission).toEqual({
+          ...StudentSolution.submission,
+          createdOn: StudentSolution.submission.createdOn.getTime(),
+        });
       });
     });
 
