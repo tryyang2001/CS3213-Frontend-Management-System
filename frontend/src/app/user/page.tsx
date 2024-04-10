@@ -21,8 +21,7 @@ export default function Page() {
       const token = Cookies.get('token');
       console.log(token);
       try {
-        if (!(user && Cookies.get('token'))) {
-          console.log("u reach this", user, Cookies.get('token'));
+        if (!user) {
           toast({
             title: "You must login to see Userpage",
             description: "Please login first",
