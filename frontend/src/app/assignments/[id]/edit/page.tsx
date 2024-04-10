@@ -40,6 +40,8 @@ function Page({ params }: Props) {
     },
   ]);
 
+  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [deletedQuestionIds, setDeletedQuestionIds] = useState<string[]>([]);
@@ -73,6 +75,8 @@ function Page({ params }: Props) {
             language: rawReferenceSolution.language,
             code: rawReferenceSolution.code,
           };
+
+          setQuestionUniqueIds((prevIds) => [...prevIds, crypto.randomUUID()]);
 
           return {
             id: question.id,
@@ -115,6 +119,8 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
+
+    setQuestionUniqueIds((prevIds) => [...prevIds, crypto.randomUUID()]);
   };
 
   const handleDeleteQuestion = (index: number) => {
@@ -124,9 +130,19 @@ function Page({ params }: Props) {
       setDeletedQuestionIds([...deletedQuestionIds, deletedQuestionId]);
     }
 
-    setUpdatedQuestions((prevQuestions) =>
-      prevQuestions.filter((_, idx) => idx !== index)
-    );
+    // delete the question from questionUniqueIds with index 'index'
+    setQuestionUniqueIds((prevIds) => {
+      const updatedIds = [...prevIds];
+      updatedIds.splice(index, 1);
+      return updatedIds;
+    });
+
+    // delete the question from updatedQuestions with index 'index'
+    setUpdatedQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions.splice(index, 1);
+      return updatedQuestions;
+    });
   };
 
   const handleQuestionChange = (
@@ -338,7 +354,7 @@ function Page({ params }: Props) {
           {updatedQuestions.map((question, index) => {
             return (
               <div
-                key={index}
+                key={questionUniqueIds[index]}
                 className="flex border px-4 py-10 my-2 justify-center"
               >
                 <QuestionEditor
