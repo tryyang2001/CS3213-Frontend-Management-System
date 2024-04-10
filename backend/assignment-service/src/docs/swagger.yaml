@@ -2,10 +2,14 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Assignment Service"
-  description: "This document describes all the API endpoints available for the Assignment Service that is used to manage the assignments and questions in ITS system."
+  description: "This document describes all the API endpoints available for the Assignment Service that are used to manage the assignments and questions in ITS system."
   license:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
+
+tags:
+  - name: "CORS Policy"
+    description: "IMPORTANT: Due to CORS policy, only calls from `localhost:8080` and `localhost:3000` will be accepted for local development. Please make sure to run the assignment service & frontend on these ports."
 
 schemes:
   - "http"
@@ -17,13 +21,13 @@ paths:
       tags:
         - "Base"
       summary: "Health check for the service"
-      description: "Health check for the service"
+      description: "Checks if the service is up and running and connected to the database"
       operationId: "healthCheck"
       produces:
         - "application/json"
       responses:
         200:
-          description: "Service is connected to the database and is up and running"
+          description: "Service is healthy (connected to the database and is up and running)"
           schema:
             type: "object"
             properties:
@@ -31,7 +35,7 @@ paths:
                 type: "string"
                 example: "Healthy"
         500:
-          description: "Service is down due to database connection or other unexpected errors, refer to the error message for more details"
+          description: "Service is down due to no database connection"
           schema:
             type: "object"
             properties:
@@ -46,8 +50,8 @@ paths:
     get:
       tags:
         - "Assignment"
-      summary: "Get all assignments"
-      description: "Get all assignments"
+      summary: "Get all assignments associated with a particular user"
+      description: "Retrieve all assignments omitting the details that are associated with a particular student/tutor"
       operationId: "getAssignmentsByUserId"
       parameters:
         - in: "query"
@@ -55,17 +59,19 @@ paths:
           description: "User ID to get the assignments for"
           required: true
           type: "string"
+          example: "sample_user_id"
       produces:
         - "application/json"
       responses:
         200:
-          description: "List of assignments"
+          description: "An array of assignments"
           schema:
             type: "array"
             items:
               $ref: "#/schemas/responses/Assignment"
+
         400:
-          description: "Invalid user ID or missing user ID in the query params"
+          description: "Missing user ID in the query params"
           schema:
             type: "object"
             properties:
@@ -75,8 +81,9 @@ paths:
               message:
                 type: "string"
                 example: "userId is required in the query params"
+
         404:
-          description: "Assignment not found"
+          description: "User ID not found"
           schema:
             type: "object"
             properties:
@@ -85,13 +92,13 @@ paths:
                 example: "NOT FOUND"
               message:
                 type: "string"
-                example: "Assignment not found"
+                example: "userId not found"
 
     post:
       tags:
         - "Assignment"
       summary: "Create a new assignment without questions"
-      description: "Create a new assignment without questions"
+      description: "Create a new assignment omitting the detail of creating new questions"
       operationId: "createAssignment"
       consumes:
         - "application/json"
@@ -109,8 +116,9 @@ paths:
           description: "Assignment object"
           schema:
             $ref: "#/schemas/responses/Assignment"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -119,7 +127,7 @@ paths:
                 example: "BAD REQUEST"
               message:
                 type: "string"
-                example: "Request body is empty"
+                example: "Deadline must be in the future"
 
   /assignment/api/assignments/:id:
     get:
@@ -138,10 +146,10 @@ paths:
           type: "string"
       responses:
         200:
-          description: "Assignment object"
+          description: "The assignment with detail including the questions"
           schema:
-            # special case for assignment object returned
-            $ref: "#/schemas/getAssignmentById/responses/Assignment"
+            $ref: "#/schemas/responses/AssignmentWithQuestions"
+
         404:
           description: "Assignment not found"
           schema:
@@ -158,7 +166,7 @@ paths:
       tags:
         - "Assignment"
       summary: "Update an assignment by its ID"
-      description: "Update an assignment by its ID"
+      description: "Update the details of assignment given the assignment id, note that questions are not updated here"
       operationId: "updateAssignmentById"
       consumes:
         - "application/json"
@@ -170,19 +178,23 @@ paths:
           description: "ID of the assignment to update"
           required: true
           type: "string"
+          example: "assignment_id"
+
         - in: "body"
           name: "assignment"
           description: "Assignment object that needs to be updated"
           required: true
           schema:
             $ref: "#/schemas/updateAssignmentById/UpdateAssignmentBody"
+
       responses:
         200:
           description: "Assignment object"
           schema:
             $ref: "#/schemas/responses/Assignment"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -239,7 +251,7 @@ paths:
       tags:
         - "Question"
       summary: "Create a new question"
-      description: "Create a new question"
+      description: "Create a new question under an assignment wth the given ID"
       operationId: "createQuestion"
       consumes:
         - "application/json"
@@ -252,13 +264,15 @@ paths:
           required: true
           schema:
             $ref: "#/schemas/createQuestion/CreateQuestionBody"
+
       responses:
         201:
           description: "Question object"
           schema:
             $ref: "#/schemas/responses/CreatedQuestion"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -268,6 +282,7 @@ paths:
               message:
                 type: "string"
                 example: "Request body is empty"
+
         404:
           description: "Assignment not found"
           schema:
@@ -285,7 +300,7 @@ paths:
       tags:
         - "Question"
       summary: "Get a question by its ID"
-      description: "Get a question by its ID"
+      description: "Retrieve a question by the given ID if it exists"
       operationId: "getQuestionById"
       produces:
         - "application/json"
@@ -295,11 +310,13 @@ paths:
           description: "ID of the question to return"
           required: true
           type: "string"
+
       responses:
         200:
           description: "Question object"
           schema:
             $ref: "#/schemas/responses/QuestionWithoutReferenceSolution"
+
         404:
           description: "Question not found"
           schema:
@@ -316,7 +333,7 @@ paths:
       tags:
         - "Question"
       summary: "Update a question by its ID"
-      description: "Update a question by its ID"
+      description: "Update question detail with the given ID"
       operationId: "updateQuestionById"
       consumes:
         - "application/json"
@@ -328,17 +345,20 @@ paths:
           description: "ID of the question to update"
           required: true
           type: "string"
+
         - in: "body"
           name: "question"
           description: "Question object that needs to be updated"
           required: true
           schema:
             $ref: "#/schemas/updateQuestionById/UpdateQuestionBody"
+
       responses:
         200:
           description: "Question object"
           schema:
             $ref: "#/schemas/responses/CreatedQuestion"
+
         400:
           description: "Invalid request body, either contains extra fields or is empty"
           schema:
@@ -350,6 +370,7 @@ paths:
               message:
                 type: "string"
                 example: "Request body is empty"
+
         404:
           description: "Question not found"
           schema:
@@ -407,6 +428,7 @@ paths:
           description: "ID of the question to get the test cases for"
           required: true
           type: "string"
+
       responses:
         200:
           description: "List of test cases"
@@ -414,6 +436,7 @@ paths:
             type: "array"
             items:
               $ref: "#/schemas/responses/TestCase"
+
         404:
           description: "Test cases or question not found"
           schema:
@@ -430,7 +453,7 @@ paths:
       tags:
         - "Question"
       summary: "Create new test cases for a question"
-      description: "Create one or multiple new test cases for a question"
+      description: "Create at least one or multiple new test cases for a question"
       operationId: "createTestCaseByQuestionId"
       consumes:
         - "application/json"
@@ -442,19 +465,22 @@ paths:
           description: "ID of the question to create the test case for"
           required: true
           type: "string"
+
         - in: "body"
           name: "testCase"
           description: "Test case object that needs to be created"
           required: true
           schema:
             $ref: "#/schemas/createTestCaseByQuestionId/CreateTestCasesBody"
+
       responses:
         201:
           description: "Total number of test cases after new insertion"
           schema:
-            $ref: "#/schemas/responses/TestCase"
+            $ref: "#/schemas/responses/CreatedTestCases"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -464,6 +490,7 @@ paths:
               message:
                 type: "string"
                 example: "Request body is empty"
+
         404:
           description: "Question not found"
           schema:
@@ -479,8 +506,8 @@ paths:
     delete:
       tags:
         - "Question"
-      summary: "Delete all test cases for a question"
-      description: "Delete all test cases for a question"
+      summary: "Delete test cases for a question"
+      description: "Delete test cases for a question given the test case IDs"
       operationId: "deleteTestCasesById"
       produces:
         - "application/json"
@@ -517,7 +544,7 @@ paths:
       tags:
         - "Question"
       summary: "Get the solution for a question"
-      description: "Get the solution for a question"
+      description: "Get the reference solution for a question"
       operationId: "getSolutionByQuestionId"
       produces:
         - "application/json"
@@ -651,8 +678,9 @@ paths:
           description: "Solution object"
           schema:
             $ref: "#/schemas/responses/ReferenceSolution"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -662,6 +690,7 @@ paths:
               message:
                 type: "string"
                 example: "Request body is empty"
+
         404:
           description: "Question not found"
           schema:
@@ -696,13 +725,15 @@ paths:
           required: true
           schema:
             $ref: "#/schemas/updateReferenceSolutionByQuestionId/UpdateReferenceSolutionBody"
+
       responses:
         200:
           description: "Solution object"
           schema:
             $ref: "#/schemas/responses/ReferenceSolution"
+
         400:
-          description: "Invalid request body, either contains extra fields or is empty"
+          description: "Invalid request body, please refer to the error message in the response for details"
           schema:
             type: "object"
             properties:
@@ -712,6 +743,7 @@ paths:
               message:
                 type: "string"
                 example: "Request body is empty"
+
         404:
           description: "Solution or question not found"
           schema:
@@ -769,12 +801,15 @@ schemas:
           type: "number"
           description: "Deadline date in timestamp format"
           format: "int"
-          example: 16300025000000
+          example: 1630000000000
         authors:
           type: "array"
           items:
-            type: "string"
-          example: ["jonh_doe_user_id", "jane_doe_user_id"]
+            type: "number"
+          example: [1, 2]
+        description:
+          type: "string"
+          example: "This is an assignment, you may describe any requirements or instructions here"
         isPublished:
           type: "boolean"
           description: "If the assignment is published or not"
@@ -782,6 +817,71 @@ schemas:
         numberOfQuestions:
           type: "number"
           example: 0
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+        updatedOn:
+          type: "number"
+          description: "Last updated date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    AssignmentWithQuestions:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "assignment_id"
+        title:
+          type: "string"
+          example: "Assignment 1"
+        deadline:
+          type: "number"
+          example: 1630000000000
+        authors:
+          type: "array"
+          items:
+            type: "number"
+          example: [1, 2]
+        isPublished:
+          type: "boolean"
+          example: false
+        description:
+          type: "string"
+          example: "This is an assignment, you may describe any requirements or instructions here"
+        numberOfQuestions:
+          type: "number"
+          example: 1
+        questions:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "question_id"
+              title:
+                type: "string"
+                example: "Question 1"
+              description:
+                type: "string"
+                example: "<p>The description of the question. This field is likely to be HTML code.</p>"
+              deadline:
+                type: "number"
+                example: 1630000000000
+              numberOfTestCases:
+                type: "number"
+                example: 0
+              referenceSolutionId:
+                type: "string"
+                example: "reference_solution_id"
+              createdOn:
+                type: "number"
+                description: "Creation date in timestamp format"
+                format: "int"
+                example: 1630000000000
         createdOn:
           type: "number"
           description: "Creation date in timestamp format"
@@ -810,18 +910,18 @@ schemas:
           example: 1630000000000
         numberOfTestCases:
           type: "number"
-          example: 0
+          example: 2
         referenceSolutionId:
           type: "string"
+          description: "The reference solution id if it exists, otherwise this field will not be present"
           example: "reference_solution_id"
+        assignmentId:
+          type: "string"
+          description: "The assignment id that this question belongs to"
+          example: "assignment_id"
         createdOn:
           type: "number"
           description: "Creation date in timestamp format"
-          format: "int"
-          example: 1630000000000
-        updatedOn:
-          type: "number"
-          description: "Last updated date in timestamp format"
           format: "int"
           example: 1630000000000
 
@@ -850,31 +950,64 @@ schemas:
             properties:
               id:
                 type: "string"
-                example: "test_case_id"
               input:
                 type: "string"
-                example: "input"
               output:
                 type: "string"
-                example: "output"
+              isPublic:
+                type: "boolean"
+          example:
+            - id: "test_case_id_1"
+              input: "input_1"
+              output: "output_1"
+              isPublic: true
+            - id: "test_case_id_2"
+              input: "input_2"
+              output: "output_2"
+              isPublic: false
         createdOn:
           type: "number"
           description: "Creation date in timestamp format"
           format: "int"
           example: 1630000000000
-        updatedOn:
-          type: "number"
-          description: "Last updated date in timestamp format"
-          format: "int"
-          example: 1630000000000
 
     TestCase:
       description: "Total number of test cases after new insertion"
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+          input:
+            type: "string"
+            example: "input_1"
+          output:
+            type: "string"
+            example: "output_1"
+          isPublic:
+            type: "boolean"
+      example:
+        - id: "test_case_id_1"
+          input: "input_1"
+          output: "output_1"
+          isPublic: true
+        - id: "test_case_id_2"
+          input: "input_2"
+          output: "output_2"
+          isPublic: false
+
+    CreatedTestCases:
       type: "object"
       properties:
         numberOfTestCases:
           type: "number"
           example: 2
+        testCases:
+          type: "array"
+          items:
+            type: "object"
+            $ref: "#/schemas/responses/TestCase"
 
     ReferenceSolution:
       type: "object"
@@ -887,20 +1020,14 @@ schemas:
           example: "question_id"
         language:
           type: "string"
-          example: "language"
+          description: "The programming language, either 'python' or 'c"
+          minLength: 1
+          maxLength: 255
+          example: "python"
         code:
           type: "string"
-          example: "code"
-        createdOn:
-          type: "number"
-          description: "Creation date in timestamp format"
-          format: "int"
-          example: 1630000000000
-        updatedOn:
-          type: "number"
-          description: "Last updated date in timestamp format"
-          format: "int"
-          example: 1630000000000
+          minLength: 1
+          example: "def add(a, b):\n    return a + b\n"
 
   createAssignment:
     CreateAssignmentBody:
@@ -910,26 +1037,60 @@ schemas:
           type: "string"
           minLength: 1
           maxLength: 255
+          required: true
           example: "Assignment 1"
         deadline:
           type: "number"
           description: "Deadline date in timestamp format, must be in the future"
           format: "int"
+          required: true
           example: 1630000000000
         authors:
           type: "array"
           items:
-            type: "string"
+            type: "number"
           minItems: 1
-          example: ["jonh_doe_user_id", "jane_doe_user_id"]
+          required: true
+          example: [1, 2]
         isPublished:
           type: "boolean"
           description: "If the assignment is published or not, default is false"
           example: false
+          required: true
+        description:
+          type: "string"
+          example: "Optional, you may describe any requirements or instructions here"
 
   updateAssignmentById:
     UpdateAssignmentBody:
-      $ref: "#/schemas/createAssignment/CreateAssignmentBody"
+      type: "object"
+      properties:
+        title:
+          type: "string"
+          description: "Optional, if not provided, the title will not be updated"
+          minLength: 1
+          maxLength: 255
+          example: "Assignment 1"
+        deadline:
+          type: "number"
+          description: "Optional, deadline date in timestamp format, must be in the future"
+          format: "int"
+          example: 1630000000000
+        authors:
+          type: "array"
+          description: "Optional, if not provided, the authors will not be updated"
+          items:
+            type: "number"
+          minItems: 1
+          example: [1, 2]
+        isPublished:
+          type: "boolean"
+          description: "Optional, whether the assignment is published or not, default is false"
+          example: false
+        description:
+          type: "string"
+          description: "Optional, if not provided, the description will not be updated"
+          example: "This is an assignment, you may describe any requirements or instructions here"
 
   createQuestion:
     CreateQuestionBody:
@@ -939,28 +1100,48 @@ schemas:
           type: "string"
           minLength: 1
           maxLength: 255
+          required: true
           example: "Question 1"
         description:
           type: "string"
           minLength: 1
+          required: true
           example: "This is a question"
         deadline:
           type: "number"
           description: "Deadline date in timestamp format, must be in the future"
           format: "int"
+          required: true
           example: 1630000000000
         testCases:
           type: "array"
-          description: "List of test cases for the question"
+          description: "Optional, list of test cases for the question"
           $ref: "#/schemas/createTestCaseByQuestionId/CreateTestCasesBody"
         referenceSolution:
           type: "object"
-          description: "Reference solution for the question"
+          description: "Optional, the reference solution for the question"
           $ref: "#/schemas/createReferenceSolutionByQuestionId/CreateReferenceSolutionBody"
 
   updateQuestionById:
     UpdateQuestionBody:
-      $ref: "#/schemas/createQuestion/CreateQuestionBody"
+      type: "object"
+      properties:
+        title:
+          type: "string"
+          description: "Optional, if not provided, the title will not be updated"
+          minLength: 1
+          maxLength: 255
+          example: "Question 1"
+        description:
+          type: "string"
+          description: "Optional, if not provided, the description will not be updated"
+          minLength: 1
+          example: "This is a question"
+        deadline:
+          type: "number"
+          description: "Optional, the deadline must be in timestamp format, must be in the future"
+          format: "int"
+          example: 1630000000000
 
   createTestCaseByQuestionId:
     CreateTestCasesBody:
@@ -971,11 +1152,18 @@ schemas:
           input:
             type: "string"
             minLength: 1
-            example: "input"
           output:
             type: "string"
             minLength: 1
-            example: "output"
+          isPublic:
+            type: "boolean"
+      example:
+        - input: "input_1"
+          output: "output_1"
+          isPublished: true
+        - input: "input_2"
+          output: "output_2"
+          isPublished: false
 
   deleteTestCasesById:
     DeleteTestCasesBody:
@@ -994,13 +1182,14 @@ schemas:
       properties:
         language:
           type: "string"
+          description: "The programming language, either 'python' or 'c"
           minLength: 1
           maxLength: 255
-          example: "language"
+          example: "python"
         code:
           type: "string"
           minLength: 1
-          example: "code"
+          example: "def add(a, b):\n    return a + b\n"
 
   updateReferenceSolutionByQuestionId:
     UpdateReferenceSolutionBody:

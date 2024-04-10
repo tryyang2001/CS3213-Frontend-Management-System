@@ -64,6 +64,8 @@ model Question {
     assignmentId String?
     Submission   Submission[]
 
+    createdOn DateTime @default(now())
+
     @@schema("assignments")
 }
 
