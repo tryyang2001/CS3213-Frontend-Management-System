@@ -24,9 +24,16 @@ const convertDateToTimestamp = (date: string | Date) => {
   return timestamp;
 };
 
+const toLocalISOString = (date: Date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  const adjustedDate = new Date(date.getTime() - offset);
+  return adjustedDate.toISOString().slice(0, 16);
+};
+
 const dateUtils = {
   parseTimestampToDate,
   convertDateToTimestamp,
+  toLocalISOString,
 };
 
 export default dateUtils;

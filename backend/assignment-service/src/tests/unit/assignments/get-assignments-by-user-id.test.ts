@@ -68,9 +68,9 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       // Assert
       expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.OK);
-      expect(response.body).toEqual({
-        assignments: ExpectedAssignmentsFromGetAssignmentsByUserId(userId),
-      });
+      expect(response.body).toEqual(
+        ExpectedAssignmentsFromGetAssignmentsByUserId(userId)
+      );
     });
   });
 
@@ -91,7 +91,7 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
   describe("Given the userId does not exist in the database", () => {
     it("should return 404 with an error message", async () => {
       // Arrange
-      const userId = "non-existing-user-id-1";
+      const userId = 3213;
       GetHandler.getAssignmentsByUserId = jest.fn().mockResolvedValue(null);
 
       // Act
@@ -104,7 +104,7 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
       expect(response.body).toEqual({
         error: "NOT FOUND",
-        message: "Assignments not found",
+        message: "User not found",
       });
     });
   });
@@ -130,7 +130,7 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
   describe("Given an unexpected error occurs", () => {
     it("should return 500 and an error message", async () => {
       // Arrange
-      const userId = "existing-user-id-1";
+      const userId = 1;
       GetHandler.getAssignmentsByUserId = jest
         .fn()
         .mockRejectedValue(

@@ -2,14 +2,10 @@
 
 import { useState } from "react";
 import { Avatar, Button, User, Spacer } from "@nextui-org/react";
-import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
-import { useRouter } from "next/navigation";
-import {
-  MdOutlineAssignment,
-  MdOutlineUploadFile,
-  MdOutlineLogout,
-} from "react-icons/md";
+import { usePathname, useRouter } from "next/navigation";
 import classNames from "classnames";
+import Icons from "./Icons";
+import UserDropdown from "./UserDropdown";
 
 interface MenuItem {
   id: number;
@@ -21,14 +17,20 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     id: 1,
-    label: "Assignments",
-    icon: <MdOutlineAssignment className="text-2xl" />,
+    label: "View Assignments",
+    icon: <Icons.ViewAssignment className="text-2xl" />,
     link: "/dashboard",
   },
   {
     id: 2,
-    label: "Submissions",
-    icon: <MdOutlineUploadFile className="text-2xl" />,
+    label: "Create New Assignment",
+    icon: <Icons.CreateNewInstance className="text-2xl" />,
+    link: "/assignments/create",
+  },
+  {
+    id: 3,
+    label: "View Submissions",
+    icon: <Icons.ViewSubmissions className="text-2xl" />,
     link: "/assignments/submissions",
   },
 ];
@@ -60,6 +62,13 @@ export default function SideBar() {
     router.push(route);
   };
 
+  // obtain current path, if is login/sign up, don't render SideBar
+  const currentPath = usePathname();
+
+  if (currentPath === "/login" || currentPath === "/sign-up") {
+    return null;
+  }
+
   return (
     <div
       className={wrapperClasses}
@@ -70,19 +79,26 @@ export default function SideBar() {
         <div className="flex items-center pl-1 gap-4">
           {isCollapsed ? (
             <div className="block">
-              <Button
-                isIconOnly
-                onClick={handleToggleCollapse}
-                className="text-black"
-              >
-                <HiMenu className="text-2xl" />
-              </Button>
-              <Avatar
-                showFallback
-                name="Jane"
-                src="https://i.pravatar.cc/150?u=a04258114e29026702d"
-              />
+              <div className="mb-4">
+                <Button
+                  isIconOnly
+                  onClick={handleToggleCollapse}
+                  className="text-black"
+                >
+                  <Icons.Expand className="text-2xl" />
+                </Button>
+              </div>
+
+              <UserDropdown>
+                <Avatar
+                  showFallback
+                  name="Jane"
+                  src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                />
+              </UserDropdown>
+
               <Spacer y={60} />
+
               {menuItems.map((item: MenuItem) => (
                 <Button
                   isIconOnly
@@ -94,34 +110,31 @@ export default function SideBar() {
                   {item.icon}
                 </Button>
               ))}
-              <Spacer y={72} />
-              <Spacer y={6} />
-              <Button
-                isIconOnly
-                // onClick={handleToggleCollapse}
-                className="text-black"
-              >
-                <MdOutlineLogout className="text-2xl" />
-              </Button>
             </div>
           ) : (
             <div className="flex flex-col w-full items-start">
-              <Button
-                isIconOnly
-                onClick={handleToggleCollapse}
-                className="text-black"
-              >
-                <HiOutlineChevronDoubleLeft className="text-2xl" />
-              </Button>
-              <User
-                name={userName}
-                description={userEmail}
-                avatarProps={{
-                  src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-                  alt: "Jane",
-                  showFallback: true,
-                }}
-              />
+              <div className="mb-4">
+                <Button
+                  isIconOnly
+                  onClick={handleToggleCollapse}
+                  className="text-black"
+                >
+                  <Icons.Collapse className="text-2xl" />
+                </Button>
+              </div>
+
+              <UserDropdown>
+                <User
+                  name={userName}
+                  description={userEmail}
+                  avatarProps={{
+                    src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                    alt: "Jane",
+                    showFallback: true,
+                  }}
+                />
+              </UserDropdown>
+
               <Spacer y={60} />
               {menuItems.map((item: MenuItem) => (
                 <Button
@@ -136,17 +149,6 @@ export default function SideBar() {
                   {item.label}
                 </Button>
               ))}
-              <Spacer y={72} />
-              <Spacer y={6} />
-              <Button
-                // isIconOnly
-                // onClick={handleToggleCollapse}
-                className="flex text-black w-full text-left items-center justify-start p-2"
-                fullWidth={true}
-                startContent={<MdOutlineLogout className="text-2xl" />}
-              >
-                Log Out
-              </Button>
             </div>
           )}
         </div>

@@ -9,6 +9,7 @@ export const CreateAssignmentValidator = z.object({
     .refine((deadline) => deadline > Date.now(), {
       message: "Deadline must be in the future",
     }),
+  description: z.string().max(50000).optional(),
   authors: z
     .array(z.number().int().positive())
     .nonempty("At least one author is required"),

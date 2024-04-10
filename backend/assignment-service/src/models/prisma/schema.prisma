@@ -16,6 +16,7 @@ model Assignment {
     id          String   @id @default(cuid())
     title       String
     deadline    DateTime
+    description String?
     isPublished Boolean  @default(false)
     description String?
 
@@ -46,6 +47,8 @@ model Question {
 
     Assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
     assignmentId String?
+
+    createdOn DateTime @default(now())
 
     @@schema("assignments")
 }

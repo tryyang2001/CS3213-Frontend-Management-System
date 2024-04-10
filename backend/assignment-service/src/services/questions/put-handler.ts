@@ -43,6 +43,7 @@ const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
     numberOfTestCases: updatedQuestion.numberOfTestCases,
     referenceSolutionId: updatedQuestion.referenceSolutionId || undefined,
     assignmentId: updatedQuestion.assignmentId!,
+    createdOn: updatedQuestion.createdOn.getTime(),
   };
 
   return updatedQuestionDto;

@@ -22,6 +22,8 @@ const getAssignmentsByUserId = async (userId: number) => {
     },
   });
 
+  // TODO: search user under courses, what assignments are there
+
   const assignmentsDto: Assignment[] = assignments.map((assignment) => {
     return {
       id: assignment.id,
@@ -62,6 +64,7 @@ const getAssignmentById = async (id: string) => {
       referenceSolutionId: question.referenceSolutionId
         ? question.referenceSolutionId
         : undefined,
+      createdOn: question.createdOn.getTime(),
     };
   });
 
@@ -69,6 +72,7 @@ const getAssignmentById = async (id: string) => {
     id: assignment.id,
     title: assignment.title,
     deadline: assignment.deadline.getTime(),
+    description: assignment.description ?? undefined,
     isPublished: assignment.isPublished,
     numberOfQuestions: assignment.numberOfQuestions,
     questions: questionsDto,
