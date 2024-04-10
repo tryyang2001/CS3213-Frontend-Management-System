@@ -83,7 +83,6 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
     } else {
       setMessage("Profile saved!");
       setInfo({
-        uid: info.uid,
         email: info.email,
         name: name,
         bio: bio,

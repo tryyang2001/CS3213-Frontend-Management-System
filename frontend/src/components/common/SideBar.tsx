@@ -9,6 +9,8 @@ import UserDropdown from "./UserDropdown";
 import { useUserContext } from "@/contexts/user-context";
 import userService from "@/helpers/user-service/api-wrapper";
 import Cookies from "js-cookie";
+import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
+import { useToast } from "@/components/ui/use-toast";
 
 interface MenuItem {
   id: number;
@@ -35,8 +37,8 @@ const menuItems: MenuItem[] = [
     label: "View Submissions",
     icon: <Icons.ViewSubmissions className="text-2xl" />,
     link: "/assignments/submissions",
-  },
-];
+  }
+]
 
 export default function SideBar() {
   const router = useRouter();
@@ -45,7 +47,7 @@ export default function SideBar() {
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-
+  const { toast } = useToast();
   const wrapperClasses = classNames(
     "h-screen px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
     {
@@ -69,6 +71,12 @@ export default function SideBar() {
   const handleLoggingOut = () => {
     localStorage.removeItem('userContext');
     setUserContext(null);
+    toast({
+      title: "Log out succesfully",
+      description: "see you later!",
+      variant: "success",
+    });
+    router.push('/login');
   }
 
   const handleLoggingIn = () => {
@@ -148,6 +156,24 @@ export default function SideBar() {
                   {item.icon}
                 </Button>
               ))}
+              <Spacer y={72} />
+              <Spacer y={6} />
+              { isLoggedIn ?
+                <Button
+                  isIconOnly
+                  className="text-black"
+                  onPress={() => handleLoggingOut()}
+                >
+                  <MdOutlineLogout className="text-2xl" />
+                </Button>
+              : <Button
+                  isIconOnly
+                  className="text-black"
+                  onPress={() => handleLoggingIn()}
+                >
+                  <MdOutlineLogin className="text-2xl" />
+                </Button>
+              }
             </div>
           ) : (
             <div className="flex flex-col w-full items-start">
@@ -187,6 +213,31 @@ export default function SideBar() {
                   {item.label}
                 </Button>
               ))}
+
+              <Spacer y={72} />
+              <Spacer y={6} />
+              { isLoggedIn ?
+                <Button
+                  // isIconOnly
+                  // onClick={handleToggleCollapse}
+                  className="flex text-black w-full text-left items-center justify-start p-2"
+                  fullWidth={true}
+                  onPress={() => handleLoggingOut()}
+                  startContent={<MdOutlineLogout className="text-2xl" />}
+                >
+                  Log Out
+                </Button>
+              : <Button
+                  // isIconOnly
+                  // onClick={handleToggleCollapse}
+                  className="flex text-black w-full text-left items-center justify-start p-2"
+                  fullWidth={true}
+                  onPress={() => handleLoggingIn()}
+                  startContent={<MdOutlineLogin className="text-2xl" />} 
+                >
+                  Sign in
+                </Button>
+              }
             </div>
           )}
         </div>

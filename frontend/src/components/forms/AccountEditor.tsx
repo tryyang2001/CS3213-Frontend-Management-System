@@ -12,7 +12,7 @@ import PasswordInput from "./PasswordInput";
 import ConfirmPasswordInput from "./ConfirmPasswordInput";
 import userService from "@/helpers/user-service/api-wrapper";
 
-export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
+export default function AccountEditor({ uid, userInfo }: { uid: number, userInfo: UserInfo }) {
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
   const [updateCount, setUpdateCount] = useState<number>(2);
   
   const handleAccountSubmit = async () => {
-    if (newPassword == "") {
+    if (newPassword == "" || oldPassword == "") {
       setAccountMessage("Please fill in the required fields");
       return;
     }
@@ -32,7 +32,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
 
     try {
       await userService.updateUserPassword(
-        userInfo.uid,
+        uid,
         oldPassword,
         newPassword,
       );

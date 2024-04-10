@@ -12,9 +12,10 @@ import Cookies from "js-cookie";
 export default function Page() {
   const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [ userInfo, setUserInfo ] = useState<UserInfo>();
+  const [ userInfo, setUserInfo ] = useState<UserInfo>({} as UserInfo);
   const router = useRouter();
   const { toast } = useToast();
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -48,12 +49,13 @@ export default function Page() {
           variant: "destructive",
         });
         // Handle the error based on its type
+        router.push("/");
         setIsLoading(false);
       }
     };
-
     if (user) {
       fetchUserInfo().catch((err) => console.log(err));
+      setIsLoading(true);
     } else {
       console.log("no user context");
       setIsLoading(false);
@@ -69,11 +71,11 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor userInfo={userInfo!} />
+            <ProfileEditor userInfo={userInfo} />
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>
-            <AccountEditor userInfo={userInfo!} />
+            <AccountEditor uid={user?.uid || -1} userInfo={userInfo} />
           </div>
         </div>
       )}

@@ -10,28 +10,34 @@ const api = axios.create({
 });
 
 const login = async (email: string, password: string): Promise<User> => {
-    const response = await api.post(
-        `/login`,
-        {
-            email: email,
-            password: password
-        },
-        { withCredentials: true}
-    ).then((res) => {
-        if (res.status === HttpStatusCode.OK.valueOf()) {
-            const responseData = res.data as LoginResponse;
-            const user = responseData.user;
-            return user;
+    try {
+        const response = await api.post(
+            `/login`,
+            {
+                email: email,
+                password: password
+            },
+            { withCredentials: true}
+        )
+        console.log(response.status);
+        if (response.status === HttpStatusCode.OK.valueOf()) {
+            return response.data.user as User;
         } else {
-            console.log("invalid email/password");
-            throw new Error("Invalid Email/Password");
+            throw new Error("Unknown error updating password, please try again");
         }
-    }).catch((err: Error) => {
-        console.log(err);
-        throw err;
-    });
-
-  return response;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            console.log(error.response?.status);
+            if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+                throw new Error("Unauthorize");
+            } else if (error.response?.status === HttpStatusCode.FORBIDDEN.valueOf()) {
+                throw new Error("Incorrect password");
+            } else {
+                throw new Error(error.message);
+            }
+        }
+        throw new Error("Unknown error updating password, please try again");
+    };
 };
 
 const register = async (email: string, password: string) => {
@@ -59,11 +65,9 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
         `/getUserInfo?uid=${uid}`,
         { withCredentials: true}
     ).then((res) => {
-        console.log("response", res);
         if (res.status === HttpStatusCode.OK.valueOf()) {
             const responseData = res.data as UserInfo
             const userInfo : UserInfo = {
-                uid: responseData.uid,
                 name: responseData.name,
                 email: responseData.email,
                 bio: responseData.bio || "This person doesn't have bio",
@@ -90,8 +94,6 @@ const updateUserPassword = async (uid: number, oldPassword: string, newPassword:
             },
             { withCredentials: true}
         );
-        
-        console.log(response.status);
         if (response.status === HttpStatusCode.OK.valueOf()) {
             return;
         } else {
