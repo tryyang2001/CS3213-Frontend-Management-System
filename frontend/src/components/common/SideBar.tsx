@@ -95,7 +95,7 @@ export default function SideBar() {
             setLoggedIn(true);
           }
         }
-      } catch (error) { 
+      } catch (_error) { 
         setLoggedIn(false);
       }
     };
