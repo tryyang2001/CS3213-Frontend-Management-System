@@ -13,9 +13,9 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import FileInput from "./FileInput";
+import userService from "@/helpers/user-service/api-wrapper";
 
-export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
-  console.log(userInfo);
+export default function ProfileEditor({ uid, userInfo }: { uid: number, userInfo: UserInfo }) {
   const [info, setInfo] = useState<UserInfo>(userInfo);
   const [name, setName] = useState<string>(info.name);
   const isInvalidName = useMemo(() => {
@@ -62,32 +62,28 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-      method: "PATCH",
-      body: JSON.stringify({
-        name: name,
-        bio: bio,
-        photo: newPhoto,
-        email: info.email,
-      }),
-    }).catch((err) => {
-      console.log(err);
-      return {
-        status: 500,
-        ok: false,
-      };
-    });
-
-    if (!res.ok) {
-      setMessage("An error occured, please try again later");
-    } else {
+    try { 
+      await userService.updateUserInfo(
+        uid,
+        {
+          name: name,
+          bio: bio
+        }
+      );
       setMessage("Profile saved!");
       setInfo({
-        email: info.email,
         name: name,
+        email: info.email,
         bio: bio,
-        photo: photo,
-      });
+        photo: photo!,
+      })
+    }  catch (error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message;
+        setMessage(errorMessage);
+      } else {
+        setMessage("An error occured, please try again later");
+      }
     }
   };
   return (

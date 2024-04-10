@@ -116,11 +116,41 @@ const updateUserPassword = async (uid: number, oldPassword: string, newPassword:
     };
 };
 
+const updateUserInfo = async (
+    uid: number,
+    updateFields: Record<string, string>
+  ): Promise<void> => {
+    try {
+      const response = await api.put(
+        `/updateUserInfo?uid=${uid}`,
+        updateFields,
+        { withCredentials: true }
+      );
+  
+      if (response.status === HttpStatusCode.OK.valueOf()) {
+        return;
+      } else {
+        throw new Error("Unknown error updating user info, please try again");
+      }
+    } catch (error) {
+      console.log(error);
+      if (isAxiosError(error)) {
+        if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+          throw new Error("Unauthorized action, please login again");
+        } else {
+          throw new Error(error.message);
+        }
+      }
+      throw new Error("Unknown error updating user info, please try again");
+    }
+  };
+
 const userService = {
     login,
     register,
     getUserInfo,
-    updateUserPassword
+    updateUserPassword,
+    updateUserInfo
 };
 
 export default userService;
