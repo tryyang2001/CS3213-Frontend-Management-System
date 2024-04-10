@@ -7,6 +7,10 @@ info:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
 
+tags:
+  - name: "CORS Policy"
+    description: "IMPORTANT: Due to CORS policy, only calls from `localhost:8080` and `localhost:3000` will be accepted for local development. Please make sure to run the assignment service & frontend on these ports."
+
 schemes:
   - "http"
   - "https"
