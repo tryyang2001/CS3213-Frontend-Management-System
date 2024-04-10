@@ -797,12 +797,15 @@ schemas:
           type: "number"
           description: "Deadline date in timestamp format"
           format: "int"
-          example: 16300025000000
+          example: 1630000000000
         authors:
           type: "array"
           items:
-            type: "string"
-          example: ["john_doe_user_id", "jane_doe_user_id"]
+            type: "number"
+          example: [1, 2]
+        description:
+          type: "string"
+          example: "This is an assignment, you may describe any requirements or instructions here"
         isPublished:
           type: "boolean"
           description: "If the assignment is published or not"
@@ -836,11 +839,14 @@ schemas:
         authors:
           type: "array"
           items:
-            type: "string"
-          example: ["john_doe_user_id", "jane_doe_user_id"]
+            type: "number"
+          example: [1, 2]
         isPublished:
           type: "boolean"
           example: false
+        description:
+          type: "string"
+          example: "This is an assignment, you may describe any requirements or instructions here"
         numberOfQuestions:
           type: "number"
           example: 1
@@ -867,6 +873,11 @@ schemas:
               referenceSolutionId:
                 type: "string"
                 example: "reference_solution_id"
+              createdOn:
+                type: "number"
+                description: "Creation date in timestamp format"
+                format: "int"
+                example: 1630000000000
         createdOn:
           type: "number"
           description: "Creation date in timestamp format"
@@ -904,6 +915,11 @@ schemas:
           type: "string"
           description: "The assignment id that this question belongs to"
           example: "assignment_id"
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
 
     QuestionWithoutReferenceSolution:
       type: "object"
@@ -945,6 +961,11 @@ schemas:
               input: "input_2"
               output: "output_2"
               isPublic: false
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
 
     TestCase:
       description: "Total number of test cases after new insertion"
@@ -1023,15 +1044,18 @@ schemas:
         authors:
           type: "array"
           items:
-            type: "string"
+            type: "number"
           minItems: 1
           required: true
-          example: ["john_doe_user_id", "jane_doe_user_id"]
+          example: [1, 2]
         isPublished:
           type: "boolean"
           description: "If the assignment is published or not, default is false"
           example: false
           required: true
+        description:
+          type: "string"
+          example: "Optional, you may describe any requirements or instructions here"
 
   updateAssignmentById:
     UpdateAssignmentBody:
@@ -1052,13 +1076,17 @@ schemas:
           type: "array"
           description: "Optional, if not provided, the authors will not be updated"
           items:
-            type: "string"
+            type: "number"
           minItems: 1
-          example: ["john_doe_user_id", "jane_doe_user_id"]
+          example: [1, 2]
         isPublished:
           type: "boolean"
           description: "Optional, whether the assignment is published or not, default is false"
           example: false
+        description:
+          type: "string"
+          description: "Optional, if not provided, the description will not be updated"
+          example: "This is an assignment, you may describe any requirements or instructions here"
 
   createQuestion:
     CreateQuestionBody:
