@@ -70,7 +70,7 @@ export default function Home() {
           setIsInvalid={setIsInvalid}
         />
 
-        <PasswordInput password={password} setPassword={setPassword} />
+        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
 
         <Button
           type="submit"

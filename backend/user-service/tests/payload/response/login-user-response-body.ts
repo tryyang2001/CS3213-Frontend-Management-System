@@ -5,7 +5,6 @@ export const getLoginUserResponseBody = () => {
         password: 'password12345',
         name: 'Test',
         major: 'Computer Science',
-        course: 'CS1101S',
         role: 'student',
     };
   };

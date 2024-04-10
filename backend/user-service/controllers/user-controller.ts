@@ -5,7 +5,7 @@ import db from "../models/user-model";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 
 async function registerUser(req: Request, res: Response) {
-  const { email, password, name, major, course, role } = req.body;
+  const { email, password, name, major, role } = req.body;
 
   console.log("registering new user", req.body);
   try {
@@ -30,7 +30,6 @@ async function registerUser(req: Request, res: Response) {
           const uid = await db.createNewUser(
             name,
             major,
-            course,
             email,
             hash,
             role
@@ -111,8 +110,9 @@ async function getUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
   if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid' });
-}
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid.' });
+  }
+
   try {
     const uid = parseInt(queryUidString, 10);
     console.log(uid);
@@ -224,16 +224,26 @@ async function updateUserPassword(req: Request, res: Response) {
 }
 
 async function updateUserInfo(req: Request, res: Response) {
-  const { uid, email, name, major, course, role } = req.body;
+  const queryUidString = req.query.uid;
+  if (typeof queryUidString !== 'string') {
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid.' });
+  }
+  const uid = parseInt(queryUidString);
+  const updateFields = req.body;
+
   try {
-    await db.updateUserInfo(uid, email, name, major, course, role);
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'No fields provided for update.' });
+    }
+
+    await db.updateUserInfo(uid, updateFields);
+
     return res.json({
-      message: "User info updated.",
+      message: 'User info updated.',
     });
   } catch (err) {
-    return res.json({
-      error: "Failed to update user info.",
-    });
+    console.error('Error updating user info:', err);
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ error: 'Failed to update user info.' });
   }
 }
 

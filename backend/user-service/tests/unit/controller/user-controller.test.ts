@@ -450,7 +450,6 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
     password: "password12345",
     name: "Test",
     major: "Computer Science",
-    course: "CS1101S",
     role: "student",
   };
 
@@ -624,12 +623,18 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
   describe("Given a valid request body to update user info", () => {
     it("Should return a success message", async () => {
       // Arrange
+      const updateFields = {
+        name: "Updated Name",
+        major: "Updated Major",
+        email: "updated@example.com",
+        role: "updatedRole"
+      };
       jest.spyOn(db, "updateUserInfo").mockResolvedValue();
 
       // Act
       const response = await supertest(app)
-        .put("/user/updateUserInfo")
-        .send(reqBody);
+        .put(`/user/updateUserInfo?uid=${1}`)
+        .send(updateFields);
 
       // Assert
       expect(response.status).toBe(200);
@@ -638,20 +643,37 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
   });
 
   describe("Given an invalid request body to update user info", () => {
-    it("Should return an error message", async () => {
+    it("Should return an error message saying no update field given valid uid", async () => {
       // Arrange
       const reqBody = {};
       jest
         .spyOn(db, "updateUserInfo")
-        .mockRejectedValue(new Error("Failed to update user info."));
+        .mockRejectedValue(new Error("No fields provided for update."));
 
       // Act
       const response = await supertest(app)
-        .put("/user/updateUserInfo")
+        .put(`/user/updateUserInfo?uid=${1}`)
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Failed to update user info." });
+      expect(response.body).toEqual({ error: "No fields provided for update." });
+      // expect(response.status).toBe(400);
+    });
+
+    it("Should return an error message saying Invalid uid.", async () => {
+      // Arrange
+      const reqBody = {};
+      jest
+        .spyOn(db, "updateUserInfo")
+        .mockRejectedValue(new Error("Invalid uid."));
+
+      // Act
+      const response = await supertest(app)
+        .put(`/user/updateUserInfo`)
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ error: "Invalid uid." });
       // expect(response.status).toBe(400);
     });
   });
@@ -666,7 +688,6 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
     password: "password12345",
     name: "Test",
     major: "Computer Science",
-    course: "CS1101S",
     role: "student",
   };
 

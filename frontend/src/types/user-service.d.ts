@@ -3,7 +3,6 @@ interface User {
   email: string;
   name: string;
   major: string;
-  course: string;
   role: string;
 }
 

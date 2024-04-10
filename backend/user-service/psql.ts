@@ -21,9 +21,16 @@ const createUserTableQueryIfNotExist = `
             email VARCHAR(255) NOT NULL,
             name VARCHAR(255) NOT NULL,
             major VARCHAR(255) NOT NULL,
-            course VARCHAR(255),
             password VARCHAR(255) NOT NULL,
+            bio TEXT DEFAULT '',
+            avatarUrl VARCHAR(255) DEFAULT '',
             role VARCHAR(60) NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS users."UserAssignmentRelation" (
+          userId SERIAL REFERENCES users."User" (uid),
+          assignmentId TEXT REFERENCES assignments."Assignment" (id),
+          primary key (userId, assignmentId)
         );
   `;
 
