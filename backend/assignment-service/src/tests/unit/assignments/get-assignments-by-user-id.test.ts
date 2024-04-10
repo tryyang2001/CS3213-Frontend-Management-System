@@ -23,6 +23,7 @@ describe("Unit Tests for getAssignmentsByUserId", () => {
     it("should return the assignments associated with the user", async () => {
       // Arrange
       const userId = 1;
+      dbMock.user.findUnique = jest.fn().mockResolvedValue({ uid: userId });
       dbMock.assignment.findMany = jest
         .fn()
         .mockResolvedValue(GetAssignmentsByUserIdDbResponse(userId));
