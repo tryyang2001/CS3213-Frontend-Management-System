@@ -9,7 +9,6 @@ import UserDropdown from "./UserDropdown";
 import { useUserContext } from "@/contexts/user-context";
 import userService from "@/helpers/user-service/api-wrapper";
 import Cookies from "js-cookie";
-import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
 import { useToast } from "@/components/ui/use-toast";
 
 interface MenuItem {
@@ -70,6 +69,7 @@ export default function SideBar() {
 
   const handleLoggingOut = () => {
     localStorage.removeItem('userContext');
+    Cookies.remove('token');
     setUserContext(null);
     toast({
       title: "Log out succesfully",
@@ -164,14 +164,14 @@ export default function SideBar() {
                   className="text-black"
                   onPress={() => handleLoggingOut()}
                 >
-                  <MdOutlineLogout className="text-2xl" />
+                  <Icons.Logout className="text-2xl" />
                 </Button>
               : <Button
                   isIconOnly
                   className="text-black"
                   onPress={() => handleLoggingIn()}
                 >
-                  <MdOutlineLogin className="text-2xl" />
+                  <Icons.Login className="text-2xl" />
                 </Button>
               }
             </div>
@@ -223,7 +223,7 @@ export default function SideBar() {
                   className="flex text-black w-full text-left items-center justify-start p-2"
                   fullWidth={true}
                   onPress={() => handleLoggingOut()}
-                  startContent={<MdOutlineLogout className="text-2xl" />}
+                  startContent={<Icons.Logout className="text-2xl" />}
                 >
                   Log Out
                 </Button>
@@ -233,7 +233,7 @@ export default function SideBar() {
                   className="flex text-black w-full text-left items-center justify-start p-2"
                   fullWidth={true}
                   onPress={() => handleLoggingIn()}
-                  startContent={<MdOutlineLogin className="text-2xl" />} 
+                  startContent={<Icons.Login className="text-2xl" />} 
                 >
                   Sign in
                 </Button>

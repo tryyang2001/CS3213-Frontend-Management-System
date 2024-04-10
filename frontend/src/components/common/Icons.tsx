@@ -4,6 +4,7 @@ import {
   MdOutlineAssignment,
   MdOutlineLogout,
   MdOutlineUploadFile,
+  MdOutlineLogin
 } from "react-icons/md";
 import { MdCreateNewFolder } from "react-icons/md";
 import { HiMenu, HiOutlineChevronDoubleLeft } from "react-icons/hi";
@@ -18,6 +19,7 @@ const Icons = {
   ViewAssignment: MdOutlineAssignment,
   ViewSubmissions: MdOutlineUploadFile,
   Logout: MdOutlineLogout,
+  Login: MdOutlineLogin,
   Collapse: HiOutlineChevronDoubleLeft,
   Expand: HiMenu,
   Edit: FaRegEdit,
