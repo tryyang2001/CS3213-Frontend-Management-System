@@ -6,7 +6,6 @@ interface UserContextType {
   user: User | null;
   setUserContext: (user: User | null) => void;
 }
-
 const initialUser: User | null = null;
 
 const UserContext = createContext<UserContextType>({
@@ -43,7 +42,6 @@ function UserProvider({ children }: { children: ReactNode }) {
     </UserContext.Provider>
   );
 }
-
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {

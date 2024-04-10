@@ -11,6 +11,7 @@ const updateAssignment = async (updateAssignmentBody: UpdateAssignmentBody) => {
       title: updateAssignmentBody.title,
       authors: updateAssignmentBody.authors,
       isPublished: updateAssignmentBody.isPublished,
+      description: updateAssignmentBody.description,
       deadline: updateAssignmentBody.deadline
         ? new Date(updateAssignmentBody.deadline)
         : undefined,
@@ -26,6 +27,7 @@ const updateAssignment = async (updateAssignmentBody: UpdateAssignmentBody) => {
     title: updatedAssignment.title,
     deadline: updatedAssignment.deadline.getTime(),
     isPublished: updatedAssignment.isPublished,
+    description: updatedAssignment.description ?? undefined,
     numberOfQuestions: updatedAssignment.numberOfQuestions,
     authors: updatedAssignment.authors,
     createdOn: updatedAssignment.createdOn.getTime(),

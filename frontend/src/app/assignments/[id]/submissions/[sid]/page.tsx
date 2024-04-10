@@ -73,8 +73,6 @@ export default function SubmissionPage({ params }: Props) {
     queryFn: async () => {
       const assignment = await AssignmentService.getAssignmentById(params.id);
 
-      console.log(assignment);
-
       return assignment;
     },
   });

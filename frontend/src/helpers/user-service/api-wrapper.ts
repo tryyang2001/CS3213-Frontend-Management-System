@@ -2,8 +2,7 @@ import axios, { isAxiosError } from "axios";
 import HttpStatusCode from "@/types/HttpStatusCode";
 
 const api = axios.create({
-  baseURL:
-    process.env.USER_API_ENDPOINT ?? "http://localhost:3001/user",
+  baseURL: process.env.USER_API_ENDPOINT ?? "http://localhost:3001/user",
   timeout: 5000,
   headers: {
     "Content-type": "application/json",
@@ -24,14 +23,15 @@ const login = async (email: string, password: string): Promise<User> => {
             const user = responseData.user;
             return user;
         } else {
-            console.log("invaliad email/password");
+            console.log("invalid email/password");
             throw new Error("Invalid Email/Password");
         }
     }).catch((err: Error) => {
         console.log(err);
         throw err;
     });
-    return response;
+
+  return response;
 };
 
 const register = async (email: string, password: string) => {

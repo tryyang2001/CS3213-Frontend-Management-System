@@ -15,6 +15,7 @@ export const getCreatedQuestionDbResponse = (
         }
       : undefined,
     assignmentId: "existing-assignment-id",
+    createdOn: new Date("2024-12-30T00:00:00.000Z"),
   };
 };
 
@@ -31,5 +32,6 @@ export const getCreatedQuestionExpectedResponse = (
       ? "new-reference-solution-id"
       : undefined,
     assignmentId: "existing-assignment-id",
+    createdOn: new Date("2024-12-30T00:00:00.000Z").getTime(),
   };
 };

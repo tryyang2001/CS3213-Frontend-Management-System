@@ -70,7 +70,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
       />
 
       <Popover
-        color="danger"
+        color="primary"
         isOpen={accountMessage != ""}
         onOpenChange={() => setAccountMessage("")}
       >
@@ -81,7 +81,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <p className="text-small" color="danger">
+          <p className="text-small" color="primary">
             {accountMessage}
           </p>
         </PopoverContent>

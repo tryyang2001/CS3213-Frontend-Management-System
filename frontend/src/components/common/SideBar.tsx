@@ -2,20 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Avatar, Button, User, Spacer } from "@nextui-org/react";
-import { HiOutlineChevronDoubleLeft, HiMenu } from "react-icons/hi";
-import { useRouter } from "next/navigation";
-import {
-  MdOutlineAssignment,
-  MdOutlineUploadFile,
-  MdOutlineLogout,
-  MdOutlineLogin,
-  MdHome
-} from "react-icons/md";
+import { usePathname, useRouter } from "next/navigation";
 import classNames from "classnames";
+import Icons from "./Icons";
+import UserDropdown from "./UserDropdown";
 import { useUserContext } from "@/contexts/user-context";
-import Cookies from "js-cookie";
-import { toast } from 'react-toastify';
 import userService from "@/helpers/user-service/api-wrapper";
+import Cookies from "js-cookie";
 
 interface MenuItem {
   id: number;
@@ -27,21 +20,21 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     id: 1,
-    label: "Assignments",
-    icon: <MdOutlineAssignment className="text-2xl" />,
+    label: "View Assignments",
+    icon: <Icons.ViewAssignment className="text-2xl" />,
     link: "/dashboard",
   },
   {
     id: 2,
-    label: "Submissions",
-    icon: <MdOutlineUploadFile className="text-2xl" />,
-    link: "/assignments/submissions",
+    label: "Create New Assignment",
+    icon: <Icons.CreateNewInstance className="text-2xl" />,
+    link: "/assignments/create",
   },
   {
     id: 3,
-    label: "Dashboard",
-    icon: <MdHome className="text-2xl" />,
-    link: "/dashboard",
+    label: "View Submissions",
+    icon: <Icons.ViewSubmissions className="text-2xl" />,
+    link: "/assignments/submissions",
   },
 ];
 
@@ -86,18 +79,16 @@ export default function SideBar() {
     const fetchUserInfo = async () => {
       try {
         if (user === null || Cookies.get('token')) {
-          toast.error("You must login to view user page");
+          setLoggedIn(false);
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           if (retrievedUserInfo !== null) {
             setUserInfo(retrievedUserInfo);
+            setLoggedIn(true);
           }
         }
-        setLoggedIn(true);
       } catch (error) { 
         setLoggedIn(false);
-        console.error("Error fetching user info for sidebar:", error);
-        toast.error("An unexpected error occurred");
       }
     };
 
@@ -109,6 +100,13 @@ export default function SideBar() {
     }
   }, [user]);
 
+  // obtain current path, if is login/sign up, don't render SideBar
+  const currentPath = usePathname();
+
+  if (currentPath === "/login" || currentPath === "/sign-up") {
+    return null;
+  }
+
   return (
     <div
       className={wrapperClasses}
@@ -119,22 +117,26 @@ export default function SideBar() {
         <div className="flex items-center pl-1 gap-4">
           {isCollapsed ? (
             <div className="block">
-              <Button
-                isIconOnly
-                onClick={handleToggleCollapse}
-                className="text-black"
-              >
-                <HiMenu className="text-2xl" />
-              </Button>
-              { isLoggedIn ? 
+              <div className="mb-4">
+                <Button
+                  isIconOnly
+                  onClick={handleToggleCollapse}
+                  className="text-black"
+                >
+                  <Icons.Expand className="text-2xl" />
+                </Button>
+              </div>
+
+              <UserDropdown>
                 <Avatar
                   showFallback
                   name="Jane"
                   src="https://i.pravatar.cc/150?u=a04258114e29026702d"
                 />
-              : <div></div>
-              }
+              </UserDropdown>
+
               <Spacer y={60} />
+
               {menuItems.map((item: MenuItem) => (
                 <Button
                   isIconOnly
@@ -146,44 +148,31 @@ export default function SideBar() {
                   {item.icon}
                 </Button>
               ))}
-              <Spacer y={72} />
-              <Spacer y={6} />
-              { isLoggedIn
-              ?
-                <Button
-                  isIconOnly
-                  className="text-black"
-                  onPress={() => handleLoggingOut()}
-                >
-                  <MdOutlineLogout className="text-2xl" />
-                </Button>
-              : <Button
-                  isIconOnly
-                  className="text-black"
-                  onPress={() => handleLoggingIn()}
-                >
-                  <MdOutlineLogin className="text-2xl" />
-                </Button>
-              }
             </div>
           ) : (
             <div className="flex flex-col w-full items-start">
-              <Button
-                isIconOnly
-                onClick={handleToggleCollapse}
-                className="text-black"
-              >
-                <HiOutlineChevronDoubleLeft className="text-2xl" />
-              </Button>
-              {isLoggedIn ? <User
-                name={userInfo.name}
-                description={userInfo.email}
-                avatarProps={{
-                  src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-                  alt: "Jane",
-                  showFallback: true,
-                }}
-              /> : <div></div>}
+              <div className="mb-4">
+                <Button
+                  isIconOnly
+                  onClick={handleToggleCollapse}
+                  className="text-black"
+                >
+                  <Icons.Collapse className="text-2xl" />
+                </Button>
+              </div>
+
+              <UserDropdown>
+                <User
+                  name={userInfo.name}
+                  description={userInfo.name}
+                  avatarProps={{
+                    src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                    alt: "Jane",
+                    showFallback: true,
+                  }}
+                />
+              </UserDropdown>
+
               <Spacer y={60} />
               {menuItems.map((item: MenuItem) => (
                 <Button
@@ -198,31 +187,6 @@ export default function SideBar() {
                   {item.label}
                 </Button>
               ))}
-              <Spacer y={72} />
-              <Spacer y={6} />
-              { isLoggedIn
-              ?
-                <Button
-                  // isIconOnly
-                  // onClick={handleToggleCollapse}
-                  className="flex text-black w-full text-left items-center justify-start p-2"
-                  fullWidth={true}
-                  onPress={() => handleLoggingOut()}
-                  startContent={<MdOutlineLogout className="text-2xl" />}
-                >
-                  Log Out
-                </Button>
-              : <Button
-                  // isIconOnly
-                  // onClick={handleToggleCollapse}
-                  className="flex text-black w-full text-left items-center justify-start p-2"
-                  fullWidth={true}
-                  onPress={() => handleLoggingIn()}
-                  startContent={<MdOutlineLogin className="text-2xl" />} 
-                >
-                  Sign in
-                </Button>
-              }
             </div>
           )}
         </div>
