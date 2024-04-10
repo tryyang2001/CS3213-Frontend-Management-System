@@ -74,13 +74,6 @@ export default function Home() {
 
         <Button
           type="submit"
-<<<<<<< HEAD
-          onClick={() => {
-            void (async () => {
-                await handleSubmit()
-            })();
-          }}
-=======
           onClick={
             () => {
                 void (async () => {
@@ -88,7 +81,6 @@ export default function Home() {
                 })();
              }
           }
->>>>>>> User-Microservice
           color="primary"
           className="w-full"
         >
