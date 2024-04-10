@@ -11,6 +11,7 @@ import Icons from "@/components/common/Icons";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import { useUserContext } from "@/contexts/user-context";
+import Cookies from "js-cookie";
 
 interface Props {
   isEditing?: boolean;
@@ -49,10 +50,17 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       setIsPublished(assignment.isPublished);
     }
   }, []);
-
-  const { user } = useUserContext();
-
   const { toast } = useToast();
+  const { user } = useUserContext();
+  if (!(user && Cookies.get('token'))) {
+    toast({
+      title: "You must login to see Assignment page",
+      description: "Please login first",
+      variant: "destructive",
+    });
+    router.push('/login');
+    return <div></div>;
+  }
 
   const checkFormValidity = useCallback(
     (field: string, value: string) => {

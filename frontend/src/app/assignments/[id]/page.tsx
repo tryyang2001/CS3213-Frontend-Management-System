@@ -19,6 +19,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import { notFound, useRouter } from "next/navigation";
 
 interface Props {
@@ -38,6 +39,15 @@ export default function Page({ params }: Props) {
 
   // TODO: replace below code with actual user context to check for user role
   const { user } = useUserContext();
+  if (!(user && Cookies.get('token'))) {
+    toast({
+      title: "You must login to see Assignment page",
+      description: "Please login first",
+      variant: "destructive",
+    });
+    router.push('/login');
+    return;
+  }
   const userRole = user.role;
 
   const {
