@@ -11,6 +11,7 @@ import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -74,7 +75,11 @@ export default function Home() {
 
         <Button
           type="submit"
-          onClick={handleSubmit}
+          onClick={() => {
+            void (async () => {
+                await handleSubmit()
+            })();
+          }}
           color="primary"
           className="w-full"
         >
@@ -95,3 +100,4 @@ export default function Home() {
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */

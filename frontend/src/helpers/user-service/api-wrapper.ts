@@ -21,7 +21,8 @@ const login = async (email: string, password: string): Promise<User> => {
         )
         console.log(response.status);
         if (response.status === HttpStatusCode.OK.valueOf()) {
-            return response.data.user as User;
+            const responseData = response.data as LoginResponse
+            return responseData.user;
         } else {
             throw new Error("Unknown error updating password, please try again");
         }

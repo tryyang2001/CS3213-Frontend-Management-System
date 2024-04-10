@@ -38,7 +38,7 @@ export default function Page({ params }: Props) {
 
   // TODO: replace below code with actual user context to check for user role
   const { user } = useUserContext();
-  const userRole = user.role;
+  const userRole = user?.role ?? "student";
 
   const {
     data: assignment,

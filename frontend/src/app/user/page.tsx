@@ -75,7 +75,7 @@ export default function Page() {
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>
-            <AccountEditor uid={user?.uid || -1} userInfo={userInfo} />
+            <AccountEditor uid={user?.uid ?? 0} userInfo={userInfo} />
           </div>
         </div>
       )}
