@@ -36,6 +36,7 @@ interface Question {
   numberOfTestCases: number;
   assignmentId?: string;
   referenceSolutionId?: string;
+  createdOn: number;
 }
 
 interface TestCase {

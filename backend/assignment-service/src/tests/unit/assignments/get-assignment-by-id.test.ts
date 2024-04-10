@@ -48,6 +48,7 @@ describe("Unit Tests for getAssignmentById", () => {
             deadline: new Date("2024-12-31T00:00:00.000Z"),
             numberOfTestCases: 1,
             referenceSolutionId: null,
+            createdOn: new Date("2024-03-12T00:00:00.000Z"),
           },
           {
             id: "question-id-2",
@@ -56,6 +57,7 @@ describe("Unit Tests for getAssignmentById", () => {
             deadline: new Date("2024-12-31T00:00:00.000Z"),
             numberOfTestCases: 2,
             referenceSolutionId: null,
+            createdOn: new Date("2024-03-12T00:00:00.000Z"),
           },
         ],
       });

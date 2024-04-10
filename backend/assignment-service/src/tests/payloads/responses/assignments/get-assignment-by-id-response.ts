@@ -23,6 +23,7 @@ export const getAssignmentByIdDbResponse = (
         deadline: deadline,
         numberOfTestCases: 1,
         referenceSolutionId: "solution-id-1",
+        createdOn: createdOn,
       },
       {
         id: "question-id-2",
@@ -31,6 +32,7 @@ export const getAssignmentByIdDbResponse = (
         deadline: deadline,
         numberOfTestCases: 2,
         referenceSolutionId: "solution-id-2",
+        createdOn: createdOn,
       },
     ],
   };

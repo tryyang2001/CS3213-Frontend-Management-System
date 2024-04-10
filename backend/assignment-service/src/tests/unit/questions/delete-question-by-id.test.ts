@@ -79,6 +79,7 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id", () => {
         .mockResolvedValue({
           ...Response.getQuestionByIdExpectedResponse(),
           deadline: new Date(),
+          createdOn: new Date(),
         });
 
       // Act

@@ -11,4 +11,5 @@ export type Question = {
   referenceSolutionId?: string;
   referenceSolution?: ReferenceSolution;
   assignmentId?: string;
+  createdOn: number;
 };

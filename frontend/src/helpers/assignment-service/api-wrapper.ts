@@ -20,6 +20,9 @@ const getAssignmentById = async (assignmentId: string) => {
 
     const assignment = response.data as Assignment;
 
+    // sort questions by createdOn date
+    assignment.questions?.sort((a, b) => a.createdOn - b.createdOn);
+
     return assignment;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -47,7 +47,6 @@ const register = async (email: string, password: string) => {
       { withCredentials: true }
     )
     .then((res) => {
-      console.log(res);
       if (res.status !== HttpStatusCode.OK.valueOf()) {
         throw new Error(
           "We are currently encountering some issues, please try again later"
@@ -66,7 +65,6 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
       { withCredentials: true }
     )
     .then((res) => {
-      console.log(res);
       if (res.status === HttpStatusCode.OK.valueOf()) {
         const userInfo = res.data as UserInfo;
         return userInfo;
