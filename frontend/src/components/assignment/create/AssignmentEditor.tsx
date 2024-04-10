@@ -59,7 +59,6 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       variant: "destructive",
     });
     router.push('/login');
-    return <div></div>;
   }
 
   const checkFormValidity = useCallback(
@@ -92,9 +91,9 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         description,
         isPublished,
         // if uid is alr in authors, don't add it again
-        authors: assignment!.authors.includes(user.uid)
+        authors: assignment!.authors.includes(user?.uid ?? 0)
           ? assignment!.authors
-          : [...assignment!.authors, user.uid],
+          : [...assignment!.authors, user?.uid ?? 0],
       })
         .then((updatedAssignment) => {
           if (!updatedAssignment) {
@@ -122,7 +121,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         deadline,
         description,
         isPublished,
-        authors: [user.uid],
+        authors: [user?.uid ?? 0],
       })
         .then((createdAssignment) => {
           if (!createdAssignment) {

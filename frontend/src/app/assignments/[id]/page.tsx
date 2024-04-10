@@ -46,9 +46,8 @@ export default function Page({ params }: Props) {
       variant: "destructive",
     });
     router.push('/login');
-    return;
   }
-  const userRole = user.role;
+  const userRole = user?.role;
 
   const {
     data: assignment,

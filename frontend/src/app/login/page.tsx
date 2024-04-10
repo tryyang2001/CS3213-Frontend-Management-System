@@ -27,7 +27,6 @@ export default function Home() {
         description: "Please check your input and try again",
         variant: "destructive",
       });
-      return;
     }
 
     try {
@@ -74,7 +73,13 @@ export default function Home() {
 
         <Button
           type="submit"
-          onClick={handleSubmit}
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+             }
+          }
           color="primary"
           className="w-full"
         >
