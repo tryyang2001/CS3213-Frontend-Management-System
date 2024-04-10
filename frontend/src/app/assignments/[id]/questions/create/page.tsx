@@ -26,6 +26,7 @@ function Page({ params }: Props) {
       description: "",
     },
   ]);
+  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([]);
 
   const { toast } = useToast();
 
@@ -56,11 +57,17 @@ function Page({ params }: Props) {
         description: "",
       },
     ]);
+
+    setQuestionUniqueIds([...questionUniqueIds, crypto.randomUUID()]);
   };
 
   const handleDeleteQuestion = (index: number) => {
     setQuestions((prevQuestions) =>
       prevQuestions.filter((_, idx) => idx !== index)
+    );
+
+    setQuestionUniqueIds((prevIds) =>
+      prevIds.filter((_, idx) => idx !== index)
     );
   };
 
@@ -189,7 +196,7 @@ function Page({ params }: Props) {
           {questions.map((question, index) => (
             <div
               className="flex border px-4 py-10 my-2 justify-center"
-              key={index}
+              key={questionUniqueIds[index]}
             >
               <QuestionEditor
                 assignmentDeadline={assignment.deadline}
