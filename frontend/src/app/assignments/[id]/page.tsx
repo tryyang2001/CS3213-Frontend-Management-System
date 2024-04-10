@@ -19,6 +19,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import { notFound, useRouter } from "next/navigation";
 
 interface Props {

@@ -28,7 +28,6 @@ export default function Home() {
         description: "Please check your input and try again",
         variant: "destructive",
       });
-      return;
     }
 
     try {
@@ -75,11 +74,21 @@ export default function Home() {
 
         <Button
           type="submit"
+<<<<<<< HEAD
           onClick={() => {
             void (async () => {
                 await handleSubmit()
             })();
           }}
+=======
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+             }
+          }
+>>>>>>> User-Microservice
           color="primary"
           className="w-full"
         >

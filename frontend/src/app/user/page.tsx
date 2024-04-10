@@ -11,21 +11,24 @@ import Cookies from "js-cookie";
 
 export default function Page() {
   const { user } = useUserContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [ userInfo, setUserInfo ] = useState<UserInfo>({} as UserInfo);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      const token = Cookies.get('token');
+      console.log(token);
       try {
-        if (user === null || Cookies.get('token')) {
+        if (!(user && Cookies.get('token'))) {
+          console.log("u reach this", user, Cookies.get('token'));
           toast({
             title: "You must login to see Userpage",
             description: "Please login first",
             variant: "destructive",
           });
-          router.push("/login");
+          router.push("/");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           console.log("retrieved", retrievedUserInfo);
@@ -38,9 +41,9 @@ export default function Page() {
             router.push("/");
           } else {
             setUserInfo(retrievedUserInfo);
+            setIsLoading(false);
           }
         }
-        setIsLoading(false);
       } catch (error) { 
         console.error("Error fetching user info:", error);
         toast({
@@ -50,18 +53,16 @@ export default function Page() {
         });
         // Handle the error based on its type
         router.push("/");
-        setIsLoading(false);
       }
     };
     if (user) {
       fetchUserInfo().catch((err) => console.log(err));
-      setIsLoading(true);
     } else {
       console.log("no user context");
-      setIsLoading(false);
+      setIsLoading(true);
       router.push("/");
     }
-  }, [user]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center p-2">
