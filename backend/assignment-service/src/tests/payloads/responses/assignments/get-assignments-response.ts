@@ -28,7 +28,7 @@ export const GetAssignmentsResponse = (userId: string) => {
   };
 };
 
-export const GetAssignmentsByUserIdDbResponse = (userId: string) => {
+export const GetAssignmentsByUserIdDbResponse = (userId: number) => {
   const deadline = new Date("2024-12-31T00:00:00.000Z");
   const createdOn = new Date("2024-03-12T00:00:00.000Z");
 
@@ -57,7 +57,7 @@ export const GetAssignmentsByUserIdDbResponse = (userId: string) => {
 };
 
 export const ExpectedAssignmentsFromGetAssignmentsByUserId = (
-  userId: string
+  userId: number
 ) => {
   const deadline = new Date("2024-12-31T00:00:00.000Z").getTime();
   const createdOn = new Date("2024-03-12T00:00:00.000Z").getTime();

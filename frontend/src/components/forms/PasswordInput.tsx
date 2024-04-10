@@ -1,6 +1,6 @@
 import { Input } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useState } from "react";
-import Eye from "../common/EyeToggle";
+import Eye from "../auth/EyeToggle";
 
 interface InputProps {
   password: string;

@@ -8,6 +8,7 @@ const createAssignment = async (createAssignmentBody: CreateAssignmentBody) => {
     data: {
       title: createAssignmentBody.title,
       deadline: new Date(createAssignmentBody.deadline),
+      description: createAssignmentBody.description,
       authors: createAssignmentBody.authors,
       isPublished: createAssignmentBody.isPublished,
     },
@@ -17,6 +18,7 @@ const createAssignment = async (createAssignmentBody: CreateAssignmentBody) => {
     id: assignment.id,
     title: assignment.title,
     deadline: assignment.deadline.getTime(),
+    description: assignment.description ?? undefined,
     authors: assignment.authors,
     isPublished: assignment.isPublished,
     numberOfQuestions: assignment.numberOfQuestions,

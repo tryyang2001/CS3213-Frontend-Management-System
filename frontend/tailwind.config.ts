@@ -29,13 +29,14 @@ const config = {
         white: "#ffffff",
         logo: "#07c1ff",
         lightgrey: "#d4d4d8",
+        btnblue: "#338ef7",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#338ef7",
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

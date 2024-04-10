@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import Providers from "@/components/common/Providers";
 import SideBar from "@/components/common/SideBar";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-white">
       <body className={inter.className + " min-h-screen"}>
-      <ToastContainer
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
         <Providers>
           <div className="flex flex-row justify-start">
             <div>
@@ -37,6 +29,8 @@ export default function RootLayout({
               {children}
             </div>
           </div>
+
+          <Toaster />
         </Providers>
       </body>
     </html>

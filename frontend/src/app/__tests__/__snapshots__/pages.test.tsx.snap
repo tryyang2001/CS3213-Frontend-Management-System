@@ -114,36 +114,33 @@ exports[`Page Snapshot tests Landing Page Snapshot test 1`] = `
         </div>
       </div>
       <button
-        aria-expanded="false"
-        class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased w-full"
-        data-slot="trigger"
+        class="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover w-full"
         type="submit"
       >
-         
         Login
-         
       </button>
       <div
-        class="flex gap-3"
+        class="flex gap-3 text-center"
       >
         <div>
-           
           <a
             href="/login/recovery"
           >
-             Forgot Password 
+            Forgot Password
           </a>
            
         </div>
+        <div
+          aria-orientation="vertical"
+          class="shrink-0 bg-divider border-none h-full w-divider"
+          data-orientation="vertical"
+          role="separator"
+        />
         <div>
-           | 
-        </div>
-        <div>
-           
           <a
             href="/sign-up"
           >
-             Sign up
+            Sign up
           </a>
            
         </div>
@@ -219,8 +216,8 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
           <label
             class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
             data-slot="label"
-            for="react-aria-:rb:"
-            id="react-aria-:rc:"
+            for="react-aria-:ra:"
+            id="react-aria-:rb:"
           >
             Email
           </label>
@@ -230,11 +227,11 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
           >
             <input
               aria-label="Email"
-              aria-labelledby="react-aria-:rb: react-aria-:rc:"
+              aria-labelledby="react-aria-:ra: react-aria-:rb:"
               aria-required="true"
               class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
               data-slot="input"
-              id="react-aria-:rb:"
+              id="react-aria-:ra:"
               placeholder="Enter your email"
               required=""
               type="email"
@@ -259,8 +256,8 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
           <label
             class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
             data-slot="label"
-            for="react-aria-:rg:"
-            id="react-aria-:rh:"
+            for="react-aria-:rf:"
+            id="react-aria-:rg:"
           >
             Password
           </label>
@@ -270,12 +267,12 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
           >
             <input
               aria-label="Password"
-              aria-labelledby="react-aria-:rg: react-aria-:rh:"
+              aria-labelledby="react-aria-:rf: react-aria-:rg:"
               aria-required="true"
               class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
               data-has-end-content="true"
               data-slot="input"
-              id="react-aria-:rg:"
+              id="react-aria-:rf:"
               required=""
               type="password"
               value=""
@@ -308,36 +305,33 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
         </div>
       </div>
       <button
-        aria-expanded="false"
-        class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased w-full"
-        data-slot="trigger"
+        class="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover w-full"
         type="submit"
       >
-         
         Login
-         
       </button>
       <div
-        class="flex gap-3"
+        class="flex gap-3 text-center"
       >
         <div>
-           
           <a
             href="/login/recovery"
           >
-             Forgot Password 
+            Forgot Password
           </a>
            
         </div>
+        <div
+          aria-orientation="vertical"
+          class="shrink-0 bg-divider border-none h-full w-divider"
+          data-orientation="vertical"
+          role="separator"
+        />
         <div>
-           | 
-        </div>
-        <div>
-           
           <a
             href="/sign-up"
           >
-             Sign up
+            Sign up
           </a>
            
         </div>
@@ -372,8 +366,8 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           <label
             class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
             data-slot="label"
-            for="react-aria-:rm:"
-            id="react-aria-:rn:"
+            for="react-aria-:rk:"
+            id="react-aria-:rl:"
           >
             Email
           </label>
@@ -383,11 +377,11 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           >
             <input
               aria-label="Email"
-              aria-labelledby="react-aria-:rm: react-aria-:rn:"
+              aria-labelledby="react-aria-:rk: react-aria-:rl:"
               aria-required="true"
               class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
               data-slot="input"
-              id="react-aria-:rm:"
+              id="react-aria-:rk:"
               placeholder="Enter your email"
               required=""
               type="email"
@@ -412,8 +406,8 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           <label
             class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
             data-slot="label"
-            for="react-aria-:rr:"
-            id="react-aria-:rs:"
+            for="react-aria-:rp:"
+            id="react-aria-:rq:"
           >
             Password
           </label>
@@ -423,12 +417,12 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           >
             <input
               aria-label="Password"
-              aria-labelledby="react-aria-:rr: react-aria-:rs:"
+              aria-labelledby="react-aria-:rp: react-aria-:rq:"
               aria-required="true"
               class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
               data-has-end-content="true"
               data-slot="input"
-              id="react-aria-:rr:"
+              id="react-aria-:rp:"
               required=""
               type="password"
               value=""
@@ -476,8 +470,8 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           <label
             class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
             data-slot="label"
-            for="react-aria-:r10:"
-            id="react-aria-:r11:"
+            for="react-aria-:ru:"
+            id="react-aria-:rv:"
           >
             Confirm Password
           </label>
@@ -487,11 +481,11 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
           >
             <input
               aria-label="Confirm Password"
-              aria-labelledby="react-aria-:r10: react-aria-:r11:"
+              aria-labelledby="react-aria-:ru: react-aria-:rv:"
               aria-required="true"
               class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
               data-slot="input"
-              id="react-aria-:r10:"
+              id="react-aria-:ru:"
               required=""
               type="password"
               value=""
@@ -500,9 +494,7 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
         </div>
       </div>
       <button
-        aria-expanded="false"
-        class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-3 min-w-unit-16 h-unit-8 text-tiny gap-unit-2 rounded-small [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased w-full"
-        data-slot="trigger"
+        class="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-3 min-w-unit-16 h-unit-8 text-tiny gap-unit-2 rounded-small [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover"
         type="submit"
       >
          
@@ -538,294 +530,37 @@ exports[`Page Snapshot tests User Page Snapshot test 1`] = `
     class="flex flex-col items-center p-2"
   >
     <div
-      class="w-full"
+      class="flex flex-col items-center justify-center"
+      style="height: 100vh;"
     >
       <div
-        class="flex w-full justify-around gap-12 pt-10"
+        class="flex items-center justify-center object-cover"
       >
-        <div>
-           Your Account 
-        </div>
-        <form
-          class="flex w-1/2 flex-col gap-4"
+        <div
+          class="shadow-black/5 shadow-none group relative overflow-hidden bg-content3 dark:bg-content2 before:opacity-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:border-t before:border-content4/30 before:bg-gradient-to-r before:from-transparent before:via-content4 dark:before:via-default-700/10 before:to-transparent after:opacity-100 after:absolute after:inset-0 after:-z-10 after:bg-content3 dark:after:bg-content2 rounded-large"
+          style="max-width: 100%;"
         >
-          <div
-            class="flex flex-col relative overflow-hidden height-auto text-foreground box-border bg-content1 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 shadow-medium rounded-large transition-transform-background motion-reduce:transition-none border-none self-center max-w-[200px] max-h-[200px]"
-            tabindex="-1"
-          >
-            <span
-              class="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 text-tiny bg-default text-default-foreground rounded-full object-cover h-200 w-200"
-              tabindex="-1"
-            >
-              <img
-                alt="Profile Picture"
-                class="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
-                src="https://picsum.photos/200"
-              />
-            </span>
-            <div
-              class="p-3 h-auto flex w-full items-center color-inherit subpixel-antialiased bg-background/10 backdrop-blur backdrop-saturate-150 justify-end before:bg-white/10 overflow-hidden py-1 absolute rounded-large bottom-1 ml-1 z-10"
-            >
-              <button
-                class="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-3 min-w-unit-16 h-unit-8 gap-unit-2 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover text-tiny"
-                type="button"
-              >
-                Change
-              </button>
-            </div>
-          </div>
-          <div
-            class="group flex flex-col w-full"
-            data-has-elements="true"
-            data-has-label="true"
-            data-has-value="true"
-            data-required="true"
-            data-slot="base"
-          >
-            <div
-              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2"
-              data-slot="input-wrapper"
-              style="cursor: text;"
-            >
-              <label
-                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
-                data-slot="label"
-                for="react-aria-:r1a:"
-                id="react-aria-:r1b:"
-              >
-                Name
-              </label>
-              <div
-                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
-                data-slot="inner-wrapper"
-              >
-                <input
-                  aria-label="Name"
-                  aria-labelledby="react-aria-:r1a: react-aria-:r1b:"
-                  aria-required="true"
-                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
-                  data-slot="input"
-                  id="react-aria-:r1a:"
-                  name="Name"
-                  required=""
-                  type="text"
-                  value=""
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            class="group flex flex-col w-full"
-            data-filled="true"
-            data-filled-within="true"
-            data-has-elements="true"
-            data-has-label="true"
-            data-slot="base"
-          >
-            <div
-              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 !h-auto transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2"
-              data-has-multiple-rows="true"
-              data-slot="input-wrapper"
-              style="cursor: text;"
-            >
-              <label
-                class="z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text relative will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small pb-0.5 pe-2 max-w-full text-ellipsis overflow-hidden"
-                data-slot="label"
-                for="Bio"
-                id="react-aria-:r1g:"
-              >
-                Bio
-              </label>
-              <div
-                class="inline-flex w-full h-full box-border items-start group-data-[has-label=true]:items-start pb-0.5"
-                data-slot="inner-wrapper"
-              >
-                <textarea
-                  aria-label="Bio"
-                  aria-labelledby="Bio react-aria-:r1g:"
-                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small resize-none data-[hide-scroll=true]:scrollbar-hide group-data-[has-value=true]:text-default-foreground pt-0 transition-height !duration-100 motion-reduce:transition-none"
-                  data-hide-scroll="true"
-                  data-slot="input"
-                  id="Bio"
-                  placeholder="Share any you like..."
-                />
-              </div>
-            </div>
-          </div>
-          <button
-            aria-expanded="false"
-            class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-danger text-danger-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased"
-            data-slot="trigger"
-            type="button"
-          >
-             
-            Save Changes
-             
-          </button>
-        </form>
+           
+          <img
+            alt="ITS Logo"
+            class="relative shadow-black/5 data-[loaded=true]:opacity-100 shadow-none opacity-0 transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large bg-logo mx-auto -mb-4 z-0"
+            height="100%"
+            src="/logo.svg"
+            width="100%"
+          />
+        </div>
       </div>
       <div
-        class="flex w-full justify-around gap-12 pt-10"
+        class="mx-2 -mt-2 z-20"
       >
-        <div>
-           Your Profile 
-        </div>
-        <form
-          class="flex w-1/2 flex-col gap-4"
+        <div
+          class="flex items-center justify-center"
         >
-          <div
-            class="group flex flex-col w-full opacity-disabled pointer-events-none"
-            data-disabled="true"
-            data-has-elements="true"
-            data-has-label="true"
-            data-has-value="true"
-            data-slot="base"
-          >
-            <div
-              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 pointer-events-none transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2"
-              data-slot="input-wrapper"
-              style="cursor: text;"
-            >
-              <label
-                class="absolute z-10 origin-top-left subpixel-antialiased block text-foreground-500 cursor-text pointer-events-none will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
-                data-slot="label"
-                for="react-aria-:r1l:"
-                id="react-aria-:r1m:"
-              >
-                Email
-              </label>
-              <div
-                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
-                data-slot="inner-wrapper"
-              >
-                <input
-                  aria-label="Email"
-                  aria-labelledby="react-aria-:r1l: react-aria-:r1m:"
-                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
-                  data-slot="input"
-                  disabled=""
-                  id="react-aria-:r1l:"
-                  type="email"
-                  value=""
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            class="group flex flex-col w-full"
-            data-has-elements="true"
-            data-has-label="true"
-            data-has-value="true"
-            data-required="true"
-            data-slot="base"
-          >
-            <div
-              class="relative w-full inline-flex tap-highlight-transparent shadow-sm bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-8 rounded-small flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-12 py-1.5 px-3"
-              data-slot="input-wrapper"
-              style="cursor: text;"
-            >
-              <label
-                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
-                data-slot="label"
-                for="react-aria-:r1q:"
-                id="react-aria-:r1r:"
-              >
-                Password
-              </label>
-              <div
-                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
-                data-slot="inner-wrapper"
-              >
-                <input
-                  aria-label="Password"
-                  aria-labelledby="react-aria-:r1q: react-aria-:r1r:"
-                  aria-required="true"
-                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
-                  data-has-end-content="true"
-                  data-slot="input"
-                  id="react-aria-:r1q:"
-                  required=""
-                  type="password"
-                  value=""
-                />
-                <button
-                  class="focus:outline-none"
-                  type="button"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="text-2xl text-default-400 pointer-events-none"
-                    fill="none"
-                    focusable="false"
-                    height="1em"
-                    role="presentation"
-                    viewBox="0 0 24 24"
-                    width="1em"
-                  >
-                    <path
-                      d="M21.25 9.14969C18.94 5.51969 15.56 3.42969 12 3.42969C10.22 3.42969 8.49 3.94969 6.91 4.91969C5.33 5.89969 3.91 7.32969 2.75 9.14969C1.75 10.7197 1.75 13.2697 2.75 14.8397C5.06 18.4797 8.44 20.5597 12 20.5597C13.78 20.5597 15.51 20.0397 17.09 19.0697C18.67 18.0897 20.09 16.6597 21.25 14.8397C22.25 13.2797 22.25 10.7197 21.25 9.14969ZM12 16.0397C9.76 16.0397 7.96 14.2297 7.96 11.9997C7.96 9.76969 9.76 7.95969 12 7.95969C14.24 7.95969 16.04 9.76969 16.04 11.9997C16.04 14.2297 14.24 16.0397 12 16.0397Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M11.9984 9.14062C10.4284 9.14062 9.14844 10.4206 9.14844 12.0006C9.14844 13.5706 10.4284 14.8506 11.9984 14.8506C13.5684 14.8506 14.8584 13.5706 14.8584 12.0006C14.8584 10.4306 13.5684 9.14062 11.9984 9.14062Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div
-            class="group flex flex-col w-full"
-            data-has-elements="true"
-            data-has-label="true"
-            data-has-value="true"
-            data-required="true"
-            data-slot="base"
-          >
-            <div
-              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2"
-              data-slot="input-wrapper"
-              style="cursor: text;"
-            >
-              <label
-                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
-                data-slot="label"
-                for="react-aria-:r1v:"
-                id="react-aria-:r20:"
-              >
-                Confirm Password
-              </label>
-              <div
-                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
-                data-slot="inner-wrapper"
-              >
-                <input
-                  aria-label="Confirm Password"
-                  aria-labelledby="react-aria-:r1v: react-aria-:r20:"
-                  aria-required="true"
-                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
-                  data-slot="input"
-                  id="react-aria-:r1v:"
-                  name="Confirm new password"
-                  required=""
-                  type="password"
-                  value=""
-                />
-              </div>
-            </div>
-          </div>
-          <button
-            aria-expanded="false"
-            class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-danger text-danger-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased"
-            data-slot="trigger"
-            type="button"
-          >
-             
-            Update Password
-             
-          </button>
-        </form>
+          Loading...
+        </div>
+        <div
+          class="relative w-64 space-y-3 overflow-hidden rounded-md bg-logo p-3 shadow before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-slate-200 hover:shadow-lg before:animate-[shimmer_1.5s_infinite]"
+        />
       </div>
     </div>
   </div>

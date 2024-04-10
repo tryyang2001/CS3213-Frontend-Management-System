@@ -1,25 +1,29 @@
 interface CreateAssignmentBody {
   title: string;
-  deadline: Date;
+  deadline: number | Date;
+  description?: string;
+  authors?: number[];
   isPublished?: boolean;
 }
 
 interface CreateQuestionBody {
+  id?: string;
   title: string;
   description: string;
-  deadline?: Date;
-  testCases: TestCase[];
-  referenceSolution: ReferenceSolution;
+  deadline?: number | Date;
+  testCases?: TestCase[];
+  referenceSolution?: ReferenceSolution;
 }
 
 interface Assignment {
   id: string;
   title: string;
   deadline: number;
+  description?: string;
   isPublished: boolean;
   numberOfQuestions: number;
   questions?: Question[];
-  authors: string[];
+  authors: number[];
   createdOn: number;
   updatedOn: number;
 }
@@ -32,6 +36,7 @@ interface Question {
   numberOfTestCases: number;
   assignmentId?: string;
   referenceSolutionId?: string;
+  createdOn: number;
 }
 
 interface TestCase {
