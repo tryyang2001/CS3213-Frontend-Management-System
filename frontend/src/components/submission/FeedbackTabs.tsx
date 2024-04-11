@@ -10,27 +10,23 @@ interface Item {
 
 interface Props {
   submission?: Submission;
+  testcases?: TestCase[];
 }
 
-export default function FeedbackTabs({ submission }: Props) {
+export default function FeedbackTabs({ submission, testcases }: Props) {
   const feedback = submission ? submission.feedbacks : [];
   const feedbackContent = feedback.map(
     (fb) => `Line ${fb.line.toString()}: ${fb.hints[0]}`
   );
-  const testCases = [
-    "is_odd(1)",
-    "is_odd(2)",
-    "is_odd(3)",
-    "is_odd(0)",
-    "is_odd(-1)",
-  ];
+  const testcase = testcases ? testcases : [];
+  const testcaseContent = testcase.map((tc) => `${tc.input}`);
   const grade = ["5/5"];
 
   const tabs = [
     {
       id: "testcases",
       label: "Test Cases",
-      content: testCases,
+      content: testcaseContent,
     },
     {
       id: "feedback",
@@ -47,28 +43,13 @@ export default function FeedbackTabs({ submission }: Props) {
   const renderTabContent = (item: Item) => {
     return (
       <div className="flex flex-col gap-4">
-        {item.content.map((testcase: string) => (
-          <Code color="default" key={testcase}>
-            {testcase}
+        {item.content.map((itemcontent: string) => (
+          <Code color="default" key={itemcontent}>
+            {itemcontent}
           </Code>
         ))}
       </div>
     );
-    // if (tabId === "testcases") {
-    //   return (
-    //     <div className="flex flex-col gap-4">
-    //       {item.content.map((testcase: string) => (
-    //         <Code color="default" key={testcase}>
-    //           {testcase}
-    //         </Code>
-    //       ))}
-    //     </div>
-    //   );
-    // } else if (tabId === "feedback") {
-    //   return item.content[0];
-    // } else if (tabId === "grades") {
-    //   return item.content[0];
-    // }
   };
 
   return (
