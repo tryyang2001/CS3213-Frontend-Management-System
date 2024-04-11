@@ -39,11 +39,11 @@ export default function SideBar() {
   const router = useRouter();
   const userName = "Jane Doe";
   const userEmail = "janedoe@u.nus.edu";
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isCollapsible, setIsCollapsible] = useState(false);
 
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
+    "h-dvh px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
     {
       ["w-60"]: !isCollapsed,
       ["w-20"]: isCollapsed,
