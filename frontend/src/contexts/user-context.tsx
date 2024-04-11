@@ -1,67 +1,53 @@
 "use client";
 
-import Cookies from "js-cookie";
-import {
-  createContext,
-  useContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from "react";
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 
 interface UserContextType {
-  user: User;
-  setUser: (user: User) => void;
-  fetchUserFromCookie: () => void;
+  user: User | null;
+  setUserContext: (user: User | null) => void;
 }
-
-const initialUser: User = {
-  uid: 0,
-  email: "",
-  name: "",
-  major: "",
-  course: "",
-  role: "",
-};
+const initialUser: User | null = null;
 
 const UserContext = createContext<UserContextType>({
-  user: initialUser,
-  setUser: () => {
+  user: null,
+  setUserContext: () => {
     throw new Error("Not implemented");
-  },
-  fetchUserFromCookie: () => {
-    throw new Error("Not implemented");
-  },
+  }
 });
 
-const useUserContext = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
-};
-
 function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User>(initialUser);
-
-  const fetchUserFromCookie = () => {
-    const user = Cookies.get("user");
-
-    if (user) {
-      setUser(JSON.parse(user) as User);
+  const getLocalState = () : User | null => {
+    if (typeof window !== "undefined") {
+      const localUserContext = localStorage.getItem("userContext");
+      if (localUserContext) {
+        return JSON.parse(localUserContext) as User;
+      }
     }
+    return initialUser;
   };
 
+  const [user, setUser] = useState<User | null>(getLocalState() ?? initialUser);
+
+  const setUserContext = (user: User | null) => {
+    setUser(user);
+  }
+
   useEffect(() => {
-    fetchUserFromCookie();
-  }, []);
+    localStorage.setItem("userContext", JSON.stringify(user));
+  }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, fetchUserFromCookie }}>
+    <UserContext.Provider value={{ user, setUserContext }}>
       {children}
     </UserContext.Provider>
   );
 }
+const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};
 
 export { UserProvider, useUserContext };

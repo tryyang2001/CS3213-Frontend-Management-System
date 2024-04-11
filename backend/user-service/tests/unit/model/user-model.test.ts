@@ -24,7 +24,6 @@ describe("getAllUsers function", () => {
           password: "password12345",
           name: "Test",
           major: "Computer Science",
-          course: "CS1101S",
           role: "student",
         },
       ],
@@ -64,7 +63,6 @@ describe("getUserByUserId function", () => {
           password: "password12345",
           name: "Test",
           major: "Computer Science",
-          course: "CS1101S",
           role: "student",
         },
       ],
@@ -105,7 +103,6 @@ describe("getUserByEmail function", () => {
           password: "password12345",
           name: "Test",
           major: "Computer Science",
-          course: "CS1101S",
           role: "student",
         },
       ],
@@ -130,59 +127,6 @@ describe("getUserByEmail function", () => {
   });
 });
 
-describe("updateUser function", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("should update a user", async () => {
-    // Arrange
-    const uid = 1;
-    const name = "Updated Name";
-    const major = "Updated Major";
-    const course = "Updated Course";
-    const email = "updated@example.com";
-    const hash = "updatedHash";
-    const role = "updatedRole";
-
-    const mockResult = {
-      rowCount: 1,
-    };
-    (pool.query as jest.Mock).mockResolvedValue(mockResult as QueryResult);
-    // Act
-    const result = await model.updateUser(
-      uid,
-      name,
-      major,
-      course,
-      email,
-      hash,
-      role
-    );
-
-    // Assert
-    expect(result).toBeUndefined();
-  });
-
-  it("should throw an error if query fails", async () => {
-    // Arrange
-    const uid = 1;
-    const name = "Updated Name";
-    const major = "Updated Major";
-    const course = "Updated Course";
-    const email = "updated@example.com";
-    const hash = "updatedHash";
-    const role = "updatedRole";
-    const errorMessage = "Failed to update user";
-    (pool.query as jest.Mock).mockRejectedValue(new Error(errorMessage));
-
-    // Act and Assert
-    await expect(
-      model.updateUser(uid, name, major, course, email, hash, role)
-    ).rejects.toThrow(errorMessage);
-  });
-});
-
 describe("createNewUser function", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -192,7 +136,6 @@ describe("createNewUser function", () => {
     // Arrange
     const name = "New User";
     const major = "Computer Science";
-    const course = "CS1101S";
     const email = "newuser@example.com";
     const hash = "newHash";
     const role = "student";
@@ -206,7 +149,6 @@ describe("createNewUser function", () => {
     const result = await model.createNewUser(
       name,
       major,
-      course,
       email,
       hash,
       role
@@ -220,7 +162,6 @@ describe("createNewUser function", () => {
     // Arrange
     const name = "New User";
     const major = "Computer Science";
-    const course = "CS1101S";
     const email = "newuser@example.com";
     const hash = "newHash";
     const role = "student";
@@ -229,7 +170,7 @@ describe("createNewUser function", () => {
 
     // Act and Assert
     await expect(
-      model.createNewUser(name, major, course, email, hash, role)
+      model.createNewUser(name, major, email, hash, role)
     ).rejects.toThrow(errorMessage);
   });
 });
@@ -278,11 +219,12 @@ describe("updateUserInfo function", () => {
   it("should update user information", async () => {
     // Arrange
     const uid = 1;
-    const email = "updated@example.com";
-    const name = "Updated Name";
-    const major = "Updated Major";
-    const course = "Updated Course";
-    const role = "Updated Role";
+    const updateFields = {
+      name: "Updated Name",
+      major: "Updated Major",
+      email: "updated@example.com",
+      role: "updatedRole"
+    };
 
     const mockResult = {
       rowCount: 1,
@@ -292,11 +234,7 @@ describe("updateUserInfo function", () => {
     // Act
     const result = await model.updateUserInfo(
       uid,
-      email,
-      name,
-      major,
-      course,
-      role
+      updateFields
     );
 
     // Assert
@@ -306,17 +244,18 @@ describe("updateUserInfo function", () => {
   it("should throw an error if update fails", async () => {
     // Arrange
     const uid = 1;
-    const email = "updated@example.com";
-    const name = "Updated Name";
-    const major = "Updated Major";
-    const course = "Updated Course";
-    const role = "Updated Role";
+    const updateFields = {
+      name: "Updated Name",
+      major: "Updated Major",
+      email: "updated@example.com",
+      role: "updatedRole"
+    };
     const errorMessage = "Failed to update user";
     (pool.query as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
     // Act and Assert
     await expect(
-      model.updateUserInfo(uid, email, name, major, course, role)
+      model.updateUserInfo(uid, updateFields)
     ).rejects.toThrow(errorMessage);
   });
 });

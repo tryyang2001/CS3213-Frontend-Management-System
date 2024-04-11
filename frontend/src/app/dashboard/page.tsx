@@ -10,10 +10,10 @@ export default function DashBoard() {
   const { user } = useUserContext();
 
   const { data: assignments, isLoading } = useQuery({
-    queryKey: ["get-assignments", user.uid],
+    queryKey: ["get-assignments", user?.uid ?? 0],
     queryFn: async () => {
-      return await AssignmentService.getAssignmentsByUserId(user.uid);
-    },
+      return await AssignmentService.getAssignmentsByUserId(user?.uid ?? 0);
+    }
   });
 
   return (
@@ -21,7 +21,7 @@ export default function DashBoard() {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList assignments={assignments} userRole={user.role} />
+        <AssignmentList assignments={assignments} userRole={user?.role?? "student"} />
       )}
     </div>
   );

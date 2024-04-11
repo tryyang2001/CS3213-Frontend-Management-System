@@ -34,40 +34,19 @@ async function getUserByEmail(email: string): Promise<QueryResult> {
   }
 }
 
-async function updateUser(
-  uid: number,
-  name: string,
-  major: string,
-  course: string,
-  email: string,
-  hash: string,
-  role: string
-): Promise<void> {
-  try {
-    await pool.query(
-      `UPDATE users."User" SET name = $2, major = $3, course = $4, email = $5, password = $6, role = $7
-            WHERE uid = $1`,
-      [uid, name, major, course, email, hash, role]
-    );
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function createNewUser(
   name: string,
   major: string,
-  course: string,
   email: string,
   hash: string,
   role: string
 ): Promise<number> {
   try {
     const result: QueryResult = await pool.query(
-      `INSERT INTO users."User" (name, major, course, email, password, role)
-            VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO users."User" (name, major, email, password, bio, "avatarUrl", role)
+            VALUES ($1, $2, $3, $4, '', '', $5)
             RETURNING uid;`,
-      [name, major, course, email, hash, role]
+      [name, major, email, hash, role]
     );
     const uid: number = result.rows[0].uid;
     console.log(uid);
@@ -89,20 +68,16 @@ async function updateUserPassword(uid: number, hash: string): Promise<void> {
   }
 }
 
-async function updateUserInfo(
-  uid: number,
-  email: string,
-  name: string,
-  major: string,
-  course: string,
-  role: string
-): Promise<void> {
+async function updateUserInfo(uid: number, updateFields: any): Promise<void> {
+  const fieldsToUpdate = Object.keys(updateFields).map((key, index) => `${key} = $${index + 2}`).join(', ');
+
+  const query = {
+    text: `UPDATE users."User" SET ${fieldsToUpdate} WHERE uid = $1`,
+    values: [uid, ...Object.values(updateFields)],
+  };
+
   try {
-    await pool.query(
-      `UPDATE users."User" SET email = $2, name = $3, major = $4, course = $5, role = $6
-            WHERE uid = $1`,
-      [uid, email, name, major, course, role]
-    );
+    await pool.query(query);
   } catch (error) {
     throw error;
   }
@@ -124,7 +99,6 @@ const db = {
   getAllUsers,
   getUserByUserId,
   getUserByEmail,
-  updateUser,
   createNewUser,
   updateUserPassword,
   updateUserInfo,

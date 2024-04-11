@@ -1,32 +1,42 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
+import HttpStatusCode from '../libs/enums/HttpStatusCode';
 
-const verifyToken = (req: Request, res: Response, next: NextFunction): void | Response<any, Record<string, any>> => {
+const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
     const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
 
     try {
-        const token = req.cookies.token;
+        const token = await req.cookies.token;
 
         if (!jwtSecretKey) {
-            throw new Error('JWT secret key is not defined');
+            return res.status(HttpStatusCode.FORBIDDEN.valueOf()).send({ error: "No defined JWT secret key" });
         }
 
         if (token) {
-            const decode: any = jwt.verify(token, jwtSecretKey);
-            if (decode) {
+            const decoded: any = jwt.verify(token, jwtSecretKey);
+            if (decoded) {
                 console.log("verified");
-                next();
+                // You can perform further validation or processing here if needed
+                return next();
+            } else {
+                console.log("Unauthorized, invalid token");
+                return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
+                    login: false,
+                    data: token
+                });
             }
         } else {
-            console.log("Access Denied");
-            return res.json({
+            console.log("Unauthorized, no authentication token");
+            return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                 login: false,
-                data: 'error'
+                data: "Unauthorized, no authentication token"
             });
         }
     } catch (err) {
-        console.log("Invalid token");
-        return res.send({ err: 'Invalid token' });
+        return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
+            login: false,
+            data: "Unauthorize"
+        });
     }
 };
 

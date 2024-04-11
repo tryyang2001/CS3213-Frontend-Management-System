@@ -16,6 +16,8 @@ import { getGetAllUsersResponseBody } from "../../payload/response/get-all-users
 import { getUpdateUserPasswordRequestBody } from "../../payload/request/update-user-password-request-body";
 import { getUpdateUserInfoRequestBody } from "../../payload/request/update-user-info-request-body";
 import { getDeleteUserRequestBody } from "../../payload/request/delete-user-request-body";
+import { NextFunction } from "express";
+import auth from '../../../middleware/auth';
 
 process.env.NODE_ENV = "test";
 
@@ -23,6 +25,13 @@ jest.mock("../../../psql", () => ({
   query: jest.fn(),
   connect: jest.fn(),
 }));
+
+jest.mock('../../../middleware/auth', () => {
+  return jest.fn(async (req: Request, res: Response, next: NextFunction) => {
+    // Always call next() without performing any authentication checks
+    next();
+  });
+});
 
 describe("Unit Tests for /user/register endpoint", () => {
   const app = createUnitTestServer();
@@ -70,7 +79,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Email already exists." });
+      expect(response.body).toEqual({ message: "Email already exists." });
       // expect(response.status).toBe(400);
     });
   });
@@ -92,7 +101,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Password not long enough." });
+      expect(response.body).toEqual({ message: "Password not long enough." });
       // expect(response.status).toBe(400);
     });
   });
@@ -114,7 +123,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Failed to create user." });
+      expect(response.body).toEqual({ message: "Failed to create user." });
       // expect(response.status).toBe(400);
     });
   });
@@ -157,7 +166,7 @@ describe("Unit Tests for /user/register endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Undefined error creating users.",
+        message: "Undefined error creating users.",
       });
       // expect(response.status).toBe(400);
     });
@@ -180,17 +189,24 @@ describe("Unit Tests for /user/login endpoint", () => {
     it("Should return 200 and a token", async () => {
       // Arrange
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
-        rows: [getLoginUserResponseBody()],
+        rows: [{
+          uid: 1,
+          email: 'test@example.com',
+          password: 'password12345',
+          name: 'Test',
+          major: 'Computer Science',
+          role: 'student'}
+        ],
       } as unknown as QueryResult<any>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       jwt.sign = jest.fn().mockResolvedValue("fake_token");
       process.env.JWT_SECRET_KEY = "secretkey";
-
       // Act
-      const response = await supertest(app).post("/user/login").send(reqBody);
+      const response = await supertest(app).post("/user/login").send({email: 'test@example.com', password: 'password12345'});
+      console.log("Response:", response.body);
 
       // Assert
-      expect(response.body).toEqual({ user: getLoginUserResponseBody() });
+      expect(response.body).toEqual(getLoginUserResponseBody());
       expect(response.status).toBe(200);
     });
   });
@@ -206,7 +222,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
       // expect(response.status).toBe(400);
     });
   });
@@ -224,7 +240,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Incorrect password." });
+      expect(response.body).toEqual({ message: "Incorrect password." });
       // expect(response.status).toBe(400);
     });
   });
@@ -242,7 +258,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Internal server error." });
+      expect(response.body).toEqual({ message: "Internal server error." });
       // expect(response.status).toBe(500);
     });
   });
@@ -267,14 +283,11 @@ describe("Unit Tests for /user/login endpoint", () => {
   });
 });
 
-describe("Unit Tests for /user/getUserByUserId endpoint", () => {
+describe('Unit Tests for /user/getUserInfo endpoint', () => {
   const app = createUnitTestServer();
-  let reqBody: any;
-
-  beforeEach(() => {
-    reqBody = getGetUserRequestBody();
-  });
-
+  let uid: any;
+  const existingUserId = 1;
+  const nonExistingUserId = -1;
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -282,15 +295,14 @@ describe("Unit Tests for /user/getUserByUserId endpoint", () => {
   describe("Given a valid user ID", () => {
     it("Should return the user object", async () => {
       // Arrange
+      uid = existingUserId
       jest.spyOn(db, "getUserByUserId").mockResolvedValue({
         rows: [getGetUserResponseBody()],
       } as unknown as QueryResult<any>);
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserByUserId")
-        .send(reqBody);
-
+        .get(`/user/getUserInfo?uid=${uid}`)
       // Assert
       expect(response.body).toEqual(getGetUserResponseBody());
     });
@@ -299,31 +311,31 @@ describe("Unit Tests for /user/getUserByUserId endpoint", () => {
   describe("Given a non-existing user ID", () => {
     it("Should return an error message", async () => {
       // Arrange
+      uid = nonExistingUserId;
       jest
         .spyOn(db, "getUserByUserId")
         .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserByUserId")
-        .send(reqBody);
-
+        .get(`/user/getUserInfo?uid=${uid}`)
+      
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
     });
   });
 
   describe("Given an error while fetching user", () => {
     it("Should return an error message", async () => {
       // Arrange
+      uid = existingUserId;
       jest
         .spyOn(db, "getUserByUserId")
         .mockRejectedValue(new Error("Database error"));
 
       // Act
       const response = await supertest(app)
-        .get("/user/getUserByUserId")
-        .send(reqBody);
+        .get(`/user/getUserInfo?uid=${uid}`)
 
       // Assert
       expect(response.body).toEqual({ message: "Error getting user by uid." });
@@ -367,7 +379,7 @@ describe("Unit Tests for /user/getUserByEmail endpoint", () => {
     const response = await supertest(app).get(`/user/getUserByEmail`);
 
     // Assert
-    expect(response.body).toEqual({ error: "User does not exist." });
+    expect(response.body).toEqual({ message: "User does not exist." });
     // expect(response.status).toBe(404);
   });
 
@@ -445,7 +457,6 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
     password: "password12345",
     name: "Test",
     major: "Computer Science",
-    course: "CS1101S",
     role: "student",
   };
 
@@ -493,7 +504,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
       // expect(response.status).toBe(400);
     });
   });
@@ -512,7 +523,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Incorrect password." });
+      expect(response.body).toEqual({ message: "Incorrect password." });
       // expect(response.status).toBe(400);
     });
   });
@@ -536,7 +547,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Failed to update user password.",
+        message: "Failed to update user password.",
       });
       // expect(response.status).toBe(500);
     });
@@ -619,12 +630,18 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
   describe("Given a valid request body to update user info", () => {
     it("Should return a success message", async () => {
       // Arrange
+      const updateFields = {
+        name: "Updated Name",
+        major: "Updated Major",
+        email: "updated@example.com",
+        role: "updatedRole"
+      };
       jest.spyOn(db, "updateUserInfo").mockResolvedValue();
 
       // Act
       const response = await supertest(app)
-        .put("/user/updateUserInfo")
-        .send(reqBody);
+        .put(`/user/updateUserInfo?uid=${1}`)
+        .send(updateFields);
 
       // Assert
       expect(response.status).toBe(200);
@@ -633,20 +650,37 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
   });
 
   describe("Given an invalid request body to update user info", () => {
-    it("Should return an error message", async () => {
+    it("Should return an error message saying no update field given valid uid", async () => {
       // Arrange
       const reqBody = {};
       jest
         .spyOn(db, "updateUserInfo")
-        .mockRejectedValue(new Error("Failed to update user info."));
+        .mockRejectedValue(new Error("No fields provided for update."));
 
       // Act
       const response = await supertest(app)
-        .put("/user/updateUserInfo")
+        .put(`/user/updateUserInfo?uid=${1}`)
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Failed to update user info." });
+      expect(response.body).toEqual({ message: "No fields provided for update." });
+      // expect(response.status).toBe(400);
+    });
+
+    it("Should return an error message saying Invalid uid.", async () => {
+      // Arrange
+      const reqBody = {};
+      jest
+        .spyOn(db, "updateUserInfo")
+        .mockRejectedValue(new Error("Invalid uid."));
+
+      // Act
+      const response = await supertest(app)
+        .put(`/user/updateUserInfo`)
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ message: "Invalid uid." });
       // expect(response.status).toBe(400);
     });
   });
@@ -661,7 +695,6 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
     password: "password12345",
     name: "Test",
     major: "Computer Science",
-    course: "CS1101S",
     role: "student",
   };
 
@@ -698,7 +731,7 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
       jest
         .spyOn(db, "deleteUser")
         .mockRejectedValue(new Error("Failed to delete user."));
-
+      
       // Act
       const response = await supertest(app)
         .delete("/user/deleteUser")
@@ -706,7 +739,7 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Undefined error deleting account.",
+        message: "Undefined error deleting account.",
       });
       // expect(response.status).toBe(400);
     });

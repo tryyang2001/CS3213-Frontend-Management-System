@@ -1,9 +1,5 @@
 interface User {
   uid: number;
-  email: string;
-  name: string;
-  major: string;
-  course: string;
   role: string;
 }
 
@@ -14,6 +10,10 @@ interface UserInfo {
   photo?: string;
 }
 
-interface LoginResponse {
-  user: User;
+interface ErrorResponse {
+  data: ErrorData;
+}
+
+interface ErrorData {
+  message: string;
 }
