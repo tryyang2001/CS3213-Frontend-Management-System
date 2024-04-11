@@ -10,10 +10,6 @@ const api = axios.create({
   },
 });
 
-interface GetAssignmentsResponse {
-  assignments: Assignment[];
-}
-
 const getAssignmentById = async (assignmentId: string) => {
   try {
     const response = await api.get(`/assignments/${assignmentId}`);
