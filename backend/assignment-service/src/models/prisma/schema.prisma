@@ -85,7 +85,6 @@ model User {
     name      String
     email     String  @unique
     major     String
-    course    String?
     avatarUrl String?
     bio       String?
 
