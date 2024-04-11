@@ -48,7 +48,7 @@ const postFeedback = async (requestBody: PostFeedbackBody) => {
 
     return postedFeedback;
   } catch (_error) {
-    throw new Error("Failed to create assignment");
+    throw new Error("Failed to post feedback");
   }
 };
 
