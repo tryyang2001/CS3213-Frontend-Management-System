@@ -8,8 +8,6 @@ import Icons from "./Icons";
 import UserDropdown from "./UserDropdown";
 import { useUserContext } from "@/contexts/user-context";
 import userService from "@/helpers/user-service/api-wrapper";
-import Cookies from "js-cookie";
-import { useToast } from "@/components/ui/use-toast";
 
 interface MenuItem {
   id: number;
@@ -41,12 +39,10 @@ const menuItems: MenuItem[] = [
 
 export default function SideBar() {
   const router = useRouter();
-  const { user, setUserContext } = useUserContext();
+  const { user } = useUserContext();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCollapsible, setIsCollapsible] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-  const { toast } = useToast();
   const wrapperClasses = classNames(
     "h-screen px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
     {
@@ -67,36 +63,19 @@ export default function SideBar() {
     router.push(route);
   };
 
-  const handleLoggingOut = () => {
-    localStorage.removeItem('userContext');
-    Cookies.remove('token');
-    setUserContext(null);
-    toast({
-      title: "Log out succesfully",
-      description: "see you later!",
-      variant: "success",
-    });
-    router.push('/login');
-  }
-
-  const handleLoggingIn = () => {
-    handleNavigate('/login');
-  }
-
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        if (user === null || Cookies.get('token')) {
-          setLoggedIn(false);
+        if (user === null) {
+          router.push('/login');
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           if (retrievedUserInfo !== null) {
             setUserInfo(retrievedUserInfo);
-            setLoggedIn(true);
           }
         }
-      } catch (_error) { 
-        setLoggedIn(false);
+      } catch (error) {
+        console.log(error);
       }
     };
 
@@ -104,7 +83,6 @@ export default function SideBar() {
       fetchUserInfo().catch((err) => console.log(err));
     } else {
       console.log("no user context");
-      setLoggedIn(false);
     }
   }, [user]);
 
@@ -156,24 +134,6 @@ export default function SideBar() {
                   {item.icon}
                 </Button>
               ))}
-              <Spacer y={72} />
-              <Spacer y={6} />
-              { isLoggedIn ?
-                <Button
-                  isIconOnly
-                  className="text-black"
-                  onPress={() => handleLoggingOut()}
-                >
-                  <Icons.Logout className="text-2xl" />
-                </Button>
-              : <Button
-                  isIconOnly
-                  className="text-black"
-                  onPress={() => handleLoggingIn()}
-                >
-                  <Icons.Login className="text-2xl" />
-                </Button>
-              }
             </div>
           ) : (
             <div className="flex flex-col w-full items-start">
@@ -190,7 +150,7 @@ export default function SideBar() {
               <UserDropdown>
                 <User
                   name={userInfo.name}
-                  description={userInfo.name}
+                  description={userInfo.email}
                   avatarProps={{
                     src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
                     alt: "Jane",
@@ -213,31 +173,6 @@ export default function SideBar() {
                   {item.label}
                 </Button>
               ))}
-
-              <Spacer y={72} />
-              <Spacer y={6} />
-              { isLoggedIn ?
-                <Button
-                  // isIconOnly
-                  // onClick={handleToggleCollapse}
-                  className="flex text-black w-full text-left items-center justify-start p-2"
-                  fullWidth={true}
-                  onPress={() => handleLoggingOut()}
-                  startContent={<Icons.Logout className="text-2xl" />}
-                >
-                  Log Out
-                </Button>
-              : <Button
-                  // isIconOnly
-                  // onClick={handleToggleCollapse}
-                  className="flex text-black w-full text-left items-center justify-start p-2"
-                  fullWidth={true}
-                  onPress={() => handleLoggingIn()}
-                  startContent={<Icons.Login className="text-2xl" />} 
-                >
-                  Sign in
-                </Button>
-              }
             </div>
           )}
         </div>

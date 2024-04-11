@@ -18,7 +18,7 @@ const createUserTableQueryIfNotExist = `
         CREATE SCHEMA IF NOT EXISTS users;
         CREATE TABLE IF NOT EXISTS users."User" (
             uid SERIAL PRIMARY KEY,
-            email VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
             name VARCHAR(255) NOT NULL,
             major VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
