@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Spacer, ButtonGroup, Button } from "@nextui-org/react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import {
+  Spacer,
+  ButtonGroup,
+  Button,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
@@ -22,12 +28,15 @@ export default function SubmissionPage({ params }: Props) {
   const userId = 1;
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState("");
-  const [selectedSubmission, setSelectedSubmission] = useState<number>(0);
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
     setCurrentQuestionId(questionId);
-    setSelectedSubmission(0);
+  };
+
+  const handleSubmissionSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubmissionId(e.target.value);
   };
 
   const {
@@ -57,7 +66,11 @@ export default function SubmissionPage({ params }: Props) {
           studentId: userId,
         });
 
-      return submissions;
+      const sortedSubmissions = submissions.sort(
+        (a, b) => a.createdOn - b.createdOn
+      );
+
+      return sortedSubmissions;
     },
   });
 
@@ -75,6 +88,12 @@ export default function SubmissionPage({ params }: Props) {
     refetchSubmissions();
     refetchTestCases();
   }, [currentQuestionId]);
+
+  useEffect(() => {
+    if (submissions && submissions.length > 0) {
+      setSelectedSubmissionId(submissions[0].id);
+    }
+  }, [submissions]);
 
   if (isError) {
     return notFound();
@@ -119,11 +138,28 @@ export default function SubmissionPage({ params }: Props) {
               )}
             </div>
             <div className="col-span-1">
+              <div>
+                <Select
+                  items={submissions}
+                  label="Past Submissions"
+                  placeholder="Select a submission"
+                  className="max-w-xs"
+                  onChange={handleSubmissionSelect}
+                >
+                  {(submission) => (
+                    <SelectItem key={submission.id} value={submission.id}>
+                      {submission.createdOn}
+                    </SelectItem>
+                  )}
+                </Select>
+              </div>
               <div className="row-span-1 border border-black">
                 {submissions ? (
                   <FeedbackCodeEditor
-                    submission={submissions[selectedSubmission]}
-                    key={`${submissions[selectedSubmission].questionId}_${selectedSubmission}`}
+                    submission={submissions.find(
+                      (submission) => submission.id === selectedSubmissionId
+                    )}
+                    key={selectedSubmissionId}
                   />
                 ) : (
                   <FeedbackCodeEditor key={"0"} />
@@ -132,7 +168,12 @@ export default function SubmissionPage({ params }: Props) {
               <Spacer y={4} />
               <div className="row-span-1">
                 {submissions ? (
-                  <FeedbackTabs submission={submissions[selectedSubmission]} testcases={testCases} />
+                  <FeedbackTabs
+                    submission={submissions.find(
+                      (submission) => submission.id === selectedSubmissionId
+                    )}
+                    testcases={testCases}
+                  />
                 ) : (
                   <FeedbackTabs />
                 )}
