@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import userRoute from './routes/user-route';
+import HttpStatusCode from "./libs/enums/HttpStatusCode";
 
 const app = express();
 

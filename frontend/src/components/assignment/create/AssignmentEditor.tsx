@@ -49,10 +49,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       setIsPublished(assignment.isPublished);
     }
   }, []);
-
-  const { user } = useUserContext();
-
   const { toast } = useToast();
+  const { user } = useUserContext();
 
   const checkFormValidity = useCallback(
     (field: string, value: string) => {
@@ -84,9 +82,9 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         description,
         isPublished,
         // if uid is alr in authors, don't add it again
-        authors: assignment!.authors.includes(user.uid)
+        authors: assignment!.authors.includes(user?.uid ?? 0)
           ? assignment!.authors
-          : [...assignment!.authors, user.uid],
+          : [...assignment!.authors, user?.uid ?? 0],
       })
         .then((updatedAssignment) => {
           if (!updatedAssignment) {
@@ -114,7 +112,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         deadline,
         description,
         isPublished,
-        authors: [user.uid],
+        authors: [user?.uid ?? 0],
       })
         .then((createdAssignment) => {
           if (!createdAssignment) {

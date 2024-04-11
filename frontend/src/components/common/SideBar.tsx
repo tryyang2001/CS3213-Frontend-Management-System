@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, Button, User, Spacer } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import classNames from "classnames";
 import Icons from "./Icons";
 import UserDropdown from "./UserDropdown";
+import { useUserContext } from "@/contexts/user-context";
+import userService from "@/helpers/user-service/api-wrapper";
 
 interface MenuItem {
   id: number;
@@ -32,16 +34,15 @@ const menuItems: MenuItem[] = [
     label: "View Submissions",
     icon: <Icons.ViewSubmissions className="text-2xl" />,
     link: "/assignments/submissions",
-  },
-];
+  }
+]
 
 export default function SideBar() {
   const router = useRouter();
-  const userName = "Jane Doe";
-  const userEmail = "janedoe@u.nus.edu";
+  const { user } = useUserContext();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCollapsible, setIsCollapsible] = useState(false);
-
+  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const wrapperClasses = classNames(
     "h-screen px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
     {
@@ -61,6 +62,28 @@ export default function SideBar() {
   const handleNavigate = (route: string) => {
     router.push(route);
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        if (user === null) {
+          router.push('/login');
+        } else {
+          const retrievedUserInfo = await userService.getUserInfo(user.uid);
+          if (retrievedUserInfo !== null) {
+            setUserInfo(retrievedUserInfo);
+          }
+        }
+      } catch (_error) {
+      }
+    };
+
+    if (user) {
+      fetchUserInfo().catch((_err) => {return;});
+    } else {
+      //should never reach here since if there's no user context, middleware should redirect to login page
+    }
+  }, [user]);
 
   // obtain current path, if is login/sign up, don't render SideBar
   const currentPath = usePathname();
@@ -125,8 +148,8 @@ export default function SideBar() {
 
               <UserDropdown>
                 <User
-                  name={userName}
-                  description={userEmail}
+                  name={userInfo.name}
+                  description={userInfo.email}
                   avatarProps={{
                     src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
                     alt: "Jane",

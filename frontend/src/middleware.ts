@@ -15,8 +15,7 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const userCookie =
-    request.cookies.get("user") && request.cookies.get("token");
+  const userCookie = request.cookies.get("token");
 
   if (!userCookie) {
     return NextResponse.redirect(new URL("/login", request.nextUrl.origin));

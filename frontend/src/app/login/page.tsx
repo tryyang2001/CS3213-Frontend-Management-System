@@ -6,24 +6,23 @@ import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
-import Cookies from "js-cookie";
+import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-
-  const { setUser } = useUserContext();
+  const { toast } = useToast();
+  const { setUserContext } = useUserContext();
 
   const router = useRouter();
 
-  const { toast } = useToast();
-
-  const handleSubmit = () => {
-    if (email === "" || password === "" || isInvalid) {
+  const handleSubmit = async () => {
+    if (email == "" || password == "" || isInvalid) {
       toast({
         title: "Invalid input",
         description: "Please check your input and try again",
@@ -31,31 +30,34 @@ export default function Home() {
       });
     }
 
-    userService
-      .login(email, password)
-      .then((user) => {
-        if (!user) {
-          throw new Error("Cannot logging in");
-        }
-
-        Cookies.set("user", JSON.stringify(user), { expires: 7 });
-        setUser(user);
-
+    try {
+      const user = await userService.login(email, password);
+      if (!user) {
+        throw new Error("Cannot logging in");
+      }
+      setUserContext(user);
+      toast({
+        title: "Login successfully",
+        description: "Welcome back to ITS",
+        variant: "success",
+      });
+      router.push('/dashboard');
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
         toast({
-          title: "Login successfully",
-          description: "Welcome back to ITS, " + user.name,
-          variant: "success",
-        });
-
-        router.push("/dashboard");
-      })
-      .catch((_err) => {
-        toast({
-          title: "Login failed",
-          description: "Please check your email and password",
+          title: "Logging in unsucessfully",
+          description: errorMsg,
           variant: "destructive",
         });
-      });
+      } else {
+        toast({
+          title: "Logging in unsucessfully",
+          description: "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   return (
@@ -67,11 +69,17 @@ export default function Home() {
           setIsInvalid={setIsInvalid}
         />
 
-        <PasswordInput password={password} setPassword={setPassword} />
+        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
 
         <Button
           type="submit"
-          onClick={handleSubmit}
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+             }
+          }
           color="primary"
           className="w-full"
         >
@@ -92,3 +100,4 @@ export default function Home() {
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */

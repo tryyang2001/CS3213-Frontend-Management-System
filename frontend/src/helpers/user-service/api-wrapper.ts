@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import HttpStatusCode from "@/types/HttpStatusCode";
 
 const api = axios.create({
@@ -10,78 +10,155 @@ const api = axios.create({
 });
 
 const login = async (email: string, password: string): Promise<User> => {
-  const response = await api
-    .post(
-      `/login`,
-      {
-        email: email,
-        password: password,
-      },
-      { withCredentials: true }
-    )
-    .then((res) => {
-      if (res.status === HttpStatusCode.OK.valueOf()) {
-        // the response from login is {user: user: {}}, hence we need to destructure this way
-        const user = (res.data as LoginResponse).user;
-        return user;
-      } else {
-        throw new Error("Invalid Email/Password");
-      }
-    });
-
-  return response;
+    try {
+        const response = await api.post(
+            `/login`,
+            {
+                email: email,
+                password: password
+            },
+            { withCredentials: true}
+        )
+        if (response.status === HttpStatusCode.OK.valueOf()) {
+            const user = response.data as User;
+            return user;
+        } else {
+            throw new Error("Unknown error logging in, please try again");
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+                throw new Error("Unauthorize");
+            } else if (error.response?.status === HttpStatusCode.FORBIDDEN.valueOf()) {
+                throw new Error("Incorrect password");
+            } else if (error?.response?.data) {
+                const responseData = error.response as ErrorResponse;
+                throw new Error(responseData.data.message);
+            }
+        }
+        throw new Error("Unknown error logging in, please try again");
+    };
 };
 
 const register = async (email: string, password: string) => {
-  await api
-    .post(
-      `/register`,
-      {
-        email: email,
-        password: password,
-        name: "name placeholder",
-        major: "major placeholder",
-        course: "course placeholder",
-        role: "student",
-      },
-      { withCredentials: true }
-    )
-    .then((res) => {
-      if (res.status !== HttpStatusCode.OK.valueOf()) {
-        throw new Error(
-          "We are currently encountering some issues, please try again later"
+    try {
+        await api.post(
+            `/register`,
+            {
+                email: email,
+                password: password,
+                name: 'name placeholder',
+                major: 'major placeholder',
+                role: 'student'
+            },
         );
-      }
-    });
+    } catch(error) {
+        if (isAxiosError(error) && error?.response?.data) {
+            const responseData = error.response as ErrorResponse;
+            throw new Error(responseData.data.message);
+        }
+        throw new Error("Unknown error signing up, please try again");
+    };
 };
 
 const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
-  await api
-    .post(
-      `/getUserInfo`,
-      {
-        uid: uid,
-      },
-      { withCredentials: true }
-    )
-    .then((res) => {
-      if (res.status === HttpStatusCode.OK.valueOf()) {
-        const userInfo = res.data as UserInfo;
-        return userInfo;
-      } else {
-        throw new Error(
-          "We are currently encountering some issues, please try again later"
-        );
-      }
-    });
+    try {
+        const response = await api.get(
+            `/getUserInfo?uid=${uid}`,
+            { withCredentials: true}
+        )
+        if (response.status === HttpStatusCode.OK.valueOf()) {
+            const responseData = response.data as UserInfo
+            const userInfo : UserInfo = {
+                name: responseData.name,
+                email: responseData.email,
+                bio: responseData.bio || "This person doesn't have bio",
+                photo: responseData.photo
+            }
+            return userInfo;
+        } else {
+            return null;
+        }
+    } catch(error)  {
+        if (isAxiosError(error)) {
+            if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+                throw new Error("Unauthorize");
+            } else if (error?.response?.data) {
+                const responseData = error.response as ErrorResponse;
+                throw new Error(responseData.data.message);
+            }
+        }
+        throw new Error("Unknown getting user information, please try again");
+    }
+}
 
-  return null;
+const updateUserPassword = async (uid: number, oldPassword: string, newPassword: string) => {
+    try {
+        const response = await api.put(
+            `/updateUserPassword`,
+            {
+                uid: uid,
+                old_password: oldPassword,
+                new_password: newPassword,
+            },
+            { withCredentials: true}
+        );
+        if (response.status === HttpStatusCode.OK.valueOf()) {
+            return;
+        } else {
+            return  new Error("Unknown error updating password, please try again");
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+                throw new Error("Unauthorize");
+            } else if (error.response?.status === HttpStatusCode.FORBIDDEN.valueOf()) {
+                throw new Error("Incorrect password");
+            } else if (error?.response?.data) {
+                const responseData = error.response as ErrorResponse;
+                throw new Error(responseData.data.message);
+            }
+        }
+
+        throw new Error("Unknown error updating password, please try again");
+    };
 };
 
+const updateUserInfo = async (
+    uid: number,
+    updateFields: Record<string, string>
+  ): Promise<void> => {
+    try {
+      const response = await api.put(
+        `/updateUserInfo?uid=${uid}`,
+        updateFields,
+        { withCredentials: true }
+      );
+  
+      if (response.status === HttpStatusCode.OK.valueOf()) {
+        return;
+      } else {
+        throw new Error("Unknown error updating user info, please try again");
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+          throw new Error("Unauthorized action, please login again");
+        } else if (error?.response?.data) {
+            const responseData = error.response as ErrorResponse;
+            throw new Error(responseData.data.message);
+        }
+      }
+      throw new Error("Unknown error updating user info, please try again");
+    }
+  };
+
 const userService = {
-  login,
-  register,
-  getUserInfo,
+    login,
+    register,
+    getUserInfo,
+    updateUserPassword,
+    updateUserInfo
 };
 
 export default userService;
