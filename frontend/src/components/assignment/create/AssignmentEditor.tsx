@@ -135,15 +135,17 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
           enableAddingQuestion(createdAssignment);
 
           // invalidate the get assignments query
-          queryClient.invalidateQueries({
-            queryKey: ["get-assignments", user],
-          });
+          queryClient
+            .invalidateQueries({
+              queryKey: ["get-assignments", user],
+            })
+            .catch((_error) => new Error("Failed to invalidate query"));
 
           // redirect to create questions page
           router.push(`/assignments/${createdAssignment.id}/questions/create`);
         })
         .catch((_err) => {
-          return toast({
+          toast({
             title: "Failed to create assignment",
             description:
               "An error occurred while creating the assignment. Please check the inputs and try again.",

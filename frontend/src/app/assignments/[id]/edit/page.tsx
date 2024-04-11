@@ -197,9 +197,11 @@ function Page({ params }: Props) {
     Promise.all([deleteQuestionPromises, updateQuestionPromises])
       .then(() => {
         // invalidate the get assignments query
-        queryClient.invalidateQueries({
-          queryKey: ["get-assignments", user],
-        });
+        queryClient
+          .invalidateQueries({
+            queryKey: ["get-assignments", user],
+          })
+          .catch((_error) => new Error("Failed to invalidate query"));
 
         toast({
           title: "Questions updated successfully",
