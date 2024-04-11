@@ -9,8 +9,8 @@ import {
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import Cookies from "js-cookie";
 import { useUserContext } from "@/contexts/user-context";
+import userService from "@/helpers/user-service/api-wrapper";
 
 export default function UserDropdown({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -22,14 +22,28 @@ export default function UserDropdown({ children }: { children: ReactNode }) {
 
   const handleLoggingOut = () => {
     localStorage.removeItem("userContext");
-    Cookies.remove("token");
+
     setUserContext(null);
-    toast({
-      title: "Log out succesfully",
-      description: "see you later!",
-      variant: "success",
-    });
-    router.push("/login");
+
+    userService
+      .clearCookie()
+      .then(() => {
+        toast({
+          title: "Log out succesfully",
+          description: "You have been logged out successfully",
+          variant: "success",
+        });
+
+        router.push("/login");
+      })
+      .catch((_err) => {
+        toast({
+          title: "Log out unsuccesfully",
+          description:
+            "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
+      });
   };
 
   return (
