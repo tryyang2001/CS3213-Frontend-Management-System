@@ -1,0 +1,55 @@
+version: '3'
+services:
+  users:
+    container_name: users
+    hostname: users
+    build:
+      context: ./backend/user-service
+    env_file:
+      - ./backend/user-service/.env
+    ports:
+      - "3001:3001"
+
+  assignment:
+    container_name: assignment
+    hostname: assignment
+    build:
+      context: ./backend/assignment-service
+    env_file:
+      - ./backend/assignment-service/.env
+    ports:
+      - "8080:8080"
+
+  grading:
+    container_name: grading
+    hostname: grading
+    build:
+      context: ./backend/grading-service
+    env_file:
+      - ./backend/grading-service/.env
+    ports:
+      - "8088:8088"
+
+  frontend:
+    container_name: frontend
+    hostname: frontend
+    build:
+      context: ./frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - users
+      - grading
+      - assignment

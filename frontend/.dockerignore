@@ -1,0 +1,13 @@
+# .dockerignore
+/node_modules
+/.next
+
+# testing
+/coverage
+
+# production
+src/app/__tests__
+
+.eslintrc.json
+.prettierrc
+jest.config.ts
