@@ -2,14 +2,19 @@
 
 import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 
 interface Props {
   assignments: Assignment[] | undefined;
+  userRole: string;
 }
 
-function AssignmentList({ assignments }: Props) {
+function AssignmentList({ assignments, userRole }: Props) {
   const router = useRouter();
+
+  if (!assignments) {
+    return notFound();
+  }
 
   const handleButtonClick = (id: string) => {
     router.push(`/assignments/${id}`);
@@ -20,15 +25,13 @@ function AssignmentList({ assignments }: Props) {
       <b>Assignments</b>
       <Spacer y={4} />
       <div className="gap-2 grid grid-cols-1 sm:grid-cols-1">
-        {assignments!.length === 0 && <div>There is no assignment due</div>}
-        {assignments!.length > 0 &&
-          assignments!.map((assignment) => (
+        {assignments.length === 0 && <div>There is no assignment due</div>}
+        {assignments.length > 0 &&
+          assignments.map((assignment) => (
             <Card
               shadow="sm"
               key={assignment.id}
               className="bg-white shadow-md"
-              // isPressable
-              // onPress={() => console.log("item pressed")}
             >
               <CardBody>
                 <div className="flex justify-between items-start">
@@ -44,7 +47,7 @@ function AssignmentList({ assignments }: Props) {
                     size="md"
                     onClick={() => handleButtonClick(assignment.id)}
                   >
-                    New Attempt
+                    {userRole === "tutor" ? "View" : "New Attempt"}
                   </Button>
                 </div>
               </CardBody>

@@ -15,6 +15,7 @@ import {
 import FileInput from "./FileInput";
 
 export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
+  console.log(userInfo);
   const [info, setInfo] = useState<UserInfo>(userInfo);
   const [name, setName] = useState<string>(info.name);
   const isInvalidName = useMemo(() => {

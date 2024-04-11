@@ -76,6 +76,7 @@ const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
     referenceSolutionId: question.referenceSolution
       ? question.referenceSolution.id
       : undefined,
+    createdOn: question.createdOn.getTime(),
   };
 
   return questionDto;
