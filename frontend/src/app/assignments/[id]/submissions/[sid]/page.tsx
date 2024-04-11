@@ -61,8 +61,19 @@ export default function SubmissionPage({ params }: Props) {
     },
   });
 
+  const { data: testCases, refetch: refetchTestCases } = useQuery({
+    queryKey: ["get-testcases", params.id, currentQuestionId],
+    queryFn: async () => {
+      const testCases =
+        await AssignmentService.getQuestionTestCases(currentQuestionId);
+
+      return testCases;
+    },
+  });
+
   useEffect(() => {
     refetchSubmissions();
+    refetchTestCases();
   }, [currentQuestionId]);
 
   if (isError) {
@@ -121,7 +132,7 @@ export default function SubmissionPage({ params }: Props) {
               <Spacer y={4} />
               <div className="row-span-1">
                 {submissions ? (
-                  <FeedbackTabs submission={submissions[selectedSubmission]} />
+                  <FeedbackTabs submission={submissions[selectedSubmission]} testcases={testCases} />
                 ) : (
                   <FeedbackTabs />
                 )}
