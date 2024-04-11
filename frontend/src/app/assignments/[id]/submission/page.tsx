@@ -12,7 +12,7 @@ import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import DateUtils from "../../../../../utils/dateUtils";
+import DateUtils from "../../../../utils/dateUtils";
 import FeedbackCodeEditor from "@/components/submission/FeedbackCodeEditor";
 import FeedbackTabs from "@/components/submission/FeedbackTabs";
 import FeedbackQuestion from "@/components/submission/FeedbackQuestion";
@@ -20,7 +20,6 @@ import FeedbackQuestion from "@/components/submission/FeedbackQuestion";
 interface Props {
   params: {
     id: string;
-    sid: string;
   };
 }
 
@@ -138,9 +137,9 @@ export default function SubmissionPage({ params }: Props) {
               )}
             </div>
             <div className="col-span-1">
-              <div>
+              <div className="flex justify-end">
                 <Select
-                  items={submissions}
+                  items={submissions ? submissions : []}
                   label="Past Submissions"
                   placeholder="Select a submission"
                   className="max-w-xs"
@@ -153,6 +152,7 @@ export default function SubmissionPage({ params }: Props) {
                   )}
                 </Select>
               </div>
+              <Spacer y={4} />
               <div className="row-span-1 border border-black">
                 {submissions ? (
                   <FeedbackCodeEditor
