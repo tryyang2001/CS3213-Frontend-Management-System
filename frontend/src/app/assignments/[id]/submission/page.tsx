@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Spacer,
   ButtonGroup,
@@ -51,9 +51,7 @@ export default function SubmissionPage({ params }: Props) {
   });
 
   useEffect(() => {
-    if (assignment && assignment.questions) {
-      setCurrentQuestionId(assignment.questions[0]?.id ?? null);
-    }
+    setCurrentQuestionId(assignment?.questions?.[0]?.id ?? "");
   }, [assignment]);
 
   const { data: submissions, refetch: refetchSubmissions } = useQuery({
@@ -84,9 +82,19 @@ export default function SubmissionPage({ params }: Props) {
   });
 
   useEffect(() => {
-    refetchSubmissions();
-    refetchTestCases();
-  }, [currentQuestionId]);
+    const fetchData = async () => {
+      try {
+        await refetchSubmissions();
+        await refetchTestCases();
+      } catch (error) {
+        console.log("Error fetching submission:", error);
+      }
+    };
+
+    fetchData().catch((error) => {
+      console.error("Error in fetchData:", error);
+    });
+  }, [currentQuestionId, refetchSubmissions, refetchTestCases]);
 
   useEffect(() => {
     if (submissions && submissions.length > 0) {

@@ -21,7 +21,7 @@ const getSubmissionByQuestionIdAndStudentId = async ({
       `/questions/${questionId}/submissions?studentId=${studentId}`
     );
 
-    let submissions: Submission[] = response.data;
+    const submissions = response.data as Submission[];
 
     submissions.sort((a, b) => b.createdOn - a.createdOn);
 

@@ -25,22 +25,20 @@ export default function FeedbackCodeEditor({ submission }: Props) {
   //   : [];
 
   const newDecoration: monaco.editor.IModelDeltaDecoration[] =
-    submission && submission.feedbacks
-      ? submission.feedbacks.map((item) => ({
-          range: new monaco.Range(item.line, 1, item.line, 1),
-          options: {
-            isWholeLine: true,
-            className: "bg-yellow-200",
-          },
-        }))
-      : [];
+    submission?.feedbacks?.map((item) => ({
+      range: new monaco.Range(item.line, 1, item.line, 1),
+      options: {
+        isWholeLine: true,
+        className: "bg-yellow-200",
+      },
+    })) ?? [];
 
   const onMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
-    if (submission && submission.feedbacks) {
+    submission?.feedbacks?.forEach(() => {
       editor.createDecorationsCollection(newDecoration);
-      editor.focus();
-    }
+    });
+    editor.focus();
   };
 
   return (
