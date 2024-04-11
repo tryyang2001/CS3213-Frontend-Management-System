@@ -52,9 +52,9 @@ const postFeedback = async (requestBody: PostFeedbackBody) => {
   }
 };
 
-const GradingService = {
+const gradingService = {
   getSubmissionByQuestionIdAndStudentId,
   postFeedback,
 };
 
-export default GradingService;
+export default gradingService;

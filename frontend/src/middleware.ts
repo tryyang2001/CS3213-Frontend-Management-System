@@ -4,7 +4,7 @@ export const config = {
   matchers: "/:path*",
 };
 
-export default function middleware(request: NextRequest) {
+const middleware = (request: NextRequest) => {
   const publicRoutes = ["/_next", "/public", "/login", "/sign-up"];
   const redirectRoutes = ["/"];
 
@@ -27,4 +27,6 @@ export default function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+};
+
+export default middleware;

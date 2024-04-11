@@ -21,16 +21,16 @@ export default function UserDropdown({ children }: { children: ReactNode }) {
   };
 
   const handleLoggingOut = () => {
-    localStorage.removeItem('userContext');
-    Cookies.remove('token');
+    localStorage.removeItem("userContext");
+    Cookies.remove("token");
     setUserContext(null);
     toast({
       title: "Log out succesfully",
       description: "see you later!",
       variant: "success",
     });
-    router.push('/login');
-  }
+    router.push("/login");
+  };
 
   return (
     <Dropdown>
@@ -41,7 +41,12 @@ export default function UserDropdown({ children }: { children: ReactNode }) {
         <DropdownItem key="profile" onClick={redirectToUserProfile}>
           User Profile
         </DropdownItem>
-        <DropdownItem key="logout" className="text-danger" color="danger" onClick={handleLoggingOut}>
+        <DropdownItem
+          key="logout"
+          className="text-danger"
+          color="danger"
+          onClick={handleLoggingOut}
+        >
           Log Out
         </DropdownItem>
       </DropdownMenu>

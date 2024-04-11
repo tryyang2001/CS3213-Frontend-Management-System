@@ -36,7 +36,11 @@ describe("Account Editor", () => {
     if (hasFetchError) {
       return Promise.reject("Fetch failed");
     }
-    const { uid: uid, oldPassword: _oldPassword, newPassword: _newPassword } = JSON.parse(body) as {
+    const {
+      uid: uid,
+      oldPassword: _oldPassword,
+      newPassword: _newPassword,
+    } = JSON.parse(body) as {
       uid: number;
       oldPassword: string;
       newPassword: string;
@@ -189,7 +193,8 @@ describe("Account Editor", () => {
         expanded: true,
       });
       expect(updateButtonWithSuccess).toBeInTheDocument();
-      const rePassword: HTMLInputElement = screen.getByLabelText("Old Password");
+      const rePassword: HTMLInputElement =
+        screen.getByLabelText("Old Password");
       expect(rePassword.value).toBe("");
     });
   });

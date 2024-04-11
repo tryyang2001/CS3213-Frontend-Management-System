@@ -109,6 +109,8 @@ function Page({ params }: Props) {
     return () => {
       disableEditing();
     };
+    // we only need to fetch the data once for this assignment
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddQuestion = () => {

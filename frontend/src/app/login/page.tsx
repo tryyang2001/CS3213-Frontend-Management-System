@@ -6,7 +6,7 @@ import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
@@ -41,7 +41,7 @@ export default function Home() {
         description: "Welcome back to ITS",
         variant: "success",
       });
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -53,7 +53,8 @@ export default function Home() {
       } else {
         toast({
           title: "Logging in unsucessfully",
-          description: "We are currently encountering some issues, please try again later",
+          description:
+            "We are currently encountering some issues, please try again later",
           variant: "destructive",
         });
       }
@@ -69,17 +70,19 @@ export default function Home() {
           setIsInvalid={setIsInvalid}
         />
 
-        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
+        <PasswordInput
+          label="Password"
+          password={password}
+          setPassword={setPassword}
+        />
 
         <Button
           type="submit"
-          onClick={
-            () => {
-                void (async () => {
-                    await handleSubmit()
-                })();
-             }
-          }
+          onClick={() => {
+            void (async () => {
+              await handleSubmit();
+            })();
+          }}
           color="primary"
           className="w-full"
         >

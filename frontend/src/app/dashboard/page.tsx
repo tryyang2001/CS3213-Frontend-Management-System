@@ -13,7 +13,7 @@ export default function DashBoard() {
     queryKey: ["get-assignments", user?.uid ?? 0],
     queryFn: async () => {
       return await AssignmentService.getAssignmentsByUserId(user?.uid ?? 0);
-    }
+    },
   });
 
   return (
@@ -21,7 +21,10 @@ export default function DashBoard() {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList assignments={assignments} userRole={user?.role?? "student"} />
+        <AssignmentList
+          assignments={assignments}
+          userRole={user?.role ?? "student"}
+        />
       )}
     </div>
   );

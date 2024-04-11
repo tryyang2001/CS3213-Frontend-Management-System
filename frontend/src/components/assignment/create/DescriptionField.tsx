@@ -57,6 +57,8 @@ function DescriptionField({
   placeholder,
   className,
 }: Props) {
+  // ReactQuill is a component generated
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     []

@@ -48,6 +48,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       setDescription(assignment.description ?? "");
       setIsPublished(assignment.isPublished);
     }
+    // Assignment does not change, we don't need to reload
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const { toast } = useToast();
   const { user } = useUserContext();
@@ -205,7 +207,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
               </Tooltip>
             </div>
           </Switch>
-          <div className="ml-[10%] col-span-1 flex items-center"></div>
+          <div className="ml-[10%] col-span-1 flex items-center" />
         </div>
 
         {/* Description */}

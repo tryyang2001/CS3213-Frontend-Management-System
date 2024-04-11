@@ -50,6 +50,8 @@ function QuestionEditor({
     setLanguage(initialQuestion.referenceSolution?.language ?? "python");
     setReferenceSolutionCode(initialQuestion.referenceSolution?.code ?? "");
     setTestCases(initialQuestion.testCases ?? []);
+    // load once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -71,6 +73,8 @@ function QuestionEditor({
     ) {
       onQuestionChange(newQuestion);
     }
+    // onQuestionChange and initialQuestionWithoutId does not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     title,
     description,

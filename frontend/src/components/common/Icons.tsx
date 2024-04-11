@@ -4,7 +4,7 @@ import {
   MdOutlineAssignment,
   MdOutlineLogout,
   MdOutlineUploadFile,
-  MdOutlineLogin
+  MdOutlineLogin,
 } from "react-icons/md";
 import { MdCreateNewFolder } from "react-icons/md";
 import { HiMenu, HiOutlineChevronDoubleLeft } from "react-icons/hi";
@@ -12,7 +12,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 
-const Icons = {
+const icons = {
   QuestionMark: RxQuestionMarkCircled,
   Delete: MdDelete,
   CreateNewInstance: MdCreateNewFolder,
@@ -27,4 +27,4 @@ const Icons = {
   Cross: RxCross2,
 };
 
-export default Icons;
+export default icons;

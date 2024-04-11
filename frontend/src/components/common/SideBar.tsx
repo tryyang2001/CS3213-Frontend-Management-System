@@ -34,8 +34,8 @@ const menuItems: MenuItem[] = [
     label: "View Submissions",
     icon: <Icons.ViewSubmissions className="text-2xl" />,
     link: "/assignments/submissions",
-  }
-]
+  },
+];
 
 export default function SideBar() {
   const router = useRouter();
@@ -67,22 +67,25 @@ export default function SideBar() {
     const fetchUserInfo = async () => {
       try {
         if (user === null) {
-          router.push('/login');
+          router.push("/login");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           if (retrievedUserInfo !== null) {
             setUserInfo(retrievedUserInfo);
           }
         }
-      } catch (_error) {
-      }
+      } catch (_error) {}
     };
 
     if (user) {
-      fetchUserInfo().catch((_err) => {return;});
+      fetchUserInfo().catch((_err) => {
+        return;
+      });
     } else {
       //should never reach here since if there's no user context, middleware should redirect to login page
     }
+    // router does not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // obtain current path, if is login/sign up, don't render SideBar
