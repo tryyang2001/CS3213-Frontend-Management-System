@@ -79,7 +79,7 @@ export default function SideBar() {
     };
 
     if (user) {
-      fetchUserInfo().catch((_err) => {});
+      fetchUserInfo().catch((_err) => {return;});
     } else {
       //should never reach here since if there's no user context, middleware should redirect to login page
     }

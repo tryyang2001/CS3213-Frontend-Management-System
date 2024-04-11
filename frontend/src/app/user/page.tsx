@@ -51,7 +51,7 @@ export default function Page() {
       }
     };
     if (user) {
-      fetchUserInfo().catch((_err) => {});
+      fetchUserInfo().catch((_err) => {return;});
     } else {
       setIsLoading(true);
       router.push("/");
