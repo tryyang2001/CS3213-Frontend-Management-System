@@ -61,7 +61,6 @@ export default function Home() {
       // push to login page since we haven't set up the cookie yet
       router.push("/login");
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         const errorMsg = error.message;
         toast({
