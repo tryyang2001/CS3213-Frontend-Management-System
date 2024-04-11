@@ -25,7 +25,7 @@ export default function RootLayout({
             <div>
               <SideBar />
             </div>
-            <div className="h-screen bg-white flex-1 p-4 text-black overflow-auto">
+            <div className="h-dvh bg-white flex-1 text-black overflow-auto">
               {children}
             </div>
           </div>
