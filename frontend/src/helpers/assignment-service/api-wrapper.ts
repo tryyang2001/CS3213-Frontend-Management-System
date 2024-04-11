@@ -45,11 +45,9 @@ const getAssignmentsByUserId = async (userId: number | string) => {
       return [];
     }
 
-    const response = await api.get<GetAssignmentsResponse>(
-      `/assignments?userId=${userId}`
-    );
+    const response = await api.get(`/assignments?userId=${userId}`);
 
-    const assignments = response.data.assignments;
+    const assignments = response.data as Assignment[];
 
     return assignments;
   } catch (error) {

@@ -12,7 +12,10 @@ export default function DashBoard() {
   const { data: assignments, isLoading } = useQuery({
     queryKey: ["get-assignments", user.uid],
     queryFn: async () => {
-      return await AssignmentService.getAssignmentsByUserId(user.uid);
+      const assignments = await AssignmentService.getAssignmentsByUserId(
+        user.uid
+      );
+      return assignments;
     },
   });
 
