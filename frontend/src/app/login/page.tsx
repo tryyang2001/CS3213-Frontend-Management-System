@@ -39,7 +39,7 @@ export default function Home() {
       console.log(user);
       toast({
         title: "Login successfully",
-        description: "Welcome back to ITS, " + user.name,
+        description: "Welcome back to ITS",
         variant: "success",
       });
       router.push('/dashboard');

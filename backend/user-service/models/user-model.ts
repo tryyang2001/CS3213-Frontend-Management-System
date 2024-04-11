@@ -43,7 +43,7 @@ async function createNewUser(
 ): Promise<number> {
   try {
     const result: QueryResult = await pool.query(
-      `INSERT INTO users."User" (name, major, email, password, bio, avatarUrl, role)
+      `INSERT INTO users."User" (name, major, email, password, bio, "avatarUrl", role)
             VALUES ($1, $2, $3, $4, '', '', $5)
             RETURNING uid;`,
       [name, major, email, hash, role]

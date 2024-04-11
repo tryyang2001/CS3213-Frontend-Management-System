@@ -7,7 +7,6 @@ import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
 
 export default function Page() {
   const { user } = useUserContext();
@@ -18,8 +17,6 @@ export default function Page() {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const token = Cookies.get('token');
-      console.log(token);
       try {
         if (!user) {
           toast({
@@ -71,7 +68,7 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor uid={user?.uid?? 0} userInfo={userInfo} />
+            <ProfileEditor userInfo={userInfo}/>
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>

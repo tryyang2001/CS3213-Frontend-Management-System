@@ -39,7 +39,7 @@ export default function Home() {
 
   const { toast } = useToast();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
       return toast({
         title: "Invalid input",
@@ -48,28 +48,35 @@ export default function Home() {
       });
     }
 
-    userService
-      .register(email, password)
-      .then(() => {
-        toast({
-          title: "Sign Up successfully",
-          description:
-            "Welcome to ITS, you may proceed to login with your registered email and password.",
-          variant: "success",
-        });
+    try {
+      await userService.register(email, password);
 
-        // push to login page since we haven't set up the cookie yet
-        router.push("/login");
-      })
-      .catch((_err) => {
-        console.log("Sign up failed,", _err);
+      toast({
+        title: "Sign Up successfully",
+        description:
+          "Welcome to ITS, you may proceed to login with your registered email and password.",
+        variant: "success",
+      });
+
+      // push to login page since we haven't set up the cookie yet
+      router.push("/login");
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        const errorMsg = error.message;
         toast({
-          title: "Sign Up failed",
-          description:
-            "We are currently encountering some issues, please try again later",
+          title: "Signing up unsucessfully",
+          description: errorMsg,
           variant: "destructive",
         });
-      });
+      } else {
+        toast({
+          title: "Signing up unsucessfully",
+          description: "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
+      }
+    };
   };
 
   function Eye() {
@@ -126,7 +133,18 @@ export default function Home() {
           }
         />
 
-        <Button type="submit" size="sm" color="primary" onClick={handleSubmit}>
+        <Button
+          type="submit"
+          size="sm"
+          color="primary"
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+              }
+          }
+        >
           {" "}
           Sign Up
         </Button>
