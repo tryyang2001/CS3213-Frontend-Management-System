@@ -23,7 +23,7 @@ const createUserTableQueryIfNotExist = `
             major VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
             bio TEXT DEFAULT '',
-            avatarUrl VARCHAR(255) DEFAULT '',
+            "avatarUrl" VARCHAR(255) DEFAULT '',
             role VARCHAR(60) NOT NULL
         );
 
