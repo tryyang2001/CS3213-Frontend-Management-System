@@ -6,7 +6,6 @@ export const getGetAllUsersResponseBody = () => {
           password: 'password12345',
           name: 'Test',
           major: 'Computer Science',
-          course: 'CS1101S',
           role: 'student',
          },
           {         
@@ -15,7 +14,6 @@ export const getGetAllUsersResponseBody = () => {
             password: 'password12345',
             name: 'Test2',
             major: 'Computer Science',
-            course: 'CS1101S',
             role: 'student', 
           }
         ];

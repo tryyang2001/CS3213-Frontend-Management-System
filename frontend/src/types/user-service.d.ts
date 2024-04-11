@@ -1,9 +1,5 @@
 interface User {
   uid: number;
-  email: string;
-  name: string;
-  major: string;
-  course: string;
   role: string;
 }
 
@@ -12,4 +8,12 @@ interface UserInfo {
   email: string;
   bio: string;
   photo?: string;
+}
+
+interface ErrorResponse {
+  data: ErrorData;
+}
+
+interface ErrorData {
+  message: string;
 }

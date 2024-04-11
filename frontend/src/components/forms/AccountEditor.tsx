@@ -10,16 +10,18 @@ import {
 } from "@nextui-org/react";
 import PasswordInput from "./PasswordInput";
 import ConfirmPasswordInput from "./ConfirmPasswordInput";
+import userService from "@/helpers/user-service/api-wrapper";
 
-export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
+export default function AccountEditor({ uid, userInfo }: { uid: number, userInfo: UserInfo }) {
+  const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [isInvalidPassword, setIsInvalidPassword] = useState<boolean>(false);
   const [isInvalidConfirm, setIsInvalidConfirm] = useState<boolean>(false);
   const [accountMessage, setAccountMessage] = useState<string>("");
   const [updateCount, setUpdateCount] = useState<number>(2);
-
+  
   const handleAccountSubmit = async () => {
-    if (newPassword == "") {
+    if (newPassword == "" || oldPassword == "") {
       setAccountMessage("Please fill in the required fields");
       return;
     }
@@ -28,26 +30,24 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-      method: "PATCH",
-      body: JSON.stringify({
-        email: userInfo.email,
-        password: newPassword,
-      }),
-    }).catch((err) => {
-      console.log(err);
-      return {
-        status: 500,
-        ok: false,
-      };
-    });
-
-    if (!res.ok) {
-      setAccountMessage("An error occured, please try again later");
-    } else {
-      setAccountMessage("Password Updated!");
-      setNewPassword("");
+    try {
+      await userService.updateUserPassword(
+        uid,
+        oldPassword,
+        newPassword,
+      );
       setUpdateCount(updateCount + 1);
+      setAccountMessage("Update password successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message;
+        setAccountMessage(errorMessage);
+      } else {
+        setAccountMessage("Unknown error updating password, please try again");
+      }
+    } finally {
+      setNewPassword("");
+      setOldPassword("");
     }
   };
 
@@ -55,6 +55,13 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
     <form className="flex w-1/2 flex-col gap-4" key={updateCount}>
       <Input type="email" isDisabled label="Email" value={userInfo.email} />
       <PasswordInput
+        label={"Old Password"}
+        password={oldPassword}
+        setPassword={setOldPassword}
+        setIsInvalid={setIsInvalidPassword}
+      />
+      <PasswordInput
+        label={"New Password"}
         password={newPassword}
         setPassword={setNewPassword}
         setIsInvalid={setIsInvalidPassword}
@@ -65,7 +72,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
       />
 
       <Popover
-        color="danger"
+        color="primary"
         isOpen={accountMessage != ""}
         onOpenChange={() => setAccountMessage("")}
       >
@@ -76,7 +83,7 @@ export default function AccountEditor({ userInfo }: { userInfo: UserInfo }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <p className="text-small" color="danger">
+          <p className="text-small" color="primary">
             {accountMessage}
           </p>
         </PopoverContent>

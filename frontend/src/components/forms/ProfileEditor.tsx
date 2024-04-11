@@ -13,9 +13,12 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import FileInput from "./FileInput";
+import userService from "@/helpers/user-service/api-wrapper";
+import { useUserContext } from "@/contexts/user-context";
 import { uploadFiles } from "@/utils/uploadthing";
 
 export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
+  const { user, setUserContext } = useUserContext();
   const [info, setInfo] = useState<UserInfo>(userInfo);
   const [name, setName] = useState<string>(info.name);
   const isInvalidName = useMemo(() => {
@@ -72,32 +75,33 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       setPhoto(photoUrl);
     }
 
-    const res = await fetch("https://jsonplaceholder.typicode.com/users/1", {
-      method: "PATCH",
-      body: JSON.stringify({
-        name: name,
-        bio: bio,
-        photo: photoUrl,
-        email: info.email,
-      }),
-    }).catch((err) => {
-      console.log(err);
-      return {
-        status: 500,
-        ok: false,
-      };
-    });
-
-    if (!res.ok) {
-      setMessage("An error occured, please try again later");
-    } else {
+    try { 
+      await userService.updateUserInfo(
+        user?.uid ?? 0,
+        {
+          name: name,
+          bio: bio
+        }
+      );
       setMessage("Profile saved!");
       setInfo({
-        email: info.email,
         name: name,
+        email: info.email,
         bio: bio,
-        photo: photoUrl,
+        photo: photo!,
+      })
+
+      setUserContext({
+        uid: user?.uid ?? 0,
+        role: user?.role ?? "student",
       });
+    }  catch (error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message;
+        setMessage(errorMessage);
+      } else {
+        setMessage("An error occured, please try again later");
+      }
     }
   };
   return (

@@ -2,48 +2,61 @@
 import userService from "@/helpers/user-service/api-wrapper";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
-import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
+import { useState, useEffect } from "react";
 
 export default function Page() {
-  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useUserContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [ userInfo, setUserInfo ] = useState<UserInfo>({} as UserInfo);
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        if (user === null) {
-          toast.error("You must login to view user page");
+        if (!user) {
+          toast({
+            title: "You must login to see Userpage",
+            description: "Please login first",
+            variant: "destructive",
+          });
           router.push("/");
         } else {
-          const userInfo = await userService.getUserInfo(user.uid);
-          if (userInfo === null) {
-            toast.error("Unable to get user data");
+          const retrievedUserInfo = await userService.getUserInfo(user.uid);
+          if (retrievedUserInfo === null) {
+            toast({
+              title: "Cannot fetch userpage",
+              description: "Please try again later",
+              variant: "destructive",
+            });
             router.push("/");
           } else {
-            setUserInfo(userInfo);
+            setUserInfo(retrievedUserInfo);
+            setIsLoading(false);
           }
         }
-        setIsLoading(false);
-      } catch (error) {
+      } catch (error) { 
         console.error("Error fetching user info:", error);
-        toast.error("An unexpected error occurred");
+        toast({
+          title: "Cannot fetch userpaage",
+          description: "Please try again later",
+          variant: "destructive",
+        });
         // Handle the error based on its type
-        setIsLoading(false);
+        router.push("/");
       }
     };
-
     if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
+      fetchUserInfo().catch((_err) => {return;});
     } else {
-      return;
+      setIsLoading(true);
+      router.push("/");
     }
-  }, [router]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center p-2">
@@ -53,11 +66,11 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor userInfo={userInfo} />
+            <ProfileEditor userInfo={userInfo}/>
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>
-            <AccountEditor userInfo={userInfo} />
+            <AccountEditor uid={user?.uid ?? 0} userInfo={userInfo} />
           </div>
         </div>
       )}

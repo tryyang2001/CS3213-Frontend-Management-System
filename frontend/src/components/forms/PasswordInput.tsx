@@ -1,14 +1,16 @@
 import { Input } from "@nextui-org/react";
 import { Dispatch, SetStateAction, useState } from "react";
-import Eye from "../common/EyeToggle";
+import Eye from "../auth/EyeToggle";
 
 interface InputProps {
+  label: string;
   password: string;
   setPassword: Dispatch<SetStateAction<string>>;
   setIsInvalid?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function PasswordInput({
+  label,
   password,
   setPassword,
   setIsInvalid,
@@ -28,7 +30,7 @@ export default function PasswordInput({
     <Input
       isRequired
       type={isVisible ? "text" : "password"}
-      label="Password"
+      label={label}
       endContent={<Eye isVisible={isVisible} setIsVisible={setIsVisible} />}
       size="sm"
       value={password}

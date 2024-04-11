@@ -2,22 +2,17 @@
 
 import userService from "@/helpers/user-service/api-wrapper";
 import { useState, useMemo } from "react";
-import { EyeSlashFilledIcon } from "@/components/common/EyeSlashFilledIcon";
-import { EyeFilledIcon } from "@/components/common/EyeFilledIcon";
-import {
-  Button,
-  Input,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@nextui-org/react";
+import { EyeSlashFilledIcon } from "@/components/auth/EyeSlashFilledIcon";
+import { EyeFilledIcon } from "@/components/auth/EyeFilledIcon";
+import { Button, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const isInvalidEmail = useMemo<boolean>(() => {
     if (email === "") return false;
+
     return email.match(
       /^.+@([A-Z0-9.-]+\.[A-Z]{2,4})|(\[[0-9.]+\])|(\[IPv6[A-Z0-9:]+)$/i
     )
@@ -26,43 +21,61 @@ export default function Home() {
   }, [email]);
 
   const [password, setPassword] = useState<string>("");
+
   const isInvalidPassword = useMemo<boolean>(() => {
     if (password == "") return false;
     return password.length < 10;
   }, [password]);
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [confirmation, setPasswordConfirmation] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const isInvalidConfirmation = useMemo<boolean>(() => {
     if (confirmation == "" || password == "") return false;
     return confirmation != password;
   }, [confirmation, password]);
 
   const router = useRouter();
-  const handleSubmit = async () => {
-    if (email == "" || password == "" || confirmation == "") {
-      setErrorMessage("Please enter the required fields");
-      return;
-    }
 
+  const { toast } = useToast();
+
+  const handleSubmit = async () => {
     if (isInvalidEmail || isInvalidConfirmation || isInvalidPassword) {
-      setErrorMessage("Please correct the invalid fields");
-      return;
+      return toast({
+        title: "Invalid input",
+        description: "Please check your input and try again",
+        variant: "destructive",
+      });
     }
 
     try {
       await userService.register(email, password);
-    } catch (err) {
-      if (err instanceof Error) {
-        const errorMsg = err.message;
-        setErrorMessage(errorMsg);
+
+      toast({
+        title: "Sign Up successfully",
+        description:
+          "Welcome to ITS, you may proceed to login with your registered email and password.",
+        variant: "success",
+      });
+
+      // push to login page since we haven't set up the cookie yet
+      router.push("/login");
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMsg = error.message;
+        toast({
+          title: "Signing up unsucessfully",
+          description: errorMsg,
+          variant: "destructive",
+        });
       } else {
-        setErrorMessage(
-          "We are currently encountering some issues, please try again later"
-        );
+        toast({
+          title: "Signing up unsucessfully",
+          description: "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
       }
-    }
-    router.push("/dashboard");
+    };
   };
 
   function Eye() {
@@ -119,27 +132,21 @@ export default function Home() {
           }
         />
 
-        <Popover
-          color="danger"
-          isOpen={errorMessage != ""}
-          onOpenChange={() => setErrorMessage("")}
+        <Button
+          type="submit"
+          size="sm"
+          color="primary"
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+              }
+          }
         >
-          <PopoverTrigger>
-            <Button
-              type="submit"
-              size="sm"
-              color="primary"
-              className="w-full"
-              onClick={() => void handleSubmit()}
-            >
-              {" "}
-              Sign Up
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="text-tiny">{errorMessage}</div>
-          </PopoverContent>
-        </Popover>
+          {" "}
+          Sign Up
+        </Button>
 
         <div className="flex gap-3">
           <div className="text-sm">

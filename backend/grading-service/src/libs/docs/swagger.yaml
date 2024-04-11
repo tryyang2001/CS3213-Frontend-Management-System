@@ -1,0 +1,233 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Grading Service"
+  description: "This document describes all the API endpoints available for the Grading Service that are used to manage the feedback and submissions in ITS system."
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+
+schemes:
+  - "http"
+  - "https"
+
+paths:
+  /grading/api/health:
+    get:
+      tags:
+        - "Base"
+      summary: "Health check for the service"
+      description: "Checks if the service is up and running and connected to the database"
+      operationId: "healthCheck"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Service is healthy (connected to the database and is up and running)"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Healthy"
+        500:
+          description: "Service is down due to no database connection"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "INTERNAL SERVER ERROR"
+              message:
+                type: "string"
+                example: "No database connection from the server"
+
+  /grading/api/questions/:questionId/submissions:
+    get:
+      tags:
+        - "Submission"
+      summary: "Get all submissions for a question"
+      description: "Retrieve all submissions for a question that are associated with a particular student"
+      operationId: "getSubmissionByQuestionIdAndStudentId"
+      parameters:
+        - in: "query"
+          name: "userId"
+          description: "User ID to get the submissions for"
+          required: true
+          type: "string"
+          example: "sample_user_id"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "An array of submissions"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/schemas/responses/Submission"
+
+        400:
+          description: "Missing user ID in the query params"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "userId is required in the query params"
+
+        404:
+          description: "User ID not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "userId not found"
+
+  /feedback/generate:
+    post:
+      tags:
+        - "Feedback"
+      summary: "Create feedback for student submission"
+      description: "Create feedback for code submitted by student by calling ITS API"
+      operationId: "postFeedback"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "feedback"
+          description: "Feedback object that needs to be created"
+          required: true
+          schema:
+            $ref: "#/schemas/postFeedback/PostFeedbackBody"
+      responses:
+        201:
+          description: "Feedback object"
+          schema:
+            $ref: "#/schemas/responses/Feedback"
+
+        400:
+          description: "Invalid request body, please refer to the error message in the response for details"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "Invalid source_code"
+
+        404:
+          description: "User ID not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "userId not found"
+
+        422:
+          description: "The request is not processable."
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "UNPROCESSABLE ENTITY"
+              message:
+                type: "string"
+                example: "Invalid request"
+
+schemas:
+  responses:
+    Submission:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "submission_id"
+        questionId:
+          type: "string"
+          example: "question_id"
+        studentId:
+          type: "number"
+          example: "student_id"
+        code:
+          type: "string"
+          example: "example_code"
+        language:
+          type: "string"
+          example: "python"
+        feedbacks:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              line:
+                type: "number"
+              hints:
+                type: "array"
+                items:
+                  type: "string"
+            example:
+              - line: "line_1"
+                hints: ["hint_1"]
+              - line: "line_2"
+                hints: ["hint_2"]
+        createdOn:
+          type: "number"
+          description: "Creation date in timestamp format"
+          format: "int"
+          example: 1630000000000
+
+    Feedback:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          example: "feedback_id"
+        submissionId:
+          type: "string"
+          example: "submission_id"
+        line:
+          type: "number"
+          example: 2
+        hints:
+          type: "array"
+          items:
+            type: "string"
+            example: "hint_1"
+
+  postFeedback:
+    PostFeedbackBody:
+      type: "object"
+      properties:
+        langauge:
+          type: "string"
+          required: true
+          example: "python"
+        sourceCode:
+          type: "string"
+          required: true
+          example: "example_code"
+        questionId:
+          type: "string"
+          required: true
+          example: "question_id"
+        studentId:
+          type: "number"
+          format: "int"
+          required: true
+          example: 11

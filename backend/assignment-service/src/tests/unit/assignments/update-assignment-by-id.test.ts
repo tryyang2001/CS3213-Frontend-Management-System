@@ -259,7 +259,7 @@ describe("Unit Tests for PUT /assignment/api/assignments/:id", () => {
       expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
       expect(response.body).toEqual({
         error: "BAD REQUEST",
-        message: `Invalid authors. Array must contain at least 1 element(s)`,
+        message: `Invalid authors. At least one author is required`,
       });
     });
   });

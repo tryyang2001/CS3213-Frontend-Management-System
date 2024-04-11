@@ -9,20 +9,21 @@ generator client {
 datasource db {
     provider = "postgresql"
     url      = env("POSTGRESQL_DB_URL")
-    schemas  = ["assignments"]
+    schemas  = ["assignments", "users"]
 }
 
 model Assignment {
     id          String   @id @default(cuid())
     title       String
     deadline    DateTime
+    description String?
     isPublished Boolean  @default(false)
 
     numberOfQuestions Int        @default(0)
     questions         Question[]
 
     // string for now, will be replaced by user model
-    authors String[]
+    authors Int[]
 
     createdOn DateTime @default(now())
     updatedOn DateTime @updatedAt
@@ -45,6 +46,8 @@ model Question {
 
     Assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
     assignmentId String?
+
+    createdOn DateTime @default(now())
 
     @@schema("assignments")
 }
@@ -73,4 +76,21 @@ model ReferenceSolution {
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
     @@schema("assignments")
+}
+
+// User Schema
+model User {
+    uid Int @id @default(autoincrement())
+
+    name      String
+    email     String  @unique
+    major     String
+    avatarUrl String?
+    bio       String?
+
+    password String
+
+    role String
+
+    @@schema("users")
 }

@@ -185,7 +185,7 @@
 			"response": []
 		},
 		{
-			"name": "getUserByUserId",
+			"name": "getUserInfo",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -202,14 +202,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3001/user/getUserByUserId",
+					"raw": "localhost:3001/user/getUserInfo",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
 						"user",
-						"getUserByUserId"
+						"getUserInfo"
 					]
 				}
 			},

@@ -1,57 +1,61 @@
 "use client";
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
 import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
-import Cookies from "js-cookie";
-import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const { toast } = useToast();
   const { setUserContext } = useUserContext();
+
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (email == "" || password == "") {
-      setErrorMessage("Please enter the required fields");
-      return;
+    if (email == "" || password == "" || isInvalid) {
+      toast({
+        title: "Invalid input",
+        description: "Please check your input and try again",
+        variant: "destructive",
+      });
     }
-    if (isInvalid) {
-      setErrorMessage("Please correct the invalid fields");
-      return;
-    }
-    // mock for backend
+
     try {
       const user = await userService.login(email, password);
       if (!user) {
         throw new Error("Cannot logging in");
       }
-      Cookies.set("user", JSON.stringify(user), { expires: 7 });
       setUserContext(user);
-      toast.success("Log in successfully!");
-      router.push("/dashboard");
+      toast({
+        title: "Login successfully",
+        description: "Welcome back to ITS",
+        variant: "success",
+      });
+      router.push('/dashboard');
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
-        setErrorMessage(errorMsg);
+        toast({
+          title: "Logging in unsucessfully",
+          description: errorMsg,
+          variant: "destructive",
+        });
       } else {
-        setErrorMessage(
-          "We are currently encountering some issues, please try again later"
-        );
+        toast({
+          title: "Logging in unsucessfully",
+          description: "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
       }
     }
   };
@@ -64,41 +68,36 @@ export default function Home() {
           setEmail={setEmail}
           setIsInvalid={setIsInvalid}
         />
-        <PasswordInput password={password} setPassword={setPassword} />
 
-        <Popover
-          color="danger"
-          isOpen={errorMessage != ""}
-          onOpenChange={() => setErrorMessage("")}
+        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
+
+        <Button
+          type="submit"
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+             }
+          }
+          color="primary"
+          className="w-full"
         >
-          <PopoverTrigger>
-            <Button
-              type="submit"
-              color="primary"
-              className="w-full"
-              onClick={() => void handleSubmit()}
-            >
-              {" "}
-              Login{" "}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="text-tiny">{errorMessage}</div>
-          </PopoverContent>
-        </Popover>
+          Login
+        </Button>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 text-center">
           <div>
-            {" "}
-            <Link href="/login/recovery"> Forgot Password </Link>{" "}
+            <Link href="/login/recovery">Forgot Password</Link>{" "}
           </div>
-          <div> | </div>
+
+          <Divider orientation="vertical" />
           <div>
-            {" "}
-            <Link href="/sign-up"> Sign up</Link>{" "}
+            <Link href="/sign-up">Sign up</Link>{" "}
           </div>
         </div>
       </div>
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */

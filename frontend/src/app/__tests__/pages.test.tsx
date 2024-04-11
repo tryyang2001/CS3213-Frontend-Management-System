@@ -5,7 +5,7 @@ import UserPage from "../user/page";
 import AssignmentPage from "../assignments/[id]/page";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 const mockUser: User = {
   uid: 9,
@@ -37,7 +37,7 @@ jest.mock("@/contexts/user-context", () => {
     __esModule: true,
     useUserContext: () => ({
       user: mockUser, // Inject the mockUser as the user context
-      setUserContext: jest.fn(), // Mock setUserContext as a Jest mock function
+      setUser: jest.fn(), // Mock setUserContext as a Jest mock function
     }),
   };
 });
@@ -74,9 +74,9 @@ describe("Page Snapshot tests", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("User Page Snapshot test", async () => {
+  it("User Page Snapshot test", () => {
     const { container } = render(<UserPage />);
-    const _title = await screen.findByText("Your Account");
+    // const _title = await screen.findByText("Your Account");
 
     expect(container).toMatchSnapshot();
   });

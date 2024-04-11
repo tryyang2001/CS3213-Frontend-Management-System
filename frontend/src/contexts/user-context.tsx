@@ -1,26 +1,40 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 
 interface UserContextType {
   user: User | null;
   setUserContext: (user: User | null) => void;
 }
-
 const initialUser: User | null = null;
 
 const UserContext = createContext<UserContextType>({
-  user: initialUser,
+  user: null,
   setUserContext: () => {
     throw new Error("Not implemented");
   },
 });
 
 function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(initialUser);
+  const getLocalState = () : User | null => {
+    if (typeof window !== "undefined") {
+      const localUserContext = localStorage.getItem("userContext");
+      if (localUserContext) {
+        return JSON.parse(localUserContext) as User;
+      }
+    }
+    return initialUser;
+  };
+
+  const [user, setUser] = useState<User | null>(getLocalState() ?? initialUser);
+
   const setUserContext = (user: User | null) => {
     setUser(user);
   };
+
+  useEffect(() => {
+    localStorage.setItem("userContext", JSON.stringify(user));
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUserContext }}>
@@ -28,7 +42,6 @@ function UserProvider({ children }: { children: ReactNode }) {
     </UserContext.Provider>
   );
 }
-
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
