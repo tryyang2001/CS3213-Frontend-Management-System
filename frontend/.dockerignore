@@ -1,20 +1,13 @@
 # .dockerignore
 /node_modules
+/.next
 
 # testing
 /coverage
 
 # production
-/build
+src/app/__tests__
 
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# vercel
-.vercel
+.eslintrc.json
+.prettierrc
+jest.config.ts

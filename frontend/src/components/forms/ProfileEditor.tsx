@@ -14,8 +14,10 @@ import {
 } from "@nextui-org/react";
 import FileInput from "./FileInput";
 import userService from "@/helpers/user-service/api-wrapper";
+import { useUserContext } from "@/contexts/user-context";
 
-export default function ProfileEditor({ uid, userInfo }: { uid: number, userInfo: UserInfo }) {
+export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
+  const { user, setUserContext } = useUserContext();
   const [info, setInfo] = useState<UserInfo>(userInfo);
   const [name, setName] = useState<string>(info.name);
   const isInvalidName = useMemo(() => {
@@ -64,7 +66,7 @@ export default function ProfileEditor({ uid, userInfo }: { uid: number, userInfo
 
     try { 
       await userService.updateUserInfo(
-        uid,
+        user?.uid ?? 0,
         {
           name: name,
           bio: bio
@@ -77,6 +79,11 @@ export default function ProfileEditor({ uid, userInfo }: { uid: number, userInfo
         bio: bio,
         photo: photo!,
       })
+
+      setUserContext({
+        uid: user?.uid ?? 0,
+        role: user?.role ?? "student",
+      });
     }  catch (error) {
       if (error instanceof Error) {
         const errorMessage = error.message;

@@ -13,13 +13,13 @@ async function registerUser(req: Request, res: Response) {
 
     if (emailSearch.rows.length > 0) {
       console.log("Email already exists.");
-      return res.json({
-        error: "Email already exists.",
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+        message: "Email already exists.",
       });
     } else if (password.length < 10) {
       console.log("Password not long enough.");
-      return res.json({
-        error: "Password not long enough.",
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+        message: "Password not long enough.",
       });
     }
     bcrypt
@@ -37,31 +37,30 @@ async function registerUser(req: Request, res: Response) {
           return res.json({ uid });
         } catch (err) {
           console.log(err);
-          return res.json({
-            error: "Failed to create user.",
+          return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
+            message: "Failed to create user.",
           });
         }
       })
       .catch((err) => {
         console.log(err);
-        return res.send({ message: "Error crypting password." });
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: "Error crypting password." });
       });
   } catch (err) {
     console.log(err);
-    return res.json({
-      error: "Undefined error creating users.",
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
+      message: "Undefined error creating users.",
     });
   }
 }
 
 async function loginUser(req: Request, res: Response) {
   const { email, password } = req.body;
-
   const emailSearch = await db.getUserByEmail(email);
   if (emailSearch.rows.length == 0) {
     console.log("User does not exist.");
-    return res.json({
-      error: "User does not exist.",
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+      message: "User does not exist.",
     });
   } else if (emailSearch.rows.length > 0) {
     const user = emailSearch.rows[0];
@@ -73,14 +72,14 @@ async function loginUser(req: Request, res: Response) {
         if (!result) {
           console.log("Incorrect password.");
           return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
-            error: "Incorrect password.",
+            message: "Incorrect password.",
           });
         } else {
           const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
           if (!jwtSecretKey) {
             console.error("JWT secret key is not defined.");
             return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-              error: "Internal server error.",
+              message: "Internal server error.",
             });
           }
 
@@ -90,13 +89,17 @@ async function loginUser(req: Request, res: Response) {
           };
 
           const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "5d" });
+          const responseData = {
+            uid: user.uid,
+            role: user.role,
+          }
           res
             .cookie("token", token, {
               path: "/",
               httpOnly: true,
               maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days expiry
             })
-            .json({ user });
+            .json(responseData);
         }
       })
       .catch((err) => {
@@ -110,7 +113,7 @@ async function getUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
   if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid.' });
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'Invalid uid.' });
   }
 
   try {
@@ -119,8 +122,8 @@ async function getUserInfo(req: Request, res: Response) {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.json({
-        error: "User does not exist.",
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+        message: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
       const user = userIdSearch.rows[0];
@@ -128,7 +131,7 @@ async function getUserInfo(req: Request, res: Response) {
     }
   } catch (err) {
     console.log(err);
-    return res.send({
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
       message: "Error getting user by uid.",
     });
   }
@@ -140,8 +143,8 @@ async function getUserByEmail(req: Request, res: Response) {
     const emailSearch = await db.getUserByEmail(email);
     if (emailSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.json({
-        error: "User does not exist.",
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+        message: "User does not exist.",
       });
     } else if (emailSearch.rows.length > 0) {
       const user = emailSearch.rows[0];
@@ -149,7 +152,7 @@ async function getUserByEmail(req: Request, res: Response) {
     }
   } catch (err) {
     console.log(err);
-    return res.send({
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
       message: "Error getting user by email.",
     });
   }
@@ -161,7 +164,7 @@ async function getAllUsers(req: Request, res: Response) {
     return res.json(allUsers);
   } catch (err) {
     console.log(err);
-    return res.send({ message: "Error getting all users." });
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({ message: "Error getting all users." });
   }
 }
 
@@ -172,7 +175,7 @@ async function updateUserPassword(req: Request, res: Response) {
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
       return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
-        error: "User does not exist.",
+        message: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
       const hash = userIdSearch.rows[0].password;
@@ -182,8 +185,8 @@ async function updateUserPassword(req: Request, res: Response) {
         .then((result) => {
           if (!result) {
             console.log("Incorrect password.");
-            return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
-              error: "Incorrect password.",
+            return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+              message: "Incorrect password.",
             });
           } else {
             bcrypt
@@ -195,14 +198,14 @@ async function updateUserPassword(req: Request, res: Response) {
                     message: "Update password successfully.",
                   });
                 } catch (err) {
-                  return res.status(HttpStatusCode.NOT_FOUND.valueOf()).json({
-                    error: "Failed to update user password.",
+                  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
+                    message: "Failed to update user password.",
                   });
                 }
               })
               .catch((err) => {
                 console.log(err);
-                return res.send({
+                return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
                   message: "Error crypting password.",
                 });
               });
@@ -210,14 +213,14 @@ async function updateUserPassword(req: Request, res: Response) {
         })
         .catch((err) => {
           console.log(err);
-          return res.send({
+          return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
             message: "Error checking password.",
           });
         });
     }
   } catch (err) {
     console.log(err);
-    return res.send({
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
       message: "Error getting user by uid.",
     });
   }
@@ -226,14 +229,14 @@ async function updateUserPassword(req: Request, res: Response) {
 async function updateUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'Invalid uid.' });
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'Invalid uid.' });
   }
   const uid = parseInt(queryUidString);
   const updateFields = req.body;
 
   try {
     if (Object.keys(updateFields).length === 0) {
-      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ error: 'No fields provided for update.' });
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'No fields provided for update.' });
     }
 
     await db.updateUserInfo(uid, updateFields);
@@ -243,7 +246,7 @@ async function updateUserInfo(req: Request, res: Response) {
     });
   } catch (err) {
     console.error('Error updating user info:', err);
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ error: 'Failed to update user info.' });
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: 'Failed to update user info.' });
   }
 }
 
@@ -259,7 +262,7 @@ async function deleteUser(req: Request, res: Response) {
   } catch (err) {
     console.log(err);
     return res.send({
-      error: "Undefined error deleting account.",
+      message: "Undefined error deleting account.",
     });
   }
 }

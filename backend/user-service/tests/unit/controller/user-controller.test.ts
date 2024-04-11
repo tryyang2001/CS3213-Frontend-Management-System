@@ -79,7 +79,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Email already exists." });
+      expect(response.body).toEqual({ message: "Email already exists." });
       // expect(response.status).toBe(400);
     });
   });
@@ -101,7 +101,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Password not long enough." });
+      expect(response.body).toEqual({ message: "Password not long enough." });
       // expect(response.status).toBe(400);
     });
   });
@@ -123,7 +123,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Failed to create user." });
+      expect(response.body).toEqual({ message: "Failed to create user." });
       // expect(response.status).toBe(400);
     });
   });
@@ -166,7 +166,7 @@ describe("Unit Tests for /user/register endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Undefined error creating users.",
+        message: "Undefined error creating users.",
       });
       // expect(response.status).toBe(400);
     });
@@ -189,17 +189,24 @@ describe("Unit Tests for /user/login endpoint", () => {
     it("Should return 200 and a token", async () => {
       // Arrange
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
-        rows: [getLoginUserResponseBody()],
+        rows: [{
+          uid: 1,
+          email: 'test@example.com',
+          password: 'password12345',
+          name: 'Test',
+          major: 'Computer Science',
+          role: 'student'}
+        ],
       } as unknown as QueryResult<any>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       jwt.sign = jest.fn().mockResolvedValue("fake_token");
       process.env.JWT_SECRET_KEY = "secretkey";
-
       // Act
-      const response = await supertest(app).post("/user/login").send(reqBody);
+      const response = await supertest(app).post("/user/login").send({email: 'test@example.com', password: 'password12345'});
+      console.log("Response:", response.body);
 
       // Assert
-      expect(response.body).toEqual({ user: getLoginUserResponseBody() });
+      expect(response.body).toEqual(getLoginUserResponseBody());
       expect(response.status).toBe(200);
     });
   });
@@ -215,7 +222,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
       // expect(response.status).toBe(400);
     });
   });
@@ -233,7 +240,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Incorrect password." });
+      expect(response.body).toEqual({ message: "Incorrect password." });
       // expect(response.status).toBe(400);
     });
   });
@@ -251,7 +258,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Internal server error." });
+      expect(response.body).toEqual({ message: "Internal server error." });
       // expect(response.status).toBe(500);
     });
   });
@@ -314,7 +321,7 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
         .get(`/user/getUserInfo?uid=${uid}`)
       
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
     });
   });
 
@@ -372,7 +379,7 @@ describe("Unit Tests for /user/getUserByEmail endpoint", () => {
     const response = await supertest(app).get(`/user/getUserByEmail`);
 
     // Assert
-    expect(response.body).toEqual({ error: "User does not exist." });
+    expect(response.body).toEqual({ message: "User does not exist." });
     // expect(response.status).toBe(404);
   });
 
@@ -497,7 +504,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "User does not exist." });
+      expect(response.body).toEqual({ message: "User does not exist." });
       // expect(response.status).toBe(400);
     });
   });
@@ -516,7 +523,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Incorrect password." });
+      expect(response.body).toEqual({ message: "Incorrect password." });
       // expect(response.status).toBe(400);
     });
   });
@@ -540,7 +547,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Failed to update user password.",
+        message: "Failed to update user password.",
       });
       // expect(response.status).toBe(500);
     });
@@ -656,7 +663,7 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "No fields provided for update." });
+      expect(response.body).toEqual({ message: "No fields provided for update." });
       // expect(response.status).toBe(400);
     });
 
@@ -673,7 +680,7 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ error: "Invalid uid." });
+      expect(response.body).toEqual({ message: "Invalid uid." });
       // expect(response.status).toBe(400);
     });
   });
@@ -732,7 +739,7 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({
-        error: "Undefined error deleting account.",
+        message: "Undefined error deleting account.",
       });
       // expect(response.status).toBe(400);
     });
