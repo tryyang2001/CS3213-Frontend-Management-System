@@ -71,7 +71,7 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
         name: responseData.name,
         email: responseData.email,
         bio: responseData.bio || "This person doesn't have bio",
-        photo: responseData.photo,
+        avatarUrl: responseData.avatarUrl,
       };
       return userInfo;
     } else {

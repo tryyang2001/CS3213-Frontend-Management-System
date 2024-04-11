@@ -25,14 +25,14 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
     return name == "";
   }, [name]);
   const [bio, setBio] = useState<string>(info.bio);
-  const [photo, setPhoto] = useState<string | undefined>(info.photo);
+  const [photo, setPhoto] = useState<string | undefined>(info.avatarUrl);
   const [newPhoto, setNewPhoto] = useState<File>();
 
-  // userInfo is constant, do not change for now
+
   const hasChanged = useMemo(() => {
     if (name != info.name) return true;
     if (bio != info.bio) return true;
-    if (photo != info.photo && !(photo == "" && info.photo == undefined))
+    if (photo != info.avatarUrl && !(photo == "" && info.avatarUrl == undefined))
       return true;
     return false;
   }, [name, bio, photo, info]);
@@ -42,14 +42,14 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       setPhoto(URL.createObjectURL(newPhoto));
     } else {
       setNewPhoto(undefined);
-      setPhoto(info.photo);
+      setPhoto(info.avatarUrl);
     }
-  }, [newPhoto, info.photo]);
+  }, [newPhoto, info.avatarUrl]);
 
   const handleDiscard = () => {
     setName(info.name);
     setBio(info.bio);
-    setPhoto(info.photo);
+    setPhoto(info.avatarUrl);
     setNewPhoto(undefined);
   };
 
@@ -60,9 +60,14 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    if (name == info.name && bio == info.bio && photo == info.photo) {
+    if (name == info.name && bio == info.bio && photo == info.avatarUrl) {
       setMessage("Profile saved!");
       return;
+    }
+
+    const dataUpdated : Record<string, string> = {
+      name: name,
+      bio: bio,
     }
 
     // upload files
@@ -72,20 +77,18 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
         files: [newPhoto],
       });
       photoUrl = fileResponse[0].url;
+      dataUpdated['"avatarUrl"'] = photoUrl;
       setPhoto(photoUrl);
     }
 
     try {
-      await userService.updateUserInfo(user?.uid ?? 0, {
-        name: name,
-        bio: bio,
-      });
+      await userService.updateUserInfo(user?.uid ?? 0, dataUpdated);
       setMessage("Profile saved!");
       setInfo({
         name: name,
         email: info.email,
         bio: bio,
-        photo: photo!,
+        avatarUrl: photoUrl,
       });
 
       setUserContext({
