@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
 import ProfileEditor from "../ProfileEditor";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { UserInfo } from "@/components/common/ReadOnlyUserCard";
 
 const mockPush = jest.fn((str: string) => str);
 
@@ -22,11 +21,13 @@ jest.mock("next/navigation", () => {
 
 describe("Profile Editor", () => {
   const userInfo: UserInfo = {
+    uid: 1,
     email: "email@email.com",
     name: "Abc",
     bio: "Hello!",
   };
   const errorInfo: UserInfo = {
+    uid: 2,
     email: "bad@email.com",
     name: "Abc",
     bio: "Hello!",

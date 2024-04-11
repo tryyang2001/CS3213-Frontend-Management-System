@@ -19,6 +19,7 @@ export const getQuestionByIdDbResponse = (questionId?: string) => {
     ],
     assignmentId: "existing-assignment-id",
     referenceSolutionId: "existing-solution-id-1",
+    createdOn: new Date("2024-12-30T00:00:00.000Z"),
   };
 };
 
@@ -43,5 +44,6 @@ export const getQuestionByIdExpectedResponse = (questionId?: string) => {
     ],
     assignmentId: "existing-assignment-id",
     referenceSolutionId: "existing-solution-id-1",
+    createdOn: new Date("2024-12-30T00:00:00.000Z").getTime(),
   };
 };

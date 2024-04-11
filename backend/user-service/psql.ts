@@ -1,36 +1,48 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import { Pool } from "pg";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const pool = new Pool({
-    host     : process.env.PSQL_HOSTNAME,
-    database : process.env.PSQL_DATABASE,
-    user     : process.env.PSQL_USERNAME,
-    password : process.env.PSQL_PASSWORD,
-    port     : parseInt(process.env.PSQL_PORT || '5432')
-});
+const pool =
+  process.env.NODE_ENV === "test"
+    ? new Pool()
+    : new Pool({
+        host: process.env.PSQL_HOSTNAME,
+        database: process.env.PSQL_DATABASE,
+        user: process.env.PSQL_USERNAME,
+        password: process.env.PSQL_PASSWORD,
+        port: parseInt(process.env.PSQL_PORT || "5432"),
+      });
 
 const createUserTableQueryIfNotExist = `
         CREATE SCHEMA IF NOT EXISTS users;
-        CREATE TABLE IF NOT EXISTS users.users (
+        CREATE TABLE IF NOT EXISTS users."User" (
             uid SERIAL PRIMARY KEY,
-            email VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
             name VARCHAR(255) NOT NULL,
             major VARCHAR(255) NOT NULL,
-            course VARCHAR(255),
             password VARCHAR(255) NOT NULL,
+            bio TEXT DEFAULT '',
+            "avatarUrl" VARCHAR(255) DEFAULT '',
             role VARCHAR(60) NOT NULL
         );
-  `;
-  
-pool.query(createUserTableQueryIfNotExist)
-.catch((err) => {
-    console.error('Error creating table:', err);
-})
 
-pool.connect()
-    .then(() => console.log('Connected to the user microservice psql database'))
-    .catch(err => console.error('Error connecting to the user microservce database', err));
+        CREATE TABLE IF NOT EXISTS users."UserAssignmentRelation" (
+          userId SERIAL REFERENCES users."User" (uid),
+          assignmentId TEXT REFERENCES assignments."Assignment" (id),
+          primary key (userId, assignmentId)
+        );
+  `;
+
+pool.query(createUserTableQueryIfNotExist).catch((err) => {
+  console.error("Error creating table:", err);
+});
+
+pool
+  .connect()
+  .then(() => console.log("Connected to the user microservice psql database"))
+  .catch((err) =>
+    console.error("Error connecting to the user microservce database", err)
+  );
 
 export default pool;

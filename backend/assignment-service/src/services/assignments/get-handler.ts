@@ -2,7 +2,18 @@ import db from "../../models/db";
 import { Assignment } from "../../models/types/assignment";
 import { Question } from "../../models/types/question";
 
-const getAssignmentsByUserId = async (userId: string) => {
+const getAssignmentsByUserId = async (userId: number) => {
+  // check if the user exists
+  const user = await db.user.findUnique({
+    where: {
+      uid: userId,
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
   const assignments = await db.assignment.findMany({
     where: {
       authors: {
@@ -10,6 +21,8 @@ const getAssignmentsByUserId = async (userId: string) => {
       },
     },
   });
+
+  // TODO: search user under courses, what assignments are there
 
   const assignmentsDto: Assignment[] = assignments.map((assignment) => {
     return {
@@ -51,6 +64,7 @@ const getAssignmentById = async (id: string) => {
       referenceSolutionId: question.referenceSolutionId
         ? question.referenceSolutionId
         : undefined,
+      createdOn: question.createdOn.getTime(),
     };
   });
 
@@ -58,6 +72,7 @@ const getAssignmentById = async (id: string) => {
     id: assignment.id,
     title: assignment.title,
     deadline: assignment.deadline.getTime(),
+    description: assignment.description ?? undefined,
     isPublished: assignment.isPublished,
     numberOfQuestions: assignment.numberOfQuestions,
     questions: questionsDto,

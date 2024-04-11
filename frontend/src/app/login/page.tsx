@@ -1,62 +1,63 @@
 "use client";
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
+import 'react-toastify/dist/ReactToastify.css';
+import { useUserContext } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 export default function Home() {
   const [email, setEmail] = useState<string>("");
-
   const [password, setPassword] = useState<string>("");
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const { toast } = useToast();
+  const { setUserContext } = useUserContext();
+
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (email == "" || password == "") {
-      setErrorMessage("Please enter the required fields");
-      return;
-    }
-    if (isInvalid) {
-      setErrorMessage("Please correct the invalid fields");
-      return;
+    if (email == "" || password == "" || isInvalid) {
+      toast({
+        title: "Invalid input",
+        description: "Please check your input and try again",
+        variant: "destructive",
+      });
     }
 
-    // mock for backend
-    const res = await fetch("https://jsonplaceholder.typicode.com/session", {
-      method: "Post",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    }).catch((err: Error) => {
-      console.log(err);
-      return {
-        ok: false,
-        status: 500,
-      };
-    });
-
-    if (res.status == 401) {
-      setErrorMessage("Invalid Email/Password");
-    } else if (!res.ok) {
-      setErrorMessage(
-        "We are currently encountering some issues, please try again later"
-      );
-    } else {
-      router.push("/dashboard");
+    try {
+      const user = await userService.login(email, password);
+      if (!user) {
+        throw new Error("Cannot logging in");
+      }
+      setUserContext(user);
+      console.log(user);
+      toast({
+        title: "Login successfully",
+        description: "Welcome back to ITS, " + user.name,
+        variant: "success",
+      });
+      router.push('/dashboard');
+    } catch (err) {
+      if (err instanceof Error) {
+        const errorMsg = err.message;
+        toast({
+          title: "Logging in unsucessfully",
+          description: errorMsg,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Logging in unsucessfully",
+          description: "We are currently encountering some issues, please try again later",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -68,41 +69,36 @@ export default function Home() {
           setEmail={setEmail}
           setIsInvalid={setIsInvalid}
         />
-        <PasswordInput password={password} setPassword={setPassword} />
 
-        <Popover
-          color="danger"
-          isOpen={errorMessage != ""}
-          onOpenChange={() => setErrorMessage("")}
+        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
+
+        <Button
+          type="submit"
+          onClick={
+            () => {
+                void (async () => {
+                    await handleSubmit()
+                })();
+             }
+          }
+          color="primary"
+          className="w-full"
         >
-          <PopoverTrigger>
-            <Button
-              type="submit"
-              color="primary"
-              className="w-full"
-              onClick={() => void handleSubmit()}
-            >
-              {" "}
-              Login{" "}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="text-tiny">{errorMessage}</div>
-          </PopoverContent>
-        </Popover>
+          Login
+        </Button>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 text-center">
           <div>
-            {" "}
-            <Link href="/login/recovery"> Forgot Password </Link>{" "}
+            <Link href="/login/recovery">Forgot Password</Link>{" "}
           </div>
-          <div> | </div>
+
+          <Divider orientation="vertical" />
           <div>
-            {" "}
-            <Link href="/sign-up"> Sign up</Link>{" "}
+            <Link href="/sign-up">Sign up</Link>{" "}
           </div>
         </div>
       </div>
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */

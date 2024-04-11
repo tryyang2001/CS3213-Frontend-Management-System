@@ -1,23 +1,19 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import LogoLoading from "@/components/common/LogoLoading";
 import AssignmentList from "@/components/assignment/AssignmentList";
+import { useUserContext } from "@/contexts/user-context";
+import { useQuery } from "@tanstack/react-query";
 
 export default function DashBoard() {
+  const { user } = useUserContext();
+
   const { data: assignments, isLoading } = useQuery({
-    queryKey: ["get-assignments", "rui_yang_tan_user_id_1"],
+    queryKey: ["get-assignments", user?.uid ?? 0],
     queryFn: async () => {
-      const assignments = await AssignmentService.getAssignmentsByUserId(
-        // TODO: Retrieve the actual logged in user ID from a user context or any equivalent
-        "rui_yang_tan_user_id_1"
-      );
-
-      console.log(assignments);
-
-      return assignments;
-    },
+      return await AssignmentService.getAssignmentsByUserId(user?.uid ?? 0);
+    }
   });
 
   return (
@@ -25,7 +21,7 @@ export default function DashBoard() {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList assignments={assignments} />
+        <AssignmentList assignments={assignments} userRole={user?.role?? "student"} />
       )}
     </div>
   );
