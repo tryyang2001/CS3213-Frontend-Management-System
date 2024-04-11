@@ -74,15 +74,14 @@ export default function SideBar() {
             setUserInfo(retrievedUserInfo);
           }
         }
-      } catch (error) {
-        console.log(error);
+      } catch (_error) {
       }
     };
 
     if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
+      fetchUserInfo().catch((_err) => {return;});
     } else {
-      console.log("no user context");
+      //should never reach here since if there's no user context, middleware should redirect to login page
     }
   }, [user]);
 

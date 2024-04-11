@@ -36,7 +36,6 @@ export default function Home() {
         throw new Error("Cannot logging in");
       }
       setUserContext(user);
-      console.log(user);
       toast({
         title: "Login successfully",
         description: "Welcome back to ITS",

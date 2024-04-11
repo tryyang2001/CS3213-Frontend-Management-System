@@ -27,7 +27,6 @@ export default function Page() {
           router.push("/");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
-          console.log("retrieved", retrievedUserInfo);
           if (retrievedUserInfo === null) {
             toast({
               title: "Cannot fetch userpage",
@@ -52,9 +51,8 @@ export default function Page() {
       }
     };
     if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
+      fetchUserInfo().catch((_err) => {return;});
     } else {
-      console.log("no user context");
       setIsLoading(true);
       router.push("/");
     }
