@@ -8,6 +8,7 @@ import { DeleteHandler } from "../services/assignments/delete-handler";
 import { UpdateAssignmentValidator } from "../libs/validators/assignments/update-assignment-validator";
 import { PutHandler } from "../services/assignments/put-handler";
 import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
+import { GetAssignmentsQueryValidator } from "../libs/validators/assignments/get-assignments-validator";
 
 const getAssignmentsByUserId = async (request: Request, response: Response) => {
   try {
@@ -21,17 +22,14 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
       return;
     }
 
-    const userId = parseInt(request.query.userId as string);
+    const { userId, includePast, isPublished } =
+      GetAssignmentsQueryValidator.parse(request.query);
 
-    if (isNaN(userId)) {
-      response.status(HttpStatusCode.BAD_REQUEST).json({
-        error: "BAD REQUEST",
-        message: "Invalid userId format",
-      });
-      return;
-    }
-
-    const assignments = await GetHandler.getAssignmentsByUserId(userId);
+    const assignments = await GetHandler.getAssignmentsByUserId(
+      userId,
+      includePast,
+      isPublished
+    );
 
     if (!assignments) {
       response.status(HttpStatusCode.NOT_FOUND).json({
@@ -42,7 +40,15 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
     }
 
     response.status(HttpStatusCode.OK).json(assignments);
-  } catch (_error) {
+  } catch (error) {
+    if (error instanceof ZodError) {
+      response.status(HttpStatusCode.BAD_REQUEST).json({
+        error: "BAD REQUEST",
+        message: formatZodErrorMessage(error),
+      });
+      return;
+    }
+
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       error: "INTERNAL SERVER ERROR",
       message: "An unexpected error has occurred. Please try again later",
