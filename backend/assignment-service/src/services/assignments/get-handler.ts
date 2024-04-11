@@ -14,15 +14,7 @@ const getAssignmentsByUserId = async (userId: number) => {
     return null;
   }
 
-  const assignments = await db.assignment.findMany({
-    where: {
-      authors: {
-        hasSome: [userId],
-      },
-    },
-  });
-
-  // TODO: search user under courses, what assignments are there
+  const assignments = await db.assignment.findMany();
 
   const assignmentsDto: Assignment[] = assignments.map((assignment) => {
     return {
