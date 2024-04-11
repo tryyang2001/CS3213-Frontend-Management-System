@@ -35,6 +35,7 @@ const getQuestionById = async (questionId: string) => {
     referenceSolutionId: question.referenceSolutionId
       ? question.referenceSolutionId
       : undefined,
+    createdOn: question.createdOn.getTime(),
   };
 
   return questionDto;

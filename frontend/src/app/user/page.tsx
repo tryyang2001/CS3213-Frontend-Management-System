@@ -2,48 +2,38 @@
 import userService from "@/helpers/user-service/api-wrapper";
 import ProfileEditor from "../../components/forms/ProfileEditor";
 import AccountEditor from "../../components/forms/AccountEditor";
-import { useEffect, useState } from "react";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
-import { toast } from 'react-toastify';
+import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
-  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useUserContext();
+
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        if (user === null) {
-          toast.error("You must login to view user page");
-          router.push("/");
-        } else {
-          const userInfo = await userService.getUserInfo(user.uid);
-          if (userInfo === null) {
-            toast.error("Unable to get user data");
-            router.push("/");
-          } else {
-            setUserInfo(userInfo);
-          }
-        }
-        setIsLoading(false);
-      } catch (error) { 
-        console.error("Error fetching user info:", error);
-        toast.error("An unexpected error occurred");
-        // Handle the error based on its type
-        setIsLoading(false);
-      }
-    };
+  const { toast } = useToast();
 
-    if (user) {
-      fetchUserInfo().catch((err) => console.log(err));
-    } else {
-      return;
-    }
-  }, [router]);
+  const { data: userInfo, isLoading } = useQuery({
+    queryKey: ["get-user-info", user.uid],
+    queryFn: async () => {
+      const userInfo = await userService.getUserInfo(user.uid);
+
+      if (userInfo === null) {
+        toast({
+          title: "User not found",
+          description: "Please login again",
+          variant: "destructive",
+        });
+
+        router.push("/dashboard");
+        return null;
+      }
+
+      return userInfo;
+    },
+  });
 
   return (
     <div className="flex flex-col items-center p-2">
@@ -53,11 +43,11 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor userInfo={userInfo} />
+            <ProfileEditor userInfo={userInfo!} />
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>
-            <AccountEditor userInfo={userInfo} />
+            <AccountEditor userInfo={userInfo!} />
           </div>
         </div>
       )}
