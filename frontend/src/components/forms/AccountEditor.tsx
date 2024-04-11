@@ -55,13 +55,13 @@ export default function AccountEditor({ uid, userInfo }: { uid: number, userInfo
     <form className="flex w-1/2 flex-col gap-4" key={updateCount}>
       <Input type="email" isDisabled label="Email" value={userInfo.email} />
       <PasswordInput
-        label={"oldPassword"}
+        label={"Old Password"}
         password={oldPassword}
         setPassword={setOldPassword}
         setIsInvalid={setIsInvalidPassword}
       />
       <PasswordInput
-        label={"newPassword"}
+        label={"New Password"}
         password={newPassword}
         setPassword={setNewPassword}
         setIsInvalid={setIsInvalidPassword}

@@ -103,7 +103,7 @@ describe("Account Editor", () => {
   it("should have an error popover given empty confirmation", () => {
     render(<AccountEditor uid={1} userInfo={userInfo} />);
 
-    const passwordInput = screen.getByLabelText("oldPassword");
+    const passwordInput = screen.getByLabelText("Old Password");
     fireEvent.change(passwordInput, { target: { value: "12345678" } });
     const updateButton = screen.getByRole("button", { expanded: false });
     fireEvent.click(updateButton);
@@ -118,7 +118,7 @@ describe("Account Editor", () => {
   it("should have an error popover given confirmation different", () => {
     render(<AccountEditor uid={1} userInfo={userInfo} />);
 
-    const passwordInput = screen.getByLabelText("newPassword");
+    const passwordInput = screen.getByLabelText("New Password");
     fireEvent.change(passwordInput, { target: { value: "12345678" } });
     const confirmInput = screen.getByLabelText("Confirm Password");
     fireEvent.change(confirmInput, { target: { value: "different" } });
@@ -135,9 +135,9 @@ describe("Account Editor", () => {
   it("should have error popover when server goes down", async () => {
     render(<AccountEditor uid={1} userInfo={errorInfo} />);
 
-    const oldPassword = screen.getByLabelText("oldPassword");
+    const oldPassword = screen.getByLabelText("Old Password");
     fireEvent.change(oldPassword, { target: { value: "12345678" } });
-    const newPassword = screen.getByLabelText("newPassword");
+    const newPassword = screen.getByLabelText("New Password");
     fireEvent.change(newPassword, { target: { value: "abcdeftghj" } });
     const confirmInput = screen.getByLabelText("Confirm Password");
     fireEvent.change(confirmInput, { target: { value: "12345678" } });
@@ -155,9 +155,9 @@ describe("Account Editor", () => {
     hasFetchError = true;
     render(<AccountEditor uid={1} userInfo={userInfo} />);
 
-    const oldPassword = screen.getByLabelText("oldPassword");
+    const oldPassword = screen.getByLabelText("Old Password");
     fireEvent.change(oldPassword, { target: { value: "12345678" } });
-    const newPassword = screen.getByLabelText("newPassword");
+    const newPassword = screen.getByLabelText("New Password");
     fireEvent.change(newPassword, { target: { value: "12345678" } });
     const confirmInput = screen.getByLabelText("Confirm Password");
     fireEvent.change(confirmInput, { target: { value: "12345678" } });
@@ -175,9 +175,9 @@ describe("Account Editor", () => {
     it("should have not have error popover", async () => {
       render(<AccountEditor uid={1} userInfo={userInfo} />);
 
-      const oldPassword = screen.getByLabelText("oldPassword");
+      const oldPassword = screen.getByLabelText("Old Password");
       fireEvent.change(oldPassword, { target: { value: "12345678" } });
-      const newPassword = screen.getByLabelText("newPassword");
+      const newPassword = screen.getByLabelText("New Password");
       fireEvent.change(newPassword, { target: { value: "12345678910" } });
       const confirmInput = screen.getByLabelText("Confirm Password");
       fireEvent.change(confirmInput, { target: { value: "12345678910" } });
@@ -189,7 +189,7 @@ describe("Account Editor", () => {
         expanded: true,
       });
       expect(updateButtonWithSuccess).toBeInTheDocument();
-      const rePassword: HTMLInputElement = screen.getByLabelText("oldPassword");
+      const rePassword: HTMLInputElement = screen.getByLabelText("Old Password");
       expect(rePassword.value).toBe("");
     });
   });
