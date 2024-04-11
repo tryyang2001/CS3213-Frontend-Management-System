@@ -19,7 +19,6 @@ const login = async (email: string, password: string): Promise<User> => {
             },
             { withCredentials: true}
         )
-        console.log(response.status);
         if (response.status === HttpStatusCode.OK.valueOf()) {
             const user = response.data as User;
             return user;
@@ -27,9 +26,7 @@ const login = async (email: string, password: string): Promise<User> => {
             throw new Error("Unknown error logging in, please try again");
         }
     } catch (error) {
-        console.log(error);
         if (isAxiosError(error)) {
-            console.log(error.response?.status);
             if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
                 throw new Error("Unauthorize");
             } else if (error.response?.status === HttpStatusCode.FORBIDDEN.valueOf()) {
@@ -56,7 +53,6 @@ const register = async (email: string, password: string) => {
             },
         );
     } catch(error) {
-        console.log(error);
         if (isAxiosError(error) && error?.response?.data) {
             const responseData = error.response as ErrorResponse;
             throw new Error(responseData.data.message);
@@ -113,7 +109,6 @@ const updateUserPassword = async (uid: number, oldPassword: string, newPassword:
             return  new Error("Unknown error updating password, please try again");
         }
     } catch (error) {
-        console.log(error);
         if (isAxiosError(error)) {
             if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
                 throw new Error("Unauthorize");
@@ -121,7 +116,6 @@ const updateUserPassword = async (uid: number, oldPassword: string, newPassword:
                 throw new Error("Incorrect password");
             } else if (error?.response?.data) {
                 const responseData = error.response as ErrorResponse;
-                console.log(responseData);
                 throw new Error(responseData.data.message);
             }
         }
@@ -147,7 +141,6 @@ const updateUserInfo = async (
         throw new Error("Unknown error updating user info, please try again");
       }
     } catch (error) {
-      console.log(error);
       if (isAxiosError(error)) {
         if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
           throw new Error("Unauthorized action, please login again");
