@@ -44,7 +44,7 @@ export default function SideBar() {
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const wrapperClasses = classNames(
-    "h-screen px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
+    "h-dvh px-4 pt-8 pb-4 bg-lightgrey text-black flex flex-col",
     {
       ["w-60"]: !isCollapsed,
       ["w-20"]: isCollapsed,
