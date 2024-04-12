@@ -1,8 +1,10 @@
 # Use Node.js base image
-FROM node:latest
+FROM node:alpine
+
+WORKDIR /app
 
 # Copy package.json and yarn.lock to container
-COPY ./package.json ./yarn.lock ./
+COPY package.json ./yarn.lock ./
 
 # Install dependencies
 RUN yarn install
@@ -11,6 +13,8 @@ RUN yarn install
 COPY . .
 
 RUN yarn build
+
+COPY .next ./.next
 
 # Expose port if necessary
 EXPOSE 3000
