@@ -1,8 +1,9 @@
 import axios, { isAxiosError } from "axios";
 import HttpStatusCode from "@/types/HttpStatusCode";
+import { USER_API_URL } from "config";
 
 const api = axios.create({
-  baseURL: process.env.USER_API_ENDPOINT ?? "http://localhost:3001/user",
+  baseURL: USER_API_URL,
   timeout: 5000,
   headers: {
     "Content-type": "application/json",

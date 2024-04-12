@@ -18,12 +18,14 @@ export default function middleware(request: NextRequest) {
   const userCookie = request.cookies.get("token");
 
   if (!userCookie) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+    const newURL = new URL("/login", request.nextUrl.origin)
+    return NextResponse.redirect(newURL);
   }
 
   // redirect to dashboard page if home page is accessed
   if (redirectRoutes.includes(path)) {
-    return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin));
+    const newURL = new URL("/dashboard", request.nextUrl.origin)
+    return NextResponse.redirect(newURL);
   }
 
   return NextResponse.next();
