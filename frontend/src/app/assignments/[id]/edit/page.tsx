@@ -6,6 +6,7 @@ import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
+import { useUserContext } from "@/contexts/user-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import {
   Button,
@@ -17,6 +18,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -95,6 +97,10 @@ function Page({ params }: Props) {
     setIsLoading(false);
   };
 
+  const { user } = useUserContext();
+
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (!assignment || !isEditing) {
       router.push(`/assignments/${params.id}`);
@@ -109,7 +115,7 @@ function Page({ params }: Props) {
     return () => {
       disableEditing();
     };
-    // we only need to fetch the data once for this assignment
+    // Run once on page load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -192,6 +198,13 @@ function Page({ params }: Props) {
     // combine the promises
     Promise.all([deleteQuestionPromises, updateQuestionPromises])
       .then(() => {
+        // invalidate the get assignments query
+        queryClient
+          .invalidateQueries({
+            queryKey: ["get-assignments", user],
+          })
+          .catch((_error) => new Error("Failed to invalidate query"));
+
         toast({
           title: "Questions updated successfully",
           description: "The questions have been updated successfully.",

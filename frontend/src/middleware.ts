@@ -5,7 +5,13 @@ export const config = {
 };
 
 const middleware = (request: NextRequest) => {
-  const publicRoutes = ["/_next", "/public", "/login", "/sign-up", "/api/uploadthing"];
+  const publicRoutes = [
+    "/_next",
+    "/public",
+    "/login",
+    "/sign-up",
+    "/api/uploadthing",
+  ];
   const redirectRoutes = ["/"];
 
   const path = request.nextUrl.pathname;

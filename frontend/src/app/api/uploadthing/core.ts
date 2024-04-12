@@ -5,8 +5,8 @@ import { UploadThingError } from "uploadthing/server";
 const f = createUploadthing();
 
 const auth = (_req: Request) => {
-  const userCookie = cookies().get('token')
-  return userCookie
+  const userCookie = cookies().get("token");
+  return userCookie;
 };
 
 // FileRouter for your app, can contain multiple FileRoutes
@@ -19,7 +19,7 @@ export const ourFileRouter = {
       // eslint-disable-next-line @typescript-eslint/await-thenable
       const user = auth(req);
       if (!user) throw new UploadThingError("Unauthorized");
-      return { userCookie: user};
+      return { userCookie: user };
     })
     .onUploadComplete(({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload

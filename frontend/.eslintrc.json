@@ -17,7 +17,7 @@
       "warn",
       {
         "selector": "default",
-        "format": ["camelCase"],
+        "format": ["camelCase", "PascalCase"],
         "leadingUnderscore": "allow"
       },
       {
@@ -62,7 +62,7 @@
     "react/no-typos": "warn",
     "react/display-name": "warn",
     "react/self-closing-comp": "warn",
-    "react/jsx-max-depth": ["warn", { "max": 5 }]
+    "react/jsx-max-depth": ["warn", { "max": 7 }]
   },
   "overrides": [
     {

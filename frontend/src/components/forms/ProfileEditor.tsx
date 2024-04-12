@@ -28,11 +28,13 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
   const [photo, setPhoto] = useState<string | undefined>(info.avatarUrl);
   const [newPhoto, setNewPhoto] = useState<File>();
 
-
   const hasChanged = useMemo(() => {
     if (name != info.name) return true;
     if (bio != info.bio) return true;
-    if (photo != info.avatarUrl && !(photo == "" && info.avatarUrl == undefined))
+    if (
+      photo != info.avatarUrl &&
+      !(photo == "" && info.avatarUrl == undefined)
+    )
       return true;
     return false;
   }, [name, bio, photo, info]);
@@ -65,23 +67,21 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    const dataUpdated : Record<string, string> = {
+    const dataUpdated: Record<string, string> = {
       name: name,
       bio: bio,
-    }
-
-    // upload files
-    let photoUrl = photo;
-    if (newPhoto) {
-      const fileResponse = await uploadFiles("imageUploader", {
-        files: [newPhoto],
-      });
-      photoUrl = fileResponse[0].url;
-      dataUpdated['"avatarUrl"'] = photoUrl;
-      setPhoto(photoUrl);
-    }
+    };
 
     try {
+      let photoUrl = photo;
+      if (newPhoto) {
+        const fileResponse = await uploadFiles("imageUploader", {
+          files: [newPhoto],
+        })
+        photoUrl = fileResponse[0].url;
+        dataUpdated['"avatarUrl"'] = photoUrl;
+        setPhoto(photoUrl);
+      }
       await userService.updateUserInfo(user?.uid ?? 0, dataUpdated);
       setMessage("Profile saved!");
       setInfo({

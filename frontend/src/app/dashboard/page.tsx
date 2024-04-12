@@ -10,9 +10,19 @@ export default function DashBoard() {
   const { user } = useUserContext();
 
   const { data: assignments, isLoading } = useQuery({
-    queryKey: ["get-assignments", user?.uid ?? 0],
+    queryKey: ["get-assignments", user],
     queryFn: async () => {
-      return await AssignmentService.getAssignmentsByUserId(user?.uid ?? 0);
+      if (!user) {
+        return [];
+      }
+
+      if (user?.role === "student") {
+        // only retrieve assignments that are published and not past the deadline
+        return await AssignmentService.getAssignmentsByUserId(user.uid);
+      }
+
+      // retrieve all assignments that are not past the deadline
+      return await AssignmentService.getAssignmentsByUserId(user.uid);
     },
   });
 

@@ -142,6 +142,7 @@ export default function Home() {
               await handleSubmit();
             })();
           }}
+          className="w-full"
         >
           {" "}
           Sign Up

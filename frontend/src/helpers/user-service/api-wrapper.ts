@@ -155,12 +155,17 @@ const updateUserInfo = async (
   }
 };
 
+const clearCookie = async () => {
+  await api.delete(`/clearCookie`, { withCredentials: true });
+};
+
 const userService = {
   login,
   register,
   getUserInfo,
   updateUserPassword,
   updateUserInfo,
+  clearCookie,
 };
 
 export default userService;

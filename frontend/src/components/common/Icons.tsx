@@ -12,11 +12,11 @@ import { FaRegEdit } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 
-const icons = {
+const Icons = {
   QuestionMark: RxQuestionMarkCircled,
   Delete: MdDelete,
   CreateNewInstance: MdCreateNewFolder,
-  ViewAssignment: MdOutlineAssignment,
+  Dashboard: MdOutlineAssignment,
   ViewSubmissions: MdOutlineUploadFile,
   Logout: MdOutlineLogout,
   Login: MdOutlineLogin,
@@ -27,4 +27,4 @@ const icons = {
   Cross: RxCross2,
 };
 
-export default icons;
+export default Icons;

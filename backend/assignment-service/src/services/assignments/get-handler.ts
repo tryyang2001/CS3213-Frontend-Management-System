@@ -2,7 +2,11 @@ import db from "../../models/db";
 import { Assignment } from "../../models/types/assignment";
 import { Question } from "../../models/types/question";
 
-const getAssignmentsByUserId = async (userId: number) => {
+const getAssignmentsByUserId = async (
+  userId: number,
+  includePast?: boolean,
+  isPublishedOnly?: boolean
+) => {
   // check if the user exists
   const user = await db.user.findUnique({
     where: {
@@ -16,9 +20,12 @@ const getAssignmentsByUserId = async (userId: number) => {
 
   const assignments = await db.assignment.findMany({
     where: {
-      authors: {
-        hasSome: [userId],
-      },
+      isPublished: isPublishedOnly ? true : undefined,
+      deadline: includePast
+        ? undefined
+        : {
+            gt: new Date(),
+          },
     },
   });
 
