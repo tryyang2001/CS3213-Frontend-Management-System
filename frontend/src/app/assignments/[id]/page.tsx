@@ -83,21 +83,19 @@ export default function Page({ params }: Props) {
       );
   };
 
-  interface PostFeedbackBody {
-    language: string;
-    sourceCode: string;
-    questionId: string;
-    studentId: number;
-  }
-
-  const handleSubmitCode = (fileContent: string) => {
+  const handleSubmitCode = (
+    fileContent: string,
+    questionId: string,
+    language: string
+  ) => {
     if (fileContent) {
       const requestBody: PostFeedbackBody = {
-        language: "python", // need to change
-        sourceCode: fileContent,
-        questionId: "your_question_id_here", // need to change
-        studentId: userId,
+        language: language, // need to change
+        source_code: fileContent,
+        question_id: questionId, // need to change
+        student_id: userId,
       };
+
       GradingService.postFeedback(requestBody)
         .then(() => {
           toast({
@@ -159,8 +157,21 @@ export default function Page({ params }: Props) {
                               >
                                 <p>{question.title}</p>
                                 <FileUpload
-                                  expectedFileTypes={["py", "c"]}
-                                  onFileUpload={handleSubmitCode}
+                                  expectedFileTypes={["py"]}
+                                  onFileUpload={(fileContent) => {
+                                    if (
+                                      !fileContent ||
+                                      fileContent.length === 0
+                                    ) {
+                                      return;
+                                    }
+
+                                    handleSubmitCode(
+                                      fileContent,
+                                      question.id,
+                                      "python"
+                                    );
+                                  }}
                                 />
                               </div>
                             );
