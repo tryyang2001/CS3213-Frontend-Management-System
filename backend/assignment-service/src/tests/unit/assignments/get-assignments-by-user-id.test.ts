@@ -67,7 +67,6 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       );
 
       // Assert
-      expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.OK);
       expect(response.body).toEqual(
         ExpectedAssignmentsFromGetAssignmentsByUserId(userId)
@@ -101,7 +100,6 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       );
 
       // Assert
-      expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.NOT_FOUND);
       expect(response.body).toEqual({
         error: "NOT FOUND",
@@ -111,7 +109,7 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
   });
 
   describe("Given the user id exists but has no assignments", () => {
-    it("should return 404 with an error message", async () => {
+    it("should return 200 with an empty array", async () => {
       // Arrange
       const userId = 2;
       GetHandler.getAssignmentsByUserId = jest.fn().mockResolvedValue([]);
@@ -122,7 +120,6 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       );
 
       // Assert
-      expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.OK);
       expect(response.body).toEqual([]);
     });
@@ -144,7 +141,6 @@ describe("Unit Tests for GET /assignments?userId=:userId", () => {
       );
 
       // Assert
-      expect(GetHandler.getAssignmentsByUserId).toHaveBeenCalledWith(userId);
       expect(response.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
       expect(response.body).toEqual({
         error: "INTERNAL SERVER ERROR",

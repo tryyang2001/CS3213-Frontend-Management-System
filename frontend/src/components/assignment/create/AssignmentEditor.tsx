@@ -11,6 +11,7 @@ import Icons from "@/components/common/Icons";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import { useUserContext } from "@/contexts/user-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   isEditing?: boolean;
@@ -70,6 +71,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
     },
     [title, deadline, description]
   );
+
+  const queryClient = useQueryClient();
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -131,11 +134,18 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
           // enable adding questions
           enableAddingQuestion(createdAssignment);
 
+          // invalidate the get assignments query
+          queryClient
+            .invalidateQueries({
+              queryKey: ["get-assignments", user],
+            })
+            .catch((_error) => new Error("Failed to invalidate query"));
+
           // redirect to create questions page
           router.push(`/assignments/${createdAssignment.id}/questions/create`);
         })
         .catch((_err) => {
-          return toast({
+          toast({
             title: "Failed to create assignment",
             description:
               "An error occurred while creating the assignment. Please check the inputs and try again.",
