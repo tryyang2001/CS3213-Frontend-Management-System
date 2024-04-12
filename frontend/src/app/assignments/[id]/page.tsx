@@ -91,29 +91,31 @@ export default function Page({ params }: Props) {
   }
 
   const handleSubmitCode = (fileContent: string) => {
-    const requestBody: PostFeedbackBody = {
-      language: "python", // need to change
-      sourceCode: fileContent,
-      questionId: "your_question_id_here", // need to change
-      studentId: userId,
-    };
-    GradingService.postFeedback(requestBody)
-      .then(() => {
-        toast({
-          title: "Code uploaded successfully",
-          description:
-            "Code uploaded successfully. Feedback will be available shortly.",
-          variant: "success",
+    if (fileContent) {
+      const requestBody: PostFeedbackBody = {
+        language: "python", // need to change
+        sourceCode: fileContent,
+        questionId: "your_question_id_here", // need to change
+        studentId: userId,
+      };
+      GradingService.postFeedback(requestBody)
+        .then(() => {
+          toast({
+            title: "Code uploaded successfully",
+            description:
+              "Code uploaded successfully. Feedback will be available shortly.",
+            variant: "success",
+          });
+        })
+        .catch((_err) => {
+          toast({
+            title: "Failed to upload code",
+            description:
+              "An error occurred while uploading code. Please try again.",
+            variant: "destructive",
+          });
         });
-      })
-      .catch((_err) => {
-        toast({
-          title: "Failed to upload code",
-          description:
-            "An error occurred while uploading code. Please try again.",
-          variant: "destructive",
-        });
-      });
+    }
   };
 
   return (
