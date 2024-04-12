@@ -6,7 +6,6 @@ import userService from "@/helpers/user-service/api-wrapper";
 import Link from "next/link";
 import EmailInput from "@/components/forms/EmailInput";
 import PasswordInput from "@/components/forms/PasswordInput";
-import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from "@/contexts/user-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +21,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (email == "" || password == "" || isInvalid) {
+    if (email === "" || password === "" || isInvalid) {
       toast({
         title: "Invalid input",
         description: "Please check your input and try again",
@@ -32,16 +31,20 @@ export default function Home() {
 
     try {
       const user = await userService.login(email, password);
+
       if (!user) {
         throw new Error("Cannot logging in");
       }
+
       setUserContext(user);
+
       toast({
         title: "Login successfully",
         description: "Welcome back to ITS",
         variant: "success",
       });
-      router.push('/dashboard');
+
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
         const errorMsg = err.message;
@@ -53,7 +56,8 @@ export default function Home() {
       } else {
         toast({
           title: "Logging in unsucessfully",
-          description: "We are currently encountering some issues, please try again later",
+          description:
+            "We are currently encountering some issues, please try again later",
           variant: "destructive",
         });
       }
@@ -69,17 +73,19 @@ export default function Home() {
           setIsInvalid={setIsInvalid}
         />
 
-        <PasswordInput label={"Password"} password={password} setPassword={setPassword} />
+        <PasswordInput
+          label={"Password"}
+          password={password}
+          setPassword={setPassword}
+        />
 
         <Button
           type="submit"
-          onClick={
-            () => {
-                void (async () => {
-                    await handleSubmit()
-                })();
-             }
-          }
+          onClick={() => {
+            void (async () => {
+              await handleSubmit();
+            })();
+          }}
           color="primary"
           className="w-full"
         >
@@ -100,4 +106,3 @@ export default function Home() {
     </div>
   );
 }
-/* eslint-enable @typescript-eslint/no-misused-promises */
