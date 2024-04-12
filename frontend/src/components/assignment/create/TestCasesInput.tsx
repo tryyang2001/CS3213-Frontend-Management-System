@@ -140,7 +140,7 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
 
       {/* show a button to toggle visibility of all test cases */}
       {testCases.length > 5 && (
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-4">
           <Button
             as={Link}
             href="#"
