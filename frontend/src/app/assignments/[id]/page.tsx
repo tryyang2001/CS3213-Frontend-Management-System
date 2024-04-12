@@ -2,12 +2,14 @@
 
 import AssignmentPage from "@/components/assignment/AssignmentPage";
 import AssignmentQuestion from "@/components/assignment/AssignmentQuestion";
+import FileUpload from "@/components/common/FileUpload";
 import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import { useUserContext } from "@/contexts/user-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import GradingService from "@/helpers/grading-service/api-wrapper";
 import {
   Button,
   Modal,
@@ -17,6 +19,7 @@ import {
   ModalHeader,
   Tooltip,
   useDisclosure,
+  Divider,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
@@ -38,6 +41,7 @@ export default function Page({ params }: Props) {
 
   // TODO: replace below code with actual user context to check for user role
   const { user } = useUserContext();
+  const userId = user?.uid ?? 0;
   const userRole = user?.role ?? "student";
 
   const {
@@ -79,6 +83,41 @@ export default function Page({ params }: Props) {
       );
   };
 
+  interface PostFeedbackBody {
+    language: string;
+    sourceCode: string;
+    questionId: string;
+    studentId: number;
+  }
+
+  const handleSubmitCode = (fileContent: string) => {
+    if (fileContent) {
+      const requestBody: PostFeedbackBody = {
+        language: "python", // need to change
+        sourceCode: fileContent,
+        questionId: "your_question_id_here", // need to change
+        studentId: userId,
+      };
+      GradingService.postFeedback(requestBody)
+        .then(() => {
+          toast({
+            title: "Code uploaded successfully",
+            description:
+              "Code uploaded successfully. Feedback will be available shortly.",
+            variant: "success",
+          });
+        })
+        .catch((_err) => {
+          toast({
+            title: "Failed to upload code",
+            description:
+              "An error occurred while uploading code. Please try again.",
+            variant: "destructive",
+          });
+        });
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -92,9 +131,57 @@ export default function Page({ params }: Props) {
             {/* Button for submission */}
             {userRole === "student" && (
               <div className="ml-auto mr-4 my-2">
-                <Button className="px-6" color="primary">
+                <Button className="px-6" color="primary" onPress={onOpen}>
                   Submit
                 </Button>
+                <Modal
+                  isOpen={isOpen}
+                  onOpenChange={onOpenChange}
+                  isDismissable={false}
+                  isKeyboardDismissDisabled={true}
+                >
+                  <ModalContent>
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">
+                          Submit
+                        </ModalHeader>
+                        <ModalBody>
+                          <p>
+                            Submit your answer to each question individually.
+                          </p>
+                          <Divider className="my-4" />
+                          {assignment!.questions!.map((question) => {
+                            return (
+                              <div
+                                className="flex items-center"
+                                key={question.id}
+                              >
+                                <p>{question.title}</p>
+                                <FileUpload
+                                  expectedFileTypes={["py", "c"]}
+                                  onFileUpload={handleSubmitCode}
+                                />
+                              </div>
+                            );
+                          })}
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="danger"
+                            variant="light"
+                            onPress={onClose}
+                          >
+                            Close
+                          </Button>
+                          {/* <Button color="primary" onPress={onClose}>
+                            Action
+                          </Button> */}
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
               </div>
             )}
             {

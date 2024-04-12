@@ -2,7 +2,7 @@ import HttpStatusCode from "@/types/HttpStatusCode";
 import axios, { AxiosError } from "axios";
 
 const api = axios.create({
-  baseURL: process.env.GRADING_API_URL ?? "http://localhost:8080/grading/api",
+  baseURL: process.env.GRADING_API_URL ?? "http://localhost:8088/grading/api",
   timeout: 10000,
   headers: {
     "Content-type": "application/json",
@@ -48,7 +48,7 @@ const postFeedback = async (requestBody: PostFeedbackBody) => {
 
     return postedFeedback;
   } catch (_error) {
-    throw new Error("Failed to create assignment");
+    throw new Error("Failed to post feedback");
   }
 };
 
