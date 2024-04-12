@@ -4,7 +4,7 @@ import {
   MdOutlineAssignment,
   MdOutlineLogout,
   MdOutlineUploadFile,
-  MdOutlineLogin
+  MdOutlineLogin,
 } from "react-icons/md";
 import { MdCreateNewFolder } from "react-icons/md";
 import { HiMenu, HiOutlineChevronDoubleLeft } from "react-icons/hi";
@@ -16,7 +16,7 @@ const Icons = {
   QuestionMark: RxQuestionMarkCircled,
   Delete: MdDelete,
   CreateNewInstance: MdCreateNewFolder,
-  ViewAssignment: MdOutlineAssignment,
+  Dashboard: MdOutlineAssignment,
   ViewSubmissions: MdOutlineUploadFile,
   Logout: MdOutlineLogout,
   Login: MdOutlineLogin,

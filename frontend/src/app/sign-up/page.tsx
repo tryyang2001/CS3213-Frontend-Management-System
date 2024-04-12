@@ -71,11 +71,12 @@ export default function Home() {
       } else {
         toast({
           title: "Signing up unsucessfully",
-          description: "We are currently encountering some issues, please try again later",
+          description:
+            "We are currently encountering some issues, please try again later",
           variant: "destructive",
         });
       }
-    };
+    }
   };
 
   function Eye() {
@@ -136,13 +137,12 @@ export default function Home() {
           type="submit"
           size="sm"
           color="primary"
-          onClick={
-            () => {
-                void (async () => {
-                    await handleSubmit()
-                })();
-              }
-          }
+          onClick={() => {
+            void (async () => {
+              await handleSubmit();
+            })();
+          }}
+          className="w-full"
         >
           {" "}
           Sign Up
