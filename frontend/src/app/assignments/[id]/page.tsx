@@ -83,20 +83,14 @@ export default function Page({ params }: Props) {
       );
   };
 
-  interface PostFeedbackBody {
-    language: string;
-    sourceCode: string;
-    questionId: string;
-    studentId: number;
-  }
-
-  const handleSubmitCode = (fileContent: string) => {
+  const handleSubmitCode = (fileContent: string, questionId: string) => {
     const requestBody: PostFeedbackBody = {
       language: "python", // need to change
-      sourceCode: fileContent,
-      questionId: "your_question_id_here", // need to change
-      studentId: userId,
+      source_code: fileContent,
+      question_id: questionId, // need to change
+      student_id: userId,
     };
+
     GradingService.postFeedback(requestBody)
       .then(() => {
         toast({
@@ -158,7 +152,14 @@ export default function Page({ params }: Props) {
                                 <p>{question.title}</p>
                                 <FileUpload
                                   expectedFileTypes={["py", "c"]}
-                                  onFileUpload={handleSubmitCode}
+                                  onFileUpload={(fileContent) => {
+                                    if (fileContent.length === 0) {
+                                      return;
+                                    }
+
+                                    handleSubmitCode(fileContent, question.id);
+                                  }}
+                                  errorMessage="Invalid file format. Please upload a .py or .c file."
                                 />
                               </div>
                             );

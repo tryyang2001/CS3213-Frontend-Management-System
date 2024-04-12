@@ -1,8 +1,8 @@
 interface PostFeedbackBody {
   language: string;
-  sourceCode: string;
-  questionId: string;
-  studentId: number;
+  source_code: string;
+  question_id: string;
+  student_id: number;
 }
 
 interface Feedback {
