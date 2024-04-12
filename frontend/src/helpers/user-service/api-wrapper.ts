@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from "axios";
 import HttpStatusCode from "@/types/HttpStatusCode";
-import { USER_API_URL } from "config";
+import { USER_API_URL } from "@/config";
 
 const api = axios.create({
   baseURL: USER_API_URL,

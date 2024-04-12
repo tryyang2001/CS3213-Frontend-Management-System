@@ -1,6 +1,6 @@
 import HttpStatusCode from "@/types/HttpStatusCode";
 import axios, { AxiosError } from "axios";
-import { GRADING_API_URL } from "config";
+import { GRADING_API_URL } from "@/config";
 
 const api = axios.create({
   baseURL: GRADING_API_URL,
