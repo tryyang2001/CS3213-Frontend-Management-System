@@ -378,15 +378,19 @@ function Page({ params }: Props) {
                   }
                 />
 
-                <Button
-                  className="bg-danger"
-                  isIconOnly
-                  onClick={() => handleDeleteQuestion(index)}
-                  size="sm"
-                  isDisabled={updatedQuestions.length === 1}
-                >
-                  <Icons.Delete className="text-lg text-white" />
-                </Button>
+                <Tooltip content="Delete current question">
+                  <div>
+                    <Button
+                      className="bg-danger"
+                      isIconOnly
+                      onClick={() => handleDeleteQuestion(index)}
+                      size="sm"
+                      isDisabled={updatedQuestions.length === 1}
+                    >
+                      <Icons.Delete className="text-lg text-white" />
+                    </Button>
+                  </div>
+                </Tooltip>
               </div>
             );
           })}
