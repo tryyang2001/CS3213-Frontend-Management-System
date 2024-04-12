@@ -203,11 +203,13 @@ function QuestionEditor({
                   vertical: "hidden",
                   horizontal: "hidden",
                 },
-                readOnly: true,
               }}
               height={editorHeight}
               defaultLanguage={language}
               value={referenceSolutionCode}
+              onChange={(code) =>
+                setReferenceSolutionCode(code ?? referenceSolutionCode)
+              }
               className="mt-2"
             />
           )}

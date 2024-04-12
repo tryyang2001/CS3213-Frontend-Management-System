@@ -7,7 +7,7 @@ import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -206,15 +206,17 @@ function Page({ params }: Props) {
                 }
               />
 
-              <Button
-                className="bg-danger"
-                isIconOnly
-                onClick={() => handleDeleteQuestion(index)}
-                size="sm"
-                isDisabled={questions.length === 1}
-              >
-                <Icons.Delete className="text-lg text-white" />
-              </Button>
+              <Tooltip content="Delete current selected question">
+                <Button
+                  className="bg-danger"
+                  isIconOnly
+                  onClick={() => handleDeleteQuestion(index)}
+                  size="sm"
+                  isDisabled={questions.length === 1}
+                >
+                  <Icons.Delete className="text-lg text-white" />
+                </Button>
+              </Tooltip>
             </div>
           ))}
         </div>
