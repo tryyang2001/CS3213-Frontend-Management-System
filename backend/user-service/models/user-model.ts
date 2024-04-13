@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
 import pool from "../psql";
 
-async function getAllUsers(): Promise<any[]> {
+async function checkDatabase(): Promise<any[]> {
   try {
     const result: QueryResult = await pool.query('SELECT * FROM users."User"');
     return result.rows;
@@ -27,6 +27,18 @@ async function getUserByEmail(email: string): Promise<QueryResult> {
     const result: QueryResult = await pool.query(
       'SELECT * FROM users."User" WHERE email = $1',
       [email]
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findUser(uid: number, email: string): Promise<QueryResult> {
+  try {
+    const result: QueryResult = await pool.query(
+      'SELECT * FROM users."User" WHERE uid = $1 AND email = $2',
+      [uid, email]
     );
     return result;
   } catch (error) {
@@ -96,10 +108,11 @@ async function deleteUser(uid: number): Promise<QueryResult> {
 }
 
 const db = {
-  getAllUsers,
+  checkDatabase,
   getUserByUserId,
   getUserByEmail,
   createNewUser,
+  findUser,
   updateUserPassword,
   updateUserInfo,
   deleteUser,
