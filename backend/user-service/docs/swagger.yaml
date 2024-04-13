@@ -233,6 +233,31 @@ paths:
                 type: "string"
                 example: "Internal server error deleting account."
 
+  /user/clearCookie:
+    delete:
+      tags:
+        - "User"
+      summary: "Clear user authentication token"
+      description: "Clear user authentication token"
+      operationId: "clearCookie"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User account deleted successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error checking password."
+
   /user/getUserInfo:
     get:
       tags:

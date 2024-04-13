@@ -267,6 +267,13 @@ async function deleteUser(req: Request, res: Response) {
   }
 }
 
+async function clearCookie(req: Request, res: Response) {
+  res.clearCookie("token");
+  return res.send({
+    message: "Cleared user cookie",
+  });
+}
+
 export default {
   health,
   registerUser,
@@ -275,4 +282,5 @@ export default {
   updateUserPassword,
   updateUserInfo,
   deleteUser,
+  clearCookie,
 };
