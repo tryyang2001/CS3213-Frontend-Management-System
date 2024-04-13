@@ -143,7 +143,16 @@ async function getUserInfo(req: Request, res: Response) {
         message: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
-      const user = userIdSearch.rows[0];
+      const userRow = userIdSearch.rows[0];
+      const user = {
+        uid: userRow.uid,
+        name: userRow.name,
+        email: userRow.email,
+        major: userRow.major,
+        avatarUrl: userRow.avatarUrl,
+        role: userRow.role,
+        bio: userRow.bio,
+      }
       return res.json(user);
     }
   } catch (err) {

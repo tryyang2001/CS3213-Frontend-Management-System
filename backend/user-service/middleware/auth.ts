@@ -17,6 +17,8 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
             const decoded: any = jwt.verify(token, jwtSecretKey);
             if (decoded) {
                 const { uid, email } = decoded;
+                console.log(uid);
+                console.log(email);
                 if (!(uid && email)) {
                     console.log("Unauthorized, invalid token");
                     return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({

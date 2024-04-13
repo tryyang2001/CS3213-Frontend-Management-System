@@ -13,7 +13,7 @@ async function checkDatabase(): Promise<any[]> {
 async function getUserByUserId(uid: number): Promise<QueryResult> {
   try {
     const result: QueryResult = await pool.query(
-      'SELECT uid, name, email, major, "avatarUrl", role, bio FROM users."User" WHERE uid = $1',
+      'SELECT * FROM users."User" WHERE uid = $1',
       [uid]
     );
     return result;
