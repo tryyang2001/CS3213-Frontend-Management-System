@@ -9,7 +9,7 @@ env:
   AZURE_CONTAINER_REGISTRY: "fmdevsimgs"
   RESOURCE_GROUP: "FMDevs_group"
   CLUSTER_NAME: "FMDevs"
-  DEPLOYMENT_MANIFEST_PATH: "/k8s/startup.yaml"
+  DEPLOYMENT_MANIFEST_PATH: "**/k8s/startup.yaml"
 jobs:
   deploy:
     permissions:
