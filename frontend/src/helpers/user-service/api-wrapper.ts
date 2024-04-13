@@ -91,6 +91,34 @@ const getUserInfo = async (uid: number): Promise<UserInfo | null> => {
   }
 };
 
+const getAllStudents = async (uid: number): Promise<StudentInfo[] | null> => {
+  try {
+    const response = await api.get(`/getAllStudents?uid=${uid}`, {
+      withCredentials: true,
+    });
+    if (response.status === HttpStatusCode.OK.valueOf()) {
+      const responseData = response.data as StudentInfo[];
+      const studentInfos: StudentInfo[] = responseData.map(student => ({
+        name: student.name,
+        uid: student.uid,
+      }));
+      return studentInfos;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      if (error.response?.status === HttpStatusCode.UNAUTHORIZED.valueOf()) {
+        throw new Error("Unauthorize");
+      } else if (error?.response?.data) {
+        const responseData = error.response as ErrorResponse;
+        throw new Error(responseData.data.message);
+      }
+    }
+    throw new Error("Unknown getting user information, please try again");
+  }
+};
+
 const updateUserPassword = async (
   uid: number,
   oldPassword: string,
@@ -164,6 +192,7 @@ const userService = {
   login,
   register,
   getUserInfo,
+  getAllStudents,
   updateUserPassword,
   updateUserInfo,
   clearCookie,

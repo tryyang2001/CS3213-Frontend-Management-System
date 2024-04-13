@@ -10,6 +10,11 @@ interface UserInfo {
   photo?: string;
 }
 
+interface StudentInfo {
+  uid: number,
+  name: string
+}
+
 interface ErrorResponse {
   data: ErrorData;
 }
