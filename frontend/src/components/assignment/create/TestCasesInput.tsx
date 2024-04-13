@@ -2,7 +2,7 @@
 
 import Icons from "@/components/common/Icons";
 import { Button, Input, Link, Switch, Tooltip } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   testCases: TestCase[];

@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { Button, Tooltip } from "@nextui-org/react";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Props {
