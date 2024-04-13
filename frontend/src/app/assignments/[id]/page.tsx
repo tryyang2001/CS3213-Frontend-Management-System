@@ -8,7 +8,7 @@ import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import { useUserContext } from "@/contexts/user-context";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import {
   Button,
@@ -52,7 +52,7 @@ export default function Page({ params }: Props) {
   } = useQuery({
     queryKey: ["get-assignment", params.id],
     queryFn: async () => {
-      const assignment = await AssignmentService.getAssignmentById(params.id);
+      const assignment = await assignmentService.getAssignmentById(params.id);
 
       return assignment;
     },
@@ -68,7 +68,8 @@ export default function Page({ params }: Props) {
   };
 
   const handleDeleteAssignment = (closeModal: () => void) => {
-    AssignmentService.deleteAssignment(params.id)
+    assignmentService
+      .deleteAssignment(params.id)
       .then(() => {
         closeModal();
         router.push("/dashboard");

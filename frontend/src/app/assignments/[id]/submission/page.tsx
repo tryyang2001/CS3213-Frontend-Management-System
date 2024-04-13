@@ -8,7 +8,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
@@ -45,7 +45,7 @@ export default function SubmissionPage({ params }: Props) {
   } = useQuery({
     queryKey: ["get-assignment", params.id],
     queryFn: async () => {
-      const assignment = await AssignmentService.getAssignmentById(params.id);
+      const assignment = await assignmentService.getAssignmentById(params.id);
       return assignment;
     },
   });
@@ -75,7 +75,7 @@ export default function SubmissionPage({ params }: Props) {
     queryKey: ["get-testcases", params.id, currentQuestionId],
     queryFn: async () => {
       const testCases =
-        await AssignmentService.getQuestionTestCases(currentQuestionId);
+        await assignmentService.getQuestionTestCases(currentQuestionId);
 
       return testCases;
     },
@@ -170,7 +170,7 @@ export default function SubmissionPage({ params }: Props) {
                     key={selectedSubmissionId}
                   />
                 ) : (
-                  <FeedbackCodeEditor key={"0"} />
+                  <FeedbackCodeEditor key="0" />
                 )}
               </div>
               <Spacer y={4} />

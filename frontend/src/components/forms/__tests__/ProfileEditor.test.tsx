@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import ProfileEditor from "../ProfileEditor";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { mockUserInfo } from "@/utils/testUtils";
 
 const mockPush = jest.fn((str: string) => str);
 
@@ -19,52 +20,40 @@ jest.mock("next/navigation", () => {
   };
 });
 
+const dynamicMockUserInfo = mockUserInfo;
+
+const errorUser: User = {
+  uid: -1,
+  role: "Student",
+};
+
+jest.mock("@/helpers/user-service/api-wrapper", () => {
+  return {
+    updateUserInfo: (uid: number, updateFields: Record<string, string>) => {
+      if (uid == errorUser.uid) {
+        throw new Error("Something went wrong");
+      } else {
+        Object.entries(updateFields).forEach(([key, value]) => {
+          dynamicMockUserInfo[key as keyof UserInfo] = value;
+        });
+        return;
+      }
+    },
+  };
+});
+
 describe("Profile Editor", () => {
-  const userInfo: UserInfo = {
-    uid: 1,
-    email: "email@email.com",
-    name: "Abc",
-    bio: "Hello!",
-  };
-  const errorInfo: UserInfo = {
-    uid: 2,
-    email: "bad@email.com",
-    name: "Abc",
-    bio: "Hello!",
-  };
-
-  let hasFetchError = false;
-  global.fetch = jest.fn((_, { body: body }: { body: string }) => {
-    if (hasFetchError) {
-      return Promise.reject("Fetch failed");
-    }
-    const { email: email, password: _password } = JSON.parse(body) as {
-      email: string;
-      password: string;
-    };
-
-    if (email == errorInfo.email) {
-      return Promise.resolve({
-        ok: false,
-        status: 501,
-        json: () => Promise.resolve({}),
-      });
-    } else {
-      return Promise.resolve({
-        ok: true,
-        status: 201,
-        json: () => Promise.resolve({}),
-      });
-    }
-  }) as jest.Mock;
-
   beforeEach(() => {
+    Object.entries(mockUserInfo).forEach(([key, value]) => {
+      // follows exactly the UserInfo schema
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      dynamicMockUserInfo[key as keyof UserInfo] = value;
+    });
     jest.clearAllMocks();
-    hasFetchError = false;
   });
 
   it("should not have any error popover on render", () => {
-    render(<ProfileEditor userInfo={userInfo} />);
+    render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
     const updateButtonWithError = screen.queryByRole("button", {
       hidden: true,
@@ -74,7 +63,7 @@ describe("Profile Editor", () => {
   });
 
   it("should not have discard button on render", () => {
-    render(<ProfileEditor userInfo={userInfo} />);
+    render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
     const discardButton = screen.queryByRole("button", {
       name: "Discard Changes",
@@ -84,7 +73,7 @@ describe("Profile Editor", () => {
 
   describe("Given edited name", () => {
     it("should have a discard button", () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const nameInput = screen.getByLabelText("Name");
       fireEvent.change(nameInput, { target: { value: "My name" } });
@@ -94,7 +83,7 @@ describe("Profile Editor", () => {
       expect(discardButton).toBeInTheDocument();
     });
     it("should have original name when discard is pressed", () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const nameInput: HTMLInputElement = screen.getByLabelText("Name");
       fireEvent.change(nameInput, { target: { value: "My name" } });
@@ -102,10 +91,10 @@ describe("Profile Editor", () => {
         name: "Discard Changes",
       });
       fireEvent.click(discardButton);
-      expect(nameInput.value).toBe(userInfo.name);
+      expect(nameInput.value).toBe(mockUserInfo.name);
     });
     it("should have no discard button after update", async () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const nameInput: HTMLInputElement = screen.getByLabelText("Name");
       fireEvent.change(nameInput, { target: { value: "My name" } });
@@ -122,9 +111,10 @@ describe("Profile Editor", () => {
         name: "Discard Changes",
       });
       expect(discardButton).not.toBeInTheDocument();
+      expect(dynamicMockUserInfo.name).toBe("My name");
     });
     it("should have an error popover if name is empty", async () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const nameInput: HTMLInputElement = screen.getByLabelText("Name");
       fireEvent.change(nameInput, { target: { value: "" } });
@@ -146,7 +136,7 @@ describe("Profile Editor", () => {
   });
   describe("Given edited bio", () => {
     it("should have a discard button", () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const bioInput = screen.getByLabelText("Bio");
       fireEvent.change(bioInput, { target: { value: "lmao" } });
@@ -156,7 +146,7 @@ describe("Profile Editor", () => {
       expect(discardButton).toBeInTheDocument();
     });
     it("should have original name when discard is pressed", () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const bioInput: HTMLInputElement = screen.getByLabelText("Bio");
       fireEvent.change(bioInput, { target: { value: "lmao" } });
@@ -164,10 +154,10 @@ describe("Profile Editor", () => {
         name: "Discard Changes",
       });
       fireEvent.click(discardButton);
-      expect(bioInput.value).toBe(userInfo.bio);
+      expect(bioInput.value).toBe(mockUserInfo.bio);
     });
     it("should have no discard button after update", async () => {
-      render(<ProfileEditor userInfo={userInfo} />);
+      render(<ProfileEditor userInfo={dynamicMockUserInfo} />);
 
       const bioInput: HTMLInputElement = screen.getByLabelText("Bio");
       fireEvent.change(bioInput, { target: { value: "Hello!" } });
@@ -184,6 +174,7 @@ describe("Profile Editor", () => {
         name: "Discard Changes",
       });
       expect(discardButton).not.toBeInTheDocument();
+      expect(dynamicMockUserInfo.bio).toBe("Hello!");
     });
   });
 });

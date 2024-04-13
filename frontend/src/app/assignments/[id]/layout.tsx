@@ -1,4 +1,4 @@
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import { Metadata } from "next";
 
 interface PageProps {
@@ -16,7 +16,7 @@ export default function AssignmentPageLayout({
 export const generateMetadata = async ({
   params,
 }: PageProps): Promise<Metadata> => {
-  const currentAssignment = await AssignmentService.getAssignmentById(
+  const currentAssignment = await assignmentService.getAssignmentById(
     params.id
   );
 

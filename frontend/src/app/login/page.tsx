@@ -74,7 +74,7 @@ export default function Home() {
         />
 
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password}
           setPassword={setPassword}
         />
