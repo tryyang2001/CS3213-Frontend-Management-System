@@ -53,7 +53,12 @@ jobs:
           cd frontend
           docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
           docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
-
+        env:
+          ASSIGNMENT_API_URL: ${{ secrets.ASSIGNMENT_API_URL }}
+          GRADING_API_URL: ${{ secrets.GRADING_API_URL }}
+          USER_API_URL: ${{ secrets.USER_API_URL }}
+          UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
+          
       - name: Build and push grading service image to ACR
         run: |
           cd backend/grading-service
