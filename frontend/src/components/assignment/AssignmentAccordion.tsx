@@ -8,26 +8,26 @@ interface SubmissionData {
     questionId: string;
     questionNo: number;
     submissionDate: number;
+    name: string;
+    studentId: number;
 }
 
 interface Props {
   assignments: Assignment[] | undefined;
   userRole: string;
-  submissions: {[key: string]: SubmissionData[]} 
+  submissions: Record<string, SubmissionData[]> 
 }
 
 function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
   const router = useRouter();
-
   if (!assignments) {
     return notFound();
   }
-  const handleButtonClick = (assignmentId: string) => {
+  const handleButtonClick = (assignmentId: string, studentId: number) => {
     // Navigate to the desired route when the button is clicked
-    router.push(`/assignments/${assignmentId}/submission`);
+    router.push(`/assignments/${assignmentId}/submission?studentId=${studentId}`);
   };
-
-
+  
   return (
     <div>
       <b>Submissions</b>
@@ -38,14 +38,14 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
             aria-label={assignment.title}
             title={assignment.title}
           >
-            <Button
+            {userRole === 'student' && (<Button
               className="bg-primary text-white float-right"
               onPress={() =>
-                handleButtonClick(assignment.id)
+                handleButtonClick(assignment.id, submissions[assignment.id][0].studentId)
               }
             >
               View Submission
-            </Button>
+            </Button>)}
             <Table
               color="default"
               selectionMode="single"
@@ -54,18 +54,34 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
               shadow="none"
             >
               <TableHeader>
-                <TableColumn>Question Number</TableColumn>
+                <TableColumn>{userRole === 'student' ? 'Question Number' : 'Student Name'}</TableColumn>
                 <TableColumn>Submission Date and Time</TableColumn>
+                {userRole === 'tutor' ? (<TableColumn>Click to view</TableColumn>) : <TableColumn><></></TableColumn>}
               </TableHeader>
               <TableBody
-                items={submissions[assignment.id]}
+                items={submissions[assignment.id] 
+                ? submissions[assignment.id].sort((a, b) => {
+                  return a.name.localeCompare(b.name);
+                }) : []}
               >
                 {(submission) => (
                   <TableRow key={submission.questionId}>
-                    <TableCell>{submission.questionNo}</TableCell>
+                    <TableCell>{userRole === 'student' ? submission.questionNo : submission.name}</TableCell>
                     <TableCell>{submission.submissionDate === 0 ?
                       "Not Submitted" : 
                       DateUtils.parseTimestampToDate(submission.submissionDate)}</TableCell>
+                    {userRole === 'tutor' ? 
+                    (<TableCell>
+                      <Button
+                        className = "bg-primary text-white"
+                        isDisabled={submission.submissionDate === 0}
+                        onClick={() =>
+                          handleButtonClick(assignment.id, submission.studentId)
+                        }
+                      >
+                        {submission.submissionDate !== 0 ? 'View Submission' : 'No Submission'}
+                      </Button>
+                    </TableCell>) : <TableCell><></></TableCell>}
                   </TableRow>
                 )}
               </TableBody>

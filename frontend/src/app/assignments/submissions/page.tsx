@@ -8,21 +8,18 @@ import { useUserContext } from "@/contexts/user-context";
 import LogoLoading from "@/components/common/LogoLoading";
 import AssignmentAccordion from "@/components/assignment/AssignmentAccordion";
 import GradingService from "@/helpers/grading-service/api-wrapper";
+import userService from "@/helpers/user-service/api-wrapper";
 
 interface SubmissionData {
   questionId: string;
   questionNo: number;
   submissionDate: number;
+  name: string;
+  studentId: number
 }
 
 export default function Submissions() {
-  const [submissions, setSubmissions] = useState<{[key: string]: SubmissionData[]}>({});
-  const router = useRouter();
-
-  const handleButtonClick = (aid: string, sid: string) => {
-    // Navigate to the desired route when the button is clicked
-    router.push(`/assignments/${aid}/submissions/${sid}`);
-  };
+  const [submissions, setSubmissions] = useState<Record<string, SubmissionData[]>>({});
 
   const { user } = useUserContext();
 
@@ -32,40 +29,61 @@ export default function Submissions() {
       if (!user) {
         return [];
       }
-      const submissionsData: { [key: string]: SubmissionData[] } = {};
+      const submissionsData: Record<string, SubmissionData[]> = {};
       if (user.role === "student") {
-        // Retrieve assignments that are published
+        // Retrieve all assignments that are published
         const assignments =  await assignmentService.getAssignmentsByUserId(
           user.uid,
           true,
           true
         );
         for (const assignment of assignments) {
-          const assignmentQuestionsData = [];
+          const assignmentSubmissionsData = [];
           // Get the questions belonging to the assignments
           const assignmentData = await assignmentService.getAssignmentById(assignment.id);
-          if (assignmentData?.questions && user) {
+          if (assignmentData?.questions) {
             const questionIds = assignmentData.questions.map(question => question.id);
             let questionNo = 1;
             for (const questionId of questionIds) {
               // Get the submission date of each of the question if exists
               const submissionData = await GradingService.getSubmissionByQuestionIdAndStudentId({questionId: questionId, studentId: user.uid})
               const submissionDate = submissionData.createdOn 
-              assignmentQuestionsData.push({questionId: questionId, questionNo: questionNo++, submissionDate: submissionDate})
+              // Set question name to null equivalent as it is not required
+              assignmentSubmissionsData.push({questionId: questionId, questionNo: questionNo++, submissionDate: submissionDate, name: '', studentId: user.uid})
             }
           }
-          submissionsData[assignment.id] = assignmentQuestionsData;
-          
+          submissionsData[assignment.id] = assignmentSubmissionsData;
         }
         setSubmissions(submissionsData);
         return assignments;
       }
-      // Retrieve all assignments that are not past the deadline
-      return await assignmentService.getAssignmentsByUserId(
-        user.uid,
-        true,
-        false
-      );
+      
+      if (user.role === "tutor") {
+      // Retrieve all assignments
+        const assignments = await assignmentService.getAssignmentsByUserId(
+          user.uid,
+          true,
+          false
+        );
+        const students = await userService.getAllStudents(user.uid);
+        for (const assignment of assignments) {
+          const assignmentSubmissionsData = [];
+          const assignmentData = await assignmentService.getAssignmentById(assignment.id);
+          if (assignmentData?.questions && students) {
+            const tempQuestionId = assignmentData.questions[0].id;
+            for (const student of students) {
+              const submissionDate = await GradingService.getSubmissionByQuestionIdAndStudentId({
+                questionId: tempQuestionId, studentId: student.uid
+              }).then(submission => submission.createdOn);
+              // Set question ID and number to null equivalent as tutor does not require this information
+              assignmentSubmissionsData.push({questionId: "", questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
+            }
+          }
+          submissionsData[assignment.id] = assignmentSubmissionsData;
+        }
+        setSubmissions(submissionsData);
+        return assignments;
+      }
     },
   });
 
