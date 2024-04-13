@@ -9,6 +9,7 @@ router.delete("/deleteUser", auth, userController.deleteUser);
 router.delete("/clearCookie", userController.clearCookie);
 router.put("/updateUserPassword", auth, userController.updateUserPassword);
 router.put("/updateUserInfo", auth, userController.updateUserInfo);
+router.get("/getAllStudents", userController.getAllStudents)
 router.get("/getAllUsers", userController.getAllUsers);
 router.get("/getUserInfo", auth, userController.getUserInfo);
 router.get("/getUserByEmail", userController.getUserByEmail);
