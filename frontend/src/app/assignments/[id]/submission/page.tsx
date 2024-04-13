@@ -9,12 +9,11 @@ import {
 import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import DateUtils from "../../../../utils/dateUtils";
 import FeedbackCodeEditor from "@/components/submission/FeedbackCodeEditor";
 import FeedbackTabs from "@/components/submission/FeedbackTabs";
 import FeedbackQuestion from "@/components/submission/FeedbackQuestion";
-import { useUserContext } from "@/contexts/user-context";
 
 interface Props {
   params: {
@@ -23,10 +22,10 @@ interface Props {
 }
 
 export default function SubmissionPage({ params }: Props) {
-  const { user } = useUserContext();
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState("");
   const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
+  const search = useSearchParams();
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
@@ -56,9 +55,11 @@ export default function SubmissionPage({ params }: Props) {
   const { data: submission, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
+      const studentId = search.get('studentId') as string | undefined;
+      const parsedStudentId = studentId ? parseInt(studentId, 10) : 0;
       return await GradingService.getSubmissionByQuestionIdAndStudentId({
         questionId: currentQuestionId,
-        studentId: user?.uid ?? 0,
+        studentId: parsedStudentId,
       });
     },
   });
