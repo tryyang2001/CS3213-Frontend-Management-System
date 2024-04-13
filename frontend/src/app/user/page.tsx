@@ -24,7 +24,7 @@ export default function Page() {
             description: "Please login first",
             variant: "destructive",
           });
-          router.push("/");
+          router.push("/login");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           if (retrievedUserInfo === null) {
@@ -33,7 +33,7 @@ export default function Page() {
               description: "Please try again later",
               variant: "destructive",
             });
-            router.push("/");
+            router.push("/login");
           } else {
             setUserInfo(retrievedUserInfo);
             setIsLoading(false);

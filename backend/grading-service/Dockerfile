@@ -1,12 +1,13 @@
 FROM node:alpine
-WORKDIR '/app'
-COPY package*.json ./
+
+COPY ./package.json ./yarn.lock ./
+
 RUN yarn install
 
 COPY . .
 
 RUN yarn build
 
-EXPOSE 3001
+EXPOSE 8088
 
 CMD ["yarn", "start"]

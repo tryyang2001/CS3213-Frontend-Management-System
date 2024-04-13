@@ -1,9 +1,9 @@
 import HttpStatusCode from "@/types/HttpStatusCode";
 import axios, { AxiosError } from "axios";
+import { ASSIGNMENT_API_URL } from "@/config";
 
 const api = axios.create({
-  baseURL:
-    process.env.ASSIGNMENT_API_URL ?? "http://localhost:8080/assignment/api",
+  baseURL: ASSIGNMENT_API_URL,
   timeout: 5000,
   headers: {
     "Content-type": "application/json",
@@ -34,14 +34,20 @@ const getAssignmentById = async (assignmentId: string) => {
   }
 };
 
-const getAssignmentsByUserId = async (userId: number | string) => {
+const getAssignmentsByUserId = async (
+  userId: number | string,
+  includePastAssignments?: boolean,
+  isPublishedOnly?: boolean
+) => {
   try {
     // default user id is 0, which means no user is logged in
     if (userId === 0) {
       return [];
     }
 
-    const response = await api.get(`/assignments?userId=${userId}`);
+    const response = await api.get(
+      `/assignments?userId=${userId}&${includePastAssignments ? "includePast=true" : ""}&${isPublishedOnly ? "isPublished=true" : ""}`
+    );
 
     const assignments = response.data as Assignment[];
 
@@ -110,6 +116,11 @@ const createAssignment = async (requestBody: CreateAssignmentBody) => {
       requestBody.isPublished = false;
     }
 
+    if (requestBody.description === "") {
+      // default to no description
+      requestBody.description = undefined;
+    }
+
     const response = await api.post("/assignments", requestBody);
 
     const createdAssignment = response.data as Assignment;
@@ -128,6 +139,11 @@ const updateAssignment = async (
     if (requestBody.deadline instanceof Date) {
       // cast Date to timestamp
       requestBody.deadline = requestBody.deadline.getTime();
+    }
+
+    if (requestBody.description === "") {
+      // default to no description
+      requestBody.description = undefined;
     }
 
     const response = await api.put(`/assignments/${assignmentId}`, requestBody);

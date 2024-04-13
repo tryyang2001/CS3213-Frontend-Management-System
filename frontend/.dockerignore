@@ -1,0 +1,8 @@
+# .dockerignore
+/node_modules
+
+src/app/__tests__
+
+.eslintrc.json
+.prettierrc
+jest.config.ts

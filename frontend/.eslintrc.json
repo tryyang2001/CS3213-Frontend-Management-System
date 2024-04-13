@@ -17,7 +17,7 @@
       "warn",
       {
         "selector": "default",
-        "format": ["camelCase", "PascalCase"],
+        "format": ["camelCase", "UPPER_CASE", "PascalCase"],
         "leadingUnderscore": "allow"
       },
       {

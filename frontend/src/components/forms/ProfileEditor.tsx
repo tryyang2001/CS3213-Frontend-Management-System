@@ -77,7 +77,7 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       if (newPhoto) {
         const fileResponse = await uploadFiles("imageUploader", {
           files: [newPhoto],
-        })
+        });
         photoUrl = fileResponse[0].url;
         dataUpdated['"avatarUrl"'] = photoUrl;
         setPhoto(photoUrl);

@@ -1,6 +1,6 @@
 "use client";
 
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import LogoLoading from "@/components/common/LogoLoading";
 import AssignmentList from "@/components/assignment/AssignmentList";
 import { useUserContext } from "@/contexts/user-context";
@@ -18,11 +18,15 @@ export default function DashBoard() {
 
       if (user?.role === "student") {
         // only retrieve assignments that are published and not past the deadline
-        return await AssignmentService.getAssignmentsByUserId(user.uid);
+        return await assignmentService.getAssignmentsByUserId(
+          user.uid,
+          false,
+          true
+        );
       }
 
       // retrieve all assignments that are not past the deadline
-      return await AssignmentService.getAssignmentsByUserId(user.uid);
+      return await assignmentService.getAssignmentsByUserId(user.uid);
     },
   });
 
