@@ -30,8 +30,22 @@ function Page({ params }: Props) {
 
   const { toast } = useToast();
 
-  const { assignment, isNewlyCreated, disableAddingQuestion } =
+  let { assignment, isNewlyCreated, disableAddingQuestion } =
     useAssignmentContext();
+
+  assignment = {
+    id: "1",
+    title: "Assignment 1",
+    description: "Description",
+    deadline: new Date().getTime(),
+    isPublished: true,
+    authors: [],
+    numberOfQuestions: 0,
+    createdOn: new Date().getTime(),
+    updatedOn: new Date().getTime(),
+  };
+
+  isNewlyCreated = true;
 
   if (!assignment || !isNewlyCreated) {
     router.push(`/assignments/${params.id}`);
@@ -180,43 +194,49 @@ function Page({ params }: Props) {
 
         <div className="border-b-2 my-2" />
 
-        <div className="flex ml-4 my-2">
-          <b className="flex items-center">Create new questions</b>
-          <Button
-            color="primary"
-            className="ml-auto"
-            onClick={handleAddQuestion}
-          >
-            Add more questions
-          </Button>
-        </div>
-
         {/* Question editor */}
         <div className="mx-[8%] my-4">
           {questions.map((question, index) => (
             <div
-              className="flex border px-4 py-10 my-2 justify-center"
+              className="flex flex-col border px-4 pt-5 my-2 justify-center"
               key={questionUniqueIds[index]}
             >
-              <QuestionEditor
-                assignmentDeadline={assignment.deadline}
-                initialQuestion={question}
-                onQuestionChange={(updatedQuestion) =>
-                  handleQuestionChange(updatedQuestion, index)
-                }
-              />
+              <div className="flex">
+                <QuestionEditor
+                  assignmentDeadline={assignment.deadline}
+                  initialQuestion={question}
+                  onQuestionChange={(updatedQuestion) =>
+                    handleQuestionChange(updatedQuestion, index)
+                  }
+                />
 
-              <Tooltip content="Delete current selected question">
-                <Button
-                  className="bg-danger"
-                  isIconOnly
-                  onClick={() => handleDeleteQuestion(index)}
-                  size="sm"
-                  isDisabled={questions.length === 1}
-                >
-                  <Icons.Delete className="text-lg text-white" />
-                </Button>
-              </Tooltip>
+                <Tooltip content="Delete current question">
+                  <Button
+                    className="bg-danger"
+                    isIconOnly
+                    onClick={() => handleDeleteQuestion(index)}
+                    size="sm"
+                    isDisabled={questions.length === 1}
+                  >
+                    <Icons.Delete className="text-lg text-white" />
+                  </Button>
+                </Tooltip>
+              </div>
+
+              {index === questions.length - 1 && (
+                <div className="flex justify-end my-2 px-4">
+                  <Tooltip content="Add more questions">
+                    <Button
+                      className="bg-white ml-auto text-xl"
+                      variant="bordered"
+                      onClick={handleAddQuestion}
+                      isIconOnly
+                    >
+                      <Icons.Add />
+                    </Button>
+                  </Tooltip>
+                </div>
+              )}
             </div>
           ))}
         </div>
