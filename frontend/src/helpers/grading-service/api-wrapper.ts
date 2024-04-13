@@ -22,16 +22,13 @@ const getSubmissionByQuestionIdAndStudentId = async ({
       `/questions/${questionId}/submissions?studentId=${studentId}`
     );
 
-    const submissions = response.data as Submission[];
-
-    submissions.sort((a, b) => b.createdOn - a.createdOn);
-
-    return submissions;
+    const submission = response.data as Submission;
+    return submission;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       switch ((error as AxiosError).response?.status) {
         case HttpStatusCode.NOT_FOUND:
-          return [];
+          return undefined;
         default:
           throw new Error("Failed to fetch submissions");
       }
