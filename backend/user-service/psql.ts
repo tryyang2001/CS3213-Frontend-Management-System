@@ -26,12 +26,6 @@ const createUserTableQueryIfNotExist = `
             "avatarUrl" VARCHAR(255) DEFAULT '',
             role VARCHAR(60) NOT NULL
         );
-
-        CREATE TABLE IF NOT EXISTS users."UserAssignmentRelation" (
-          userId SERIAL REFERENCES users."User" (uid),
-          assignmentId TEXT REFERENCES assignments."Assignment" (id),
-          primary key (userId, assignmentId)
-        );
   `;
 
 pool.query(createUserTableQueryIfNotExist).catch((err) => {

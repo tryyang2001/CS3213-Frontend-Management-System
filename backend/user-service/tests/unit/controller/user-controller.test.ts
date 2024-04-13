@@ -18,6 +18,7 @@ import { getUpdateUserInfoRequestBody } from "../../payload/request/update-user-
 import { getDeleteUserRequestBody } from "../../payload/request/delete-user-request-body";
 import { NextFunction } from "express";
 import auth from '../../../middleware/auth';
+import HttpStatusCode from "../../../libs/enums/HttpStatusCode";
 
 process.env.NODE_ENV = "test";
 
@@ -30,6 +31,40 @@ jest.mock('../../../middleware/auth', () => {
   return jest.fn(async (req: Request, res: Response, next: NextFunction) => {
     // Always call next() without performing any authentication checks
     next();
+  });
+});
+
+describe("health function", () => {
+  const app = createUnitTestServer();
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return \"User microservice is working\" when the database check is successful", async () => {
+    // Arrange
+    jest.spyOn(db, "checkDatabase").mockResolvedValue([0]);
+
+    // Act
+    const response = await supertest(app)
+      .get("/user/health")
+
+    // Assert
+    expect(db.checkDatabase).toHaveBeenCalled();
+    expect(response.body).toEqual({ message: "User microservice is working." });
+  });
+
+  it("should return 500 status code and \"Internal User microservice internal error\" message when the database check fails", async () => {
+    // Arrange
+    jest.spyOn(db, "checkDatabase").mockRejectedValue(new Error("Database error"));
+
+    // Act
+    const response = await supertest(app)
+      .get("/user/health")
+
+    expect(db.checkDatabase).toHaveBeenCalled();
+    expect(response.status).toEqual(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf());
+    expect(response.body).toEqual({ message: "Internal User microservice internal error." });
   });
 });
 
@@ -292,6 +327,23 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
     jest.clearAllMocks();
   });
 
+  describe("Given invalid not string user ID", () => {
+    it("return a bad request response", async () => {
+      // Arrange
+      const request = {
+        query: {uid: {}}
+      };
+
+      // Act
+      const response = await supertest(app)
+        .get(`/user/getUserInfo?`)
+        .send(request);
+        
+      // Assert
+      expect(response.status).toEqual(HttpStatusCode.BAD_REQUEST.valueOf());
+    });
+  });
+
   describe("Given a valid user ID", () => {
     it("Should return the user object", async () => {
       // Arrange
@@ -394,56 +446,6 @@ describe("Unit Tests for /user/getUserByEmail endpoint", () => {
 
     // Assert
     expect(response.body).toEqual({ message: "Error getting user by email." });
-    // expect(response.status).toBe(500);
-  });
-});
-
-describe("Unit Tests for /user/getAllUsers endpoint", () => {
-  const app = createUnitTestServer();
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("If there are users, should return all users", async () => {
-    // Arrange
-
-    jest
-      .spyOn(db, "getAllUsers")
-      .mockResolvedValue(getGetAllUsersResponseBody());
-
-    // Act
-    const response = await supertest(app).get("/user/getAllUsers");
-
-    // Assert
-    expect(response.body).toEqual(getGetAllUsersResponseBody());
-    expect(response.status).toBe(200);
-  });
-
-  it("If there are no users, should return empty", async () => {
-    // Arrange
-
-    jest.spyOn(db, "getAllUsers").mockResolvedValue([]);
-
-    // Act
-    const response = await supertest(app).get("/user/getAllUsers");
-
-    // Assert
-    expect(response.body).toEqual([]);
-    expect(response.status).toBe(200);
-  });
-
-  it("Should return an error message if there is an error getting all users", async () => {
-    // Arrange
-    jest
-      .spyOn(db, "getAllUsers")
-      .mockRejectedValue(new Error("Database error"));
-
-    // Act
-    const response = await supertest(app).get("/user/getAllUsers");
-
-    // Assert
-    expect(response.body).toEqual({ message: "Error getting all users." });
     // expect(response.status).toBe(500);
   });
 });
@@ -664,6 +666,23 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
 
       // Assert
       expect(response.body).toEqual({ message: "No fields provided for update." });
+      // expect(response.status).toBe(400);
+    });
+
+    it("Should return an error message if database is not working", async () => {
+      // Arrange
+      const reqBody = { email: "abdef@gmail.com"};
+      jest
+        .spyOn(db, "updateUserInfo")
+        .mockRejectedValue(new Error("Database is not working"));
+
+      // Act
+      const response = await supertest(app)
+        .put(`/user/updateUserInfo?uid=${1}`)
+        .send(reqBody);
+
+      // Assert
+      expect(response.body).toEqual({ message: 'Failed to update user info.' });
       // expect(response.status).toBe(400);
     });
 

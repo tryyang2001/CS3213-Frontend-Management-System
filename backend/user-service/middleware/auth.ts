@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
 import HttpStatusCode from '../libs/enums/HttpStatusCode';
+import db from "../models/user-model";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
     const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
@@ -15,9 +16,26 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
         if (token) {
             const decoded: any = jwt.verify(token, jwtSecretKey);
             if (decoded) {
-                console.log("verified");
-                // You can perform further validation or processing here if needed
-                return next();
+                const { uid, email } = decoded;
+                if (!(uid && email)) {
+                    console.log("Unauthorized, invalid token");
+                    return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
+                        login: false,
+                        data: "Unauthorized, invalid token"
+                    });
+                } else {
+                    const user = await db.findUser(uid, email);
+                    if (user) {
+                        console.log("Verified");
+                        return next();
+                    } else {
+                        console.log("Unauthorized, invalid token");
+                        return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
+                            login: false,
+                            data: "Unauthorized, invalid token"
+                        });
+                    }
+                }
             } else {
                 console.log("Unauthorized, invalid token");
                 return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({

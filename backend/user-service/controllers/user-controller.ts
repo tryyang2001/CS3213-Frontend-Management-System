@@ -4,6 +4,20 @@ import bcrypt from "bcrypt";
 import db from "../models/user-model";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 
+async function health(req: Request, res: Response) {
+  try {
+    await db.checkDatabase();
+    return res.json({ 
+      message: "User microservice is working." 
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
+      message: "Internal User microservice internal error."
+    });
+  }
+}
+
 async function registerUser(req: Request, res: Response) {
   const { email, password, name, major, role } = req.body;
 
@@ -158,16 +172,6 @@ async function getUserByEmail(req: Request, res: Response) {
   }
 }
 
-async function getAllUsers(req: Request, res: Response) {
-  try {
-    const allUsers = await db.getAllUsers();
-    return res.json(allUsers);
-  } catch (err) {
-    console.log(err);
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({ message: "Error getting all users." });
-  }
-}
-
 async function updateUserPassword(req: Request, res: Response) {
   const { uid, old_password, new_password } = req.body;
   try {
@@ -275,11 +279,11 @@ async function clearCookie(req: Request, res: Response) {
 }
 
 export default {
+  health,
   registerUser,
   loginUser,
   getUserInfo,
   getUserByEmail,
-  getAllUsers,
   updateUserPassword,
   updateUserInfo,
   deleteUser,
