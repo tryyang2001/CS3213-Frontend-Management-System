@@ -28,7 +28,16 @@ const getSubmissionByQuestionIdAndStudentId = async ({
     if (axios.isAxiosError(error)) {
       switch ((error as AxiosError).response?.status) {
         case HttpStatusCode.NOT_FOUND:
-          return undefined;
+          // Returns a null equivalent of Submission
+          return {
+            id: "",
+            questionId: questionId,
+            studentId: studentId,
+            code: "",
+            language: "",
+            feedbacks: [],
+            createdOn: 0,
+          };
         default:
           throw new Error("Failed to fetch submissions");
       }
