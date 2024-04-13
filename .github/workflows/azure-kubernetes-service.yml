@@ -64,22 +64,26 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       # Builds and pushes an image up to your Azure Container Registry
-      - name: Build and push image to ACR
+      - name: Build and push frontend image to ACR
         run: |
           cd frontend
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
-      - name: Build and push image to ACR
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+      - name: Build and push user service image to ACR
         run: |
           cd backend/user-service
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
-      - name: Build and push image to ACR
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
+      - name: Build and push grading service image to ACR
         run: |
           cd backend/grading-service
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
-      - name: Build and push image to ACR
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}}
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
+      - name: Build and push assignment image to ACR
         run: |
           cd backend/assignment-service
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
 
   deploy:
     permissions:
