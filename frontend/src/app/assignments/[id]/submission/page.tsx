@@ -24,7 +24,6 @@ interface Props {
 export default function SubmissionPage({ params }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState("");
-  const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
   const search = useSearchParams();
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
@@ -133,7 +132,7 @@ export default function SubmissionPage({ params }: Props) {
                 {submission ? (
                   <FeedbackCodeEditor
                     submission={submission}
-                    key={selectedSubmissionId}
+                    key={submission.id}
                   />
                 ) : (
                   <FeedbackCodeEditor key="0" />
