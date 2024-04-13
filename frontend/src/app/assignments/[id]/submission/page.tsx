@@ -5,8 +5,6 @@ import {
   Spacer,
   ButtonGroup,
   Button,
-  Select,
-  SelectItem,
 } from "@nextui-org/react";
 import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
@@ -16,6 +14,7 @@ import DateUtils from "../../../../utils/dateUtils";
 import FeedbackCodeEditor from "@/components/submission/FeedbackCodeEditor";
 import FeedbackTabs from "@/components/submission/FeedbackTabs";
 import FeedbackQuestion from "@/components/submission/FeedbackQuestion";
+import { useUserContext } from "@/contexts/user-context";
 
 interface Props {
   params: {
@@ -24,7 +23,7 @@ interface Props {
 }
 
 export default function SubmissionPage({ params }: Props) {
-  const userId = 1;
+  const { user } = useUserContext();
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState("");
   const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
@@ -54,20 +53,13 @@ export default function SubmissionPage({ params }: Props) {
     setCurrentQuestionId(assignment?.questions?.[0]?.id ?? "");
   }, [assignment]);
 
-  const { data: submissions, refetch: refetchSubmissions } = useQuery({
+  const { data: submission, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
-      const submissions =
-        await GradingService.getSubmissionByQuestionIdAndStudentId({
-          questionId: currentQuestionId,
-          studentId: userId,
-        });
-
-      const sortedSubmissions = submissions.sort(
-        (a, b) => a.createdOn - b.createdOn
-      );
-
-      return sortedSubmissions;
+      return await GradingService.getSubmissionByQuestionIdAndStudentId({
+        questionId: currentQuestionId,
+        studentId: user?.uid ?? 0,
+      });
     },
   });
 
@@ -95,12 +87,6 @@ export default function SubmissionPage({ params }: Props) {
       console.error("Error in fetchData:", error);
     });
   }, [currentQuestionId, refetchSubmissions, refetchTestCases]);
-
-  useEffect(() => {
-    if (submissions && submissions.length > 0) {
-      setSelectedSubmissionId(submissions[0].id);
-    }
-  }, [submissions]);
 
   if (isError) {
     return notFound();
@@ -145,28 +131,11 @@ export default function SubmissionPage({ params }: Props) {
               )}
             </div>
             <div className="col-span-1">
-              <div className="flex justify-end">
-                <Select
-                  items={submissions ? submissions : []}
-                  label="Past Submissions"
-                  placeholder="Select a submission"
-                  className="max-w-xs"
-                  onChange={handleSubmissionSelect}
-                >
-                  {(submission) => (
-                    <SelectItem key={submission.id} value={submission.id}>
-                      {submission.createdOn}
-                    </SelectItem>
-                  )}
-                </Select>
-              </div>
               <Spacer y={4} />
               <div className="row-span-1 border border-black">
-                {submissions ? (
+                {submission ? (
                   <FeedbackCodeEditor
-                    submission={submissions.find(
-                      (submission) => submission.id === selectedSubmissionId
-                    )}
+                    submission={submission}
                     key={selectedSubmissionId}
                   />
                 ) : (
@@ -175,11 +144,9 @@ export default function SubmissionPage({ params }: Props) {
               </div>
               <Spacer y={4} />
               <div className="row-span-1">
-                {submissions ? (
+                {submission ? (
                   <FeedbackTabs
-                    submission={submissions.find(
-                      (submission) => submission.id === selectedSubmissionId
-                    )}
+                    submission={submission}
                     testcases={testCases}
                   />
                 ) : (
