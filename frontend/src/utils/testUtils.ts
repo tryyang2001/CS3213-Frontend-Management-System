@@ -40,3 +40,26 @@ export const mockErrorInfo: UserInfo = {
   name: "Abc",
   bio: "Hello!",
 };
+
+const mockQuestions: Question[] = [1, 2].map((num) => {
+  return {
+    id: num.toString(),
+    title: "Question " + num,
+    description: "description " + num,
+    deadline: 0,
+    numberOfTestCases: 0,
+    createdOn: 0,
+  } as Question;
+});
+
+export const mockAssignment: Assignment = {
+  id: "1",
+  title: "Assignment 1",
+  deadline: 0,
+  isPublished: false,
+  numberOfQuestions: mockQuestions.length,
+  questions: mockQuestions,
+  authors: [],
+  createdOn: 0,
+  updatedOn: 0,
+};

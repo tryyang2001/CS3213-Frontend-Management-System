@@ -3,19 +3,9 @@ import LoginPage from "../login/page";
 import SignUpPage from "../sign-up/page";
 import UserPage from "../user/page";
 import AssignmentPage from "../assignments/[id]/page";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 
 import { render } from "@testing-library/react";
-
-const mockUser: User = {
-  uid: 9,
-  email: "testtest@gmail.com",
-  name: "name placeholder",
-  major: "major placeholder",
-  course: "course placeholder",
-  role: "student",
-};
-
+import { mockAssignment, mockUser } from "@/utils/testUtils";
 // Place all page's Snapshot tests here
 
 jest.mock("next/navigation", () => {
@@ -41,22 +31,19 @@ jest.mock("@/contexts/user-context", () => {
     }),
   };
 });
+
 jest.mock("@tanstack/react-query", () => {
   return {
     __esModule: true,
     useQuery: () => {
-      const assignment = AssignmentService.getAssignmentById("1");
+      const assignment = mockAssignment;
       return {
         data: assignment,
-        isLoading: assignment.then(() => false),
+        isLoading: false,
       };
     },
   };
 });
-
-global.fetch = jest.fn(() =>
-  Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) })
-) as jest.Mock;
 
 describe("Page Snapshot tests", () => {
   it("Landing Page Snapshot test", () => {
