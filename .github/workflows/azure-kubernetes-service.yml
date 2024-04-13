@@ -10,75 +10,13 @@ env:
   RESOURCE_GROUP: "FMDevs_group"
   CLUSTER_NAME: "FMDevs"
   DEPLOYMENT_MANIFEST_PATH: "/k8s/startup.yaml"
-
 jobs:
-  buildImage:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      # Checks out the repository this file is in
-      - uses: actions/checkout@v3
-
-      # Logs in with your Azure credentials
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-
-      # Connect to Azure Container registry (ACR)
-      - name: Login to Azure Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }} 
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: Build and push frontend image
-        run: |
-          cd backend/user-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
-        env:
-          PSQL_HOSTNAME: ${{ secrets.PSQL_HOSTNAME }}
-          PSQL_DATABASE: ${{ secrets.PSQL_DATABASE }}
-          PSQL_USERNAME: ${{ secrets.PSQL_USERNAME }}
-          PSQL_PASSWORD: ${{ secrets.PSQL_PASSWORD }}
-          PSQL_PORT: ${{ secrets.PSQL_PORT }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-
-      - name: Build and push frontend image to ACR
-        run: |
-          cd frontend
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
-
-      - name: Build and push grading service image to ACR
-        run: |
-          cd backend/grading-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
-        env:
-          ITS_API_URL: ${{ secrets.ITS_API_URL }}
-          POSTGRESQL_DB_URL: ${{ secrets.POSTGRESQL_DB_URL }}
-
-      - name: Build and push assignment image to ACR
-        run: |
-          cd backend/assignment-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
-        env:
-          POSTGRESQL_DB_PASSWORD: ${{ secrets.POSTGRESQL_DB_PASSWORD }}
-          POSTGRESQL_DB_URL: ${{ secrets.POSTGRESQL_DB_URL }}
-
   deploy:
     permissions:
       actions: read
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    needs: [buildImage]
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v3
