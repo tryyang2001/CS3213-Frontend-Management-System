@@ -8,8 +8,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { Button, Tooltip } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   params: {
@@ -26,30 +26,23 @@ function Page({ params }: Props) {
       description: "",
     },
   ]);
-  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([]);
+  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([
+    crypto.randomUUID(),
+  ]);
 
   const { toast } = useToast();
 
-  let { assignment, isNewlyCreated, disableAddingQuestion } =
+  const { assignment, isNewlyCreated, disableAddingQuestion } =
     useAssignmentContext();
 
-  assignment = {
-    id: "1",
-    title: "Assignment 1",
-    description: "Description",
-    deadline: new Date().getTime(),
-    isPublished: true,
-    authors: [],
-    numberOfQuestions: 0,
-    createdOn: new Date().getTime(),
-    updatedOn: new Date().getTime(),
-  };
-
-  isNewlyCreated = true;
+  useEffect(() => {
+    return () => {
+      disableAddingQuestion();
+    };
+  }, []);
 
   if (!assignment || !isNewlyCreated) {
     router.push(`/assignments/${params.id}`);
-
     return <LogoLoading />;
   }
 

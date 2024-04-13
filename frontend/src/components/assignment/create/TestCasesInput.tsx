@@ -2,7 +2,7 @@
 
 import Icons from "@/components/common/Icons";
 import { Button, Input, Link, Switch, Tooltip } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   testCases: TestCase[];
@@ -11,9 +11,6 @@ interface Props {
 
 function TestCasesInput({ testCases, setTestCases }: Props) {
   const [showAll, setShowAll] = useState(false);
-  const [testCaseUniqueIds, setTestCaseUniqueIds] = useState<string[]>(
-    testCases.map(() => crypto.randomUUID())
-  );
 
   let visibleTestCases = showAll ? testCases : testCases.slice(0, 5);
 
@@ -21,8 +18,16 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
     visibleTestCases = [{ input: "", output: "", isPublic: true }];
   }
 
+  const [testCaseUniqueIds, setTestCaseUniqueIds] = useState<string[]>(() => {
+    if (testCases.length === 0) {
+      return [crypto.randomUUID()];
+    }
+
+    return testCases.map((tc) => tc.id ?? crypto.randomUUID());
+  });
+
   return (
-    <div className="mt-2">
+    <div className="mt-2" key="who">
       {/* only show the first 5 test cases, hide the rest if longer than 5 */}
       {visibleTestCases.map((testCase, index) => {
         return (
@@ -94,6 +99,9 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
                 isDisabled={testCases.length <= 1}
                 className="bg-danger flex items-center justify-center"
                 onClick={() => {
+                  setTestCaseUniqueIds(
+                    testCaseUniqueIds.filter((_, i) => i !== index)
+                  );
                   setTestCases(testCases.filter((_, i) => i !== index));
                 }}
                 size="sm"
