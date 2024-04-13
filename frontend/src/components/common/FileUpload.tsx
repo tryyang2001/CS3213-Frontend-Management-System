@@ -8,12 +8,12 @@ interface Props {
   errorMessage?: string;
 }
 
-const FileUpload = ({
+function FileUpload({
   expectedFileTypes,
   onFileUpload,
   isTestCasesInput,
   errorMessage,
-}: Props) => {
+}: Props) {
   const [isError, setIsError] = useState(false);
 
   // add "." in front of the file types
@@ -113,6 +113,6 @@ const FileUpload = ({
       )}
     </div>
   );
-};
+}
 
 export default FileUpload;

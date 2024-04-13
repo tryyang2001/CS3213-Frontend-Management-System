@@ -23,3 +23,20 @@ export const useTestState = <T>(s: T): State<T> => {
   output.setValue = setValue;
   return output;
 };
+
+export const mockUserInfo: UserInfo = {
+  email: "email@email.com",
+  name: "Abc",
+  bio: "Hello!",
+};
+
+export const mockUser: User = {
+  uid: 3,
+  role: "Student",
+};
+
+export const mockErrorInfo: UserInfo = {
+  email: "bad@email.com",
+  name: "Abc",
+  bio: "Hello!",
+};

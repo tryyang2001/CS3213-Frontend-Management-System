@@ -170,7 +170,7 @@ export default function SubmissionPage({ params }: Props) {
                     key={selectedSubmissionId}
                   />
                 ) : (
-                  <FeedbackCodeEditor key={"0"} />
+                  <FeedbackCodeEditor key="0" />
                 )}
               </div>
               <Spacer y={4} />
