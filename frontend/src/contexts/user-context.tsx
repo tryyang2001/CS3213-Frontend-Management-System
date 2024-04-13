@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
 
 interface UserContextType {
   user: User | null;
@@ -12,11 +18,11 @@ const UserContext = createContext<UserContextType>({
   user: null,
   setUserContext: () => {
     throw new Error("Not implemented");
-  }
+  },
 });
 
 function UserProvider({ children }: { children: ReactNode }) {
-  const getLocalState = () : User | null => {
+  const getLocalState = (): User | null => {
     if (typeof window !== "undefined") {
       const localUserContext = localStorage.getItem("userContext");
       if (localUserContext) {
@@ -30,7 +36,7 @@ function UserProvider({ children }: { children: ReactNode }) {
 
   const setUserContext = (user: User | null) => {
     setUser(user);
-  }
+  };
 
   useEffect(() => {
     localStorage.setItem("userContext", JSON.stringify(user));
@@ -45,7 +51,7 @@ function UserProvider({ children }: { children: ReactNode }) {
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };
