@@ -21,7 +21,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
                     console.log("Unauthorized, invalid token");
                     return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                         login: false,
-                        data: "Unauthorized, invalid token"
+                        message: "Unauthorized, invalid token."
                     });
                 } else {
                     const user = await db.findUser(uid, email);
@@ -29,10 +29,10 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
                         console.log("Verified");
                         return next();
                     } else {
-                        console.log("Unauthorized, invalid token");
+                        console.log("Unauthorized, invalid token.");
                         return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                             login: false,
-                            data: "Unauthorized, invalid token"
+                            message: "Unauthorized, invalid token."
                         });
                     }
                 }
@@ -40,20 +40,20 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction): Pro
                 console.log("Unauthorized, invalid token");
                 return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                     login: false,
-                    data: token
+                    message: "Unauthorized, invalid token."
                 });
             }
         } else {
             console.log("Unauthorized, no authentication token");
             return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
                 login: false,
-                data: "Unauthorized, no authentication token"
+                message: "Unauthorized, no authentication token"
             });
         }
     } catch (err) {
-        return res.status(HttpStatusCode.UNAUTHORIZED.valueOf()).json({
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
             login: false,
-            data: "Unauthorize"
+            message: "Internal server error validating authentication token"
         });
     }
 };

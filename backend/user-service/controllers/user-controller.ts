@@ -48,7 +48,10 @@ async function registerUser(req: Request, res: Response) {
             hash,
             role
           );
-          return res.json({ uid });
+          return res.json({
+            uid: uid,
+            message: "User registered successfully."
+          });
         } catch (err) {
           console.log(err);
           return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
@@ -63,7 +66,7 @@ async function registerUser(req: Request, res: Response) {
   } catch (err) {
     console.log(err);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-      message: "Undefined error creating users.",
+      message: "Internal server error creating users.",
     });
   }
 }
@@ -93,7 +96,7 @@ async function loginUser(req: Request, res: Response) {
           if (!jwtSecretKey) {
             console.error("JWT secret key is not defined.");
             return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-              message: "Internal server error.",
+              message: "Internal server error cannot authenticate user logging in",
             });
           }
 
@@ -118,7 +121,7 @@ async function loginUser(req: Request, res: Response) {
       })
       .catch((err) => {
         console.log(err);
-        return res.send({ message: "Error checking password." });
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({ message: "Internal server error checking password." });
       });
   }
 }
@@ -127,7 +130,7 @@ async function getUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
   if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'Invalid uid.' });
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
   }
 
   try {
@@ -136,7 +139,7 @@ async function getUserInfo(req: Request, res: Response) {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+      return res.status(HttpStatusCode.NOT_FOUND.valueOf()).json({
         message: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
@@ -146,39 +149,19 @@ async function getUserInfo(req: Request, res: Response) {
   } catch (err) {
     console.log(err);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-      message: "Error getting user by uid.",
-    });
-  }
-}
-
-async function getUserByEmail(req: Request, res: Response) {
-  const { email } = req.body;
-  try {
-    const emailSearch = await db.getUserByEmail(email);
-    if (emailSearch.rows.length == 0) {
-      console.log("User does not exist.");
-      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
-        message: "User does not exist.",
-      });
-    } else if (emailSearch.rows.length > 0) {
-      const user = emailSearch.rows[0];
-      return res.json(user);
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-      message: "Error getting user by email.",
+      message: "Internal server error getting user by uid.",
     });
   }
 }
 
 async function updateUserPassword(req: Request, res: Response) {
   const { uid, old_password, new_password } = req.body;
+
   try {
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
-      return res.status(HttpStatusCode.FORBIDDEN.valueOf()).json({
+      return res.status(HttpStatusCode.NOT_FOUND.valueOf()).json({
         message: "User does not exist.",
       });
     } else if (userIdSearch.rows.length > 0) {
@@ -203,14 +186,14 @@ async function updateUserPassword(req: Request, res: Response) {
                   });
                 } catch (err) {
                   return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-                    message: "Failed to update user password.",
+                    message: "Internal server error updating user password.",
                   });
                 }
               })
               .catch((err) => {
                 console.log(err);
                 return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-                  message: "Error crypting password.",
+                  message: "Internal server error updating user password.",
                 });
               });
           }
@@ -218,14 +201,14 @@ async function updateUserPassword(req: Request, res: Response) {
         .catch((err) => {
           console.log(err);
           return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-            message: "Error checking password.",
+            message: "Internal server error updating user password.",
           });
         });
     }
   } catch (err) {
     console.log(err);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-      message: "Error getting user by uid.",
+      message: "Internal server error updating user password.",
     });
   }
 }
@@ -233,29 +216,33 @@ async function updateUserPassword(req: Request, res: Response) {
 async function updateUserInfo(req: Request, res: Response) {
   const queryUidString = req.query.uid;
   if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'Invalid uid.' });
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
   }
   const uid = parseInt(queryUidString);
   const updateFields = req.body;
 
   try {
     if (Object.keys(updateFields).length === 0) {
-      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'No fields provided for update.' });
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "No fields provided for update." });
     }
 
     await db.updateUserInfo(uid, updateFields);
 
     return res.json({
-      message: 'User info updated.',
+      message: "User information updated.",
     });
   } catch (err) {
-    console.error('Error updating user info:', err);
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: 'Failed to update user info.' });
+    console.error("Error updating user info:", err);
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: "Internal server error updating user info." });
   }
 }
 
 async function deleteUser(req: Request, res: Response) {
-  const { uid } = req.body;
+  const queryUidString = req.query.uid;
+  if (typeof queryUidString !== 'string') {
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
+  }
+  const uid = parseInt(queryUidString);
   try {
     const result = await db.deleteUser(uid);
     console.log(result);
@@ -265,17 +252,10 @@ async function deleteUser(req: Request, res: Response) {
     });
   } catch (err) {
     console.log(err);
-    return res.send({
-      message: "Undefined error deleting account.",
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
+      message: "Internal server error deleting account.",
     });
   }
-}
-
-async function clearCookie(req: Request, res: Response) {
-  res.clearCookie("token");
-  return res.send({
-    message: "Cleared user cookie",
-  });
 }
 
 export default {
@@ -283,9 +263,7 @@ export default {
   registerUser,
   loginUser,
   getUserInfo,
-  getUserByEmail,
   updateUserPassword,
   updateUserInfo,
   deleteUser,
-  clearCookie,
 };

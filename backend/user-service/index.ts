@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import userRoute from './routes/user-route';
+import router from './routes';
 import HttpStatusCode from "./libs/enums/HttpStatusCode";
 
 const app = express();
@@ -20,10 +20,13 @@ app.get("/", (req, res) => {
     res.json("Connected to user microservice");
 });
 
-app.use("/user", userRoute);
+app.use("/user", router);
 
 app.listen(3001, () => {
-    console.log("User microservice started on port 3001");
+  console.log("User microservice started on port 3001");
+  console.log(
+    `Swagger API documentation is available at http://localhost:3001/user/docs`
+  );
 });
 
 export default app;
