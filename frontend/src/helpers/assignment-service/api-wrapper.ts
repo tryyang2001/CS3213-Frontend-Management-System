@@ -1,9 +1,8 @@
 import HttpStatusCode from "@/types/HttpStatusCode";
 import axios, { AxiosError } from "axios";
-import { ASSIGNMENT_API_URL } from "@/config";
 
 const api = axios.create({
-  baseURL: ASSIGNMENT_API_URL,
+  baseURL: process.env.ASSIGNMENT_API_URL ?? "http://localhost:8080/assignment/api",
   timeout: 5000,
   headers: {
     "Content-type": "application/json",
