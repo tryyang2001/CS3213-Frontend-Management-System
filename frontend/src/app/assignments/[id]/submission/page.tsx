@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Spacer,
   ButtonGroup,
@@ -30,10 +30,6 @@ export default function SubmissionPage({ params }: Props) {
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
     setCurrentQuestionId(questionId);
-  };
-
-  const handleSubmissionSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubmissionId(e.target.value);
   };
 
   const {
