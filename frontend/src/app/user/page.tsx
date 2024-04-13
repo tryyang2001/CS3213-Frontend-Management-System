@@ -58,6 +58,8 @@ export default function Page() {
       setIsLoading(true);
       router.push("/");
     }
+    // only fetch once, we do not need to update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

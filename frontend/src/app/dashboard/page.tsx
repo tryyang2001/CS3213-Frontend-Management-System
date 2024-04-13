@@ -35,7 +35,10 @@ export default function DashBoard() {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList assignments={assignments} userRole={user?.role ?? ""} />
+        <AssignmentList
+          assignments={assignments}
+          userRole={user?.role ?? "student"}
+        />
       )}
     </div>
   );

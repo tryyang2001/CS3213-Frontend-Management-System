@@ -49,6 +49,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       setDescription(assignment.description ?? "");
       setIsPublished(assignment.isPublished);
     }
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const { toast } = useToast();
   const { user } = useUserContext();
@@ -69,6 +71,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
           break;
       }
     },
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [title, deadline, description]
   );
 

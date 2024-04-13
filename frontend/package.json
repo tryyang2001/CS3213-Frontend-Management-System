@@ -22,6 +22,7 @@
     "@nextui-org/react": "^2.2.10",
     "@radix-ui/react-toast": "^1.1.5",
     "@tanstack/react-query": "^5.24.1",
+    "@uploadthing/react": "^6.4.2",
     "add": "^2.0.6",
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
@@ -41,7 +42,8 @@
     "tailwind": "^4.0.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "uploadthing": "^6.8.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

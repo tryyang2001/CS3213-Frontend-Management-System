@@ -24,12 +24,12 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
 
     const { userId, includePast, isPublished } =
       GetAssignmentsQueryValidator.parse(request.query);
-
-    const assignments = await GetHandler.getAssignmentsByUserId(
-      userId,
-      includePast,
-      isPublished
-    );
+    
+      const assignments = await GetHandler.getAssignmentsByUserId(
+        userId,
+        includePast,
+        isPublished
+      );
 
     if (!assignments) {
       response.status(HttpStatusCode.NOT_FOUND).json({

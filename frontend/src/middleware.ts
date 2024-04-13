@@ -4,8 +4,14 @@ export const config = {
   matchers: "/:path*",
 };
 
-export default function middleware(request: NextRequest) {
-  const publicRoutes = ["/_next", "/public", "/login", "/sign-up"];
+const middleware = (request: NextRequest) => {
+  const publicRoutes = [
+    "/_next",
+    "/public",
+    "/login",
+    "/sign-up",
+    "/api/uploadthing",
+  ];
   const redirectRoutes = ["/"];
 
   const path = request.nextUrl.pathname;
@@ -29,4 +35,6 @@ export default function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+};
+
+export default middleware;

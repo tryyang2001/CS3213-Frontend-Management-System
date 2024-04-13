@@ -115,6 +115,8 @@ function Page({ params }: Props) {
     return () => {
       disableEditing();
     };
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddQuestion = () => {

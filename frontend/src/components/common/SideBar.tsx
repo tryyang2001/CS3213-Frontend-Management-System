@@ -82,6 +82,8 @@ export default function SideBar() {
         return;
       });
     }
+    // router does not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // obtain current path, if is login/sign up, don't render SideBar
