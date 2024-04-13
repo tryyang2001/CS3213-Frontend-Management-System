@@ -64,27 +64,24 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    try { 
-      await userService.updateUserInfo(
-        user?.uid ?? 0,
-        {
-          name: name,
-          bio: bio
-        }
-      );
+    try {
+      await userService.updateUserInfo(user?.uid ?? 0, {
+        name: name,
+        bio: bio,
+      });
       setMessage("Profile saved!");
       setInfo({
         name: name,
         email: info.email,
         bio: bio,
         photo: photo!,
-      })
+      });
 
       setUserContext({
         uid: user?.uid ?? 0,
         role: user?.role ?? "student",
       });
-    }  catch (error) {
+    } catch (error) {
       if (error instanceof Error) {
         const errorMessage = error.message;
         setMessage(errorMessage);

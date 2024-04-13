@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 export default function Page() {
   const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [ userInfo, setUserInfo ] = useState<UserInfo>({} as UserInfo);
+  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -24,7 +24,7 @@ export default function Page() {
             description: "Please login first",
             variant: "destructive",
           });
-          router.push("/");
+          router.push("/login");
         } else {
           const retrievedUserInfo = await userService.getUserInfo(user.uid);
           if (retrievedUserInfo === null) {
@@ -33,13 +33,13 @@ export default function Page() {
               description: "Please try again later",
               variant: "destructive",
             });
-            router.push("/");
+            router.push("/login");
           } else {
             setUserInfo(retrievedUserInfo);
             setIsLoading(false);
           }
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching user info:", error);
         toast({
           title: "Cannot fetch userpaage",
@@ -51,7 +51,9 @@ export default function Page() {
       }
     };
     if (user) {
-      fetchUserInfo().catch((_err) => {return;});
+      fetchUserInfo().catch((_err) => {
+        return;
+      });
     } else {
       setIsLoading(true);
       router.push("/");
@@ -66,7 +68,7 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor userInfo={userInfo}/>
+            <ProfileEditor userInfo={userInfo} />
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>

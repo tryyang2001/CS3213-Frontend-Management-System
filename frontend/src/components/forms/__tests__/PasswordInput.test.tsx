@@ -16,7 +16,7 @@ describe("Password Input", () => {
     it("should be valid given empty values", () => {
       render(
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password.value}
           setPassword={password.setValue}
           setIsInvalid={invalid.setValue}
@@ -31,7 +31,7 @@ describe("Password Input", () => {
     it("should be invalid given not enough characters", () => {
       render(
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password.value}
           setPassword={password.setValue}
           setIsInvalid={invalid.setValue}
@@ -48,7 +48,7 @@ describe("Password Input", () => {
     it("nothing should happen on invalid input", () => {
       render(
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password.value}
           setPassword={password.setValue}
         />
@@ -62,7 +62,7 @@ describe("Password Input", () => {
     it("should be invalid given not enough characters", () => {
       render(
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password.value}
           setPassword={password.setValue}
           setIsInvalid={invalid.setValue}
@@ -78,7 +78,7 @@ describe("Password Input", () => {
   it("should become a text input when eye is pressed", () => {
     render(
       <PasswordInput
-        label={"Password"}
+        label="Password"
         password={password.value}
         setPassword={password.setValue}
         setIsInvalid={invalid.setValue}
@@ -93,7 +93,7 @@ describe("Password Input", () => {
   it("should become a password input when eye is pressed twice", () => {
     render(
       <PasswordInput
-        label={"Password"}
+        label="Password"
         password={password.value}
         setPassword={password.setValue}
         setIsInvalid={invalid.setValue}

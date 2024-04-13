@@ -118,10 +118,11 @@ model Assignment {
 model User {
     uid Int @id @default(autoincrement())
 
-    name   String
-    email  String  @unique
-    major  String
-    course String?
+    name      String
+    email     String  @unique
+    major     String
+    avatarUrl String?
+    bio       String?
 
     password String
 

@@ -6,7 +6,8 @@ import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import { useUserContext } from "@/contexts/user-context";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import {
   Button,
   Modal,
@@ -17,6 +18,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -58,13 +60,13 @@ function Page({ params }: Props) {
 
       const referenceSolutions = await Promise.all(
         questionIds.map((questionId) =>
-          AssignmentService.getQuestionReferenceSolution(questionId)
+          assignmentService.getQuestionReferenceSolution(questionId)
         )
       );
 
       const questionTestCases = await Promise.all(
         questionIds.map((questionId) =>
-          AssignmentService.getQuestionTestCases(questionId)
+          assignmentService.getQuestionTestCases(questionId)
         )
       );
 
@@ -94,6 +96,10 @@ function Page({ params }: Props) {
 
     setIsLoading(false);
   };
+
+  const { user } = useUserContext();
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!assignment || !isEditing) {
@@ -166,7 +172,7 @@ function Page({ params }: Props) {
     // for each question ids in deletedQuestionIds, delete the question
     const deleteQuestionPromises = Promise.all(
       deletedQuestionIds.map((questionId) =>
-        AssignmentService.deleteQuestion(questionId)
+        assignmentService.deleteQuestion(questionId)
       )
     );
 
@@ -174,12 +180,12 @@ function Page({ params }: Props) {
     const updateQuestionPromises = Promise.all(
       updatedQuestions.map((question) => {
         if (question.id) {
-          return AssignmentService.updateQuestion(question.id, {
+          return assignmentService.updateQuestion(question.id, {
             ...question,
             id: undefined,
           });
         } else {
-          return AssignmentService.createQuestion(params.id, {
+          return assignmentService.createQuestion(params.id, {
             ...question,
             id: undefined,
           });
@@ -190,6 +196,13 @@ function Page({ params }: Props) {
     // combine the promises
     Promise.all([deleteQuestionPromises, updateQuestionPromises])
       .then(() => {
+        // invalidate the get assignments query
+        queryClient
+          .invalidateQueries({
+            queryKey: ["get-assignments", user],
+          })
+          .catch((_error) => new Error("Failed to invalidate query"));
+
         toast({
           title: "Questions updated successfully",
           description: "The questions have been updated successfully.",
