@@ -57,6 +57,7 @@ function DescriptionField({
   placeholder,
   className,
 }: Props) {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     []

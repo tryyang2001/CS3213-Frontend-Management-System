@@ -11,7 +11,7 @@ export function ReadOnlyFullUserCard({ userInfo }: { userInfo: UserInfo }) {
     <Card>
       <Avatar
         showFallback
-        src={userInfo.photo}
+        src={userInfo.avatarUrl}
         className="w-20 h-20 text-large"
       />
       <div>
@@ -28,7 +28,7 @@ export function ReadOnlyUserCard({ userInfo }: { userInfo: UserInfo }) {
     <Card>
       <Avatar
         showFallback
-        src={userInfo.photo}
+        src={userInfo.avatarUrl}
         className="w-20 h-20 text-large"
       />
       <div>

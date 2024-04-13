@@ -106,3 +106,4 @@ export default function Home() {
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */
