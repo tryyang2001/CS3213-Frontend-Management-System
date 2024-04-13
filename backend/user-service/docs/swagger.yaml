@@ -250,13 +250,13 @@ paths:
           type: "string"
       responses:
         200:
-          description: "User account deleted successfully"
+          description: "User authentication token cleared successfully"
           schema:
             type: "object"
             properties:
               message:
                 type: "string"
-                example: "Internal server error checking password."
+                example: "Authentication token cleared successfully."
 
   /user/getUserInfo:
     get:

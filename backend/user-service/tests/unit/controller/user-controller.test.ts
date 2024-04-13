@@ -733,7 +733,7 @@ describe("Unit Tests for /user/clearCookie endpoint", () => {
     // Act
     const response = await supertest(app).delete("/user/clearCookie");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: "Cleared user cookie" });
+    expect(response.body).toEqual({ message: "Authentication token cleared successfully" });
     expect(response.headers["set-cookie"]).toEqual([
       "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT",
     ]);
