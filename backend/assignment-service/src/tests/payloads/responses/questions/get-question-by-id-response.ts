@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
+
 export const getQuestionByIdDbResponse = (questionId?: string) => {
   return {
     id: questionId ?? "existing-question-id",

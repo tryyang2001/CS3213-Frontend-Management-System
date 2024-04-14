@@ -86,7 +86,6 @@ export default function Submissions() {
               assignmentSubmissionsData.push({questionId: crypto.randomUUID(), questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
             }
           }
-          console.log(assignmentSubmissionsData);
           submissionsData[assignment.id] = assignmentSubmissionsData;
         }
         setSubmissions(submissionsData);
@@ -96,7 +95,7 @@ export default function Submissions() {
   });
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       {(isLoading) ?
        (<LogoLoading/>) :
        (<AssignmentAccordion assignments={assignments} userRole={user?.role ?? ""} submissions={submissions}/>)

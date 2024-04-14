@@ -3,7 +3,7 @@
 exports[`Page Snapshot tests Landing Page Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"
@@ -154,107 +154,37 @@ exports[`Page Snapshot tests Loading Assignment Page Snapshot test 1`] = `
 <div>
   <div>
     <div
-      class="ml-[12%] mt-[5%] mr-[8%]"
+      class="flex flex-col items-center justify-center"
+      style="height: 100vh;"
     >
       <div
-        class="flex gap-2"
+        class="flex items-center justify-center object-cover"
       >
-        <div>
-          <h1
-            class="text-3xl font-semibold "
-          >
-            Assignment 1
-          </h1>
-          <div
-            class="flex flex-col ml-4 my-4 gap-2"
-          >
-            <p
-              class="text-lg font-semibold"
-            >
-              Due on:
-               
-              <span
-                class="italic font-medium"
-              >
-                Thursday, January 1, 1970 at 07:30 AM
-              </span>
-            </p>
-            <p
-              class="text-lg font-semibold"
-            >
-              Number of questions:
-               
-              <span
-                class="italic font-medium"
-              >
-                2
-              </span>
-            </p>
-            <div
-              class="my-4"
-            />
-          </div>
+        <div
+          class="shadow-black/5 shadow-none group relative overflow-hidden bg-content3 dark:bg-content2 before:opacity-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:border-t before:border-content4/30 before:bg-gradient-to-r before:from-transparent before:via-content4 dark:before:via-default-700/10 before:to-transparent after:opacity-100 after:absolute after:inset-0 after:-z-10 after:bg-content3 dark:after:bg-content2 rounded-large"
+          style="max-width: 100%;"
+        >
+           
+          <img
+            alt="ITS Logo"
+            class="relative shadow-black/5 data-[loaded=true]:opacity-100 shadow-none opacity-0 transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large bg-logo mx-auto -mb-4 z-0"
+            height="100%"
+            src="/logo.svg"
+            width="100%"
+          />
         </div>
       </div>
       <div
-        class="flex px-0 py-4 mb-6"
+        class="mx-2 -mt-2 z-20"
       >
         <div
-          class="w-full px-5"
+          class="flex items-center justify-center"
         >
-          <div
-            class="flex space-x-4"
-          >
-            <div
-              class="flex-1 mr-2 text-xl font-semibold"
-            >
-              Question 1
-            </div>
-          </div>
-          <hr
-            class="shrink-0 bg-divider border-none w-full h-divider mt-4 mb-2"
-            role="separator"
-          />
-          <div
-            class="flex mt-3"
-          >
-            <div
-              class="text-md text-justify"
-            >
-              description 1
-            </div>
-          </div>
+          Loading...
         </div>
-      </div>
-      <div
-        class="flex px-0 py-4 mb-6"
-      >
         <div
-          class="w-full px-5"
-        >
-          <div
-            class="flex space-x-4"
-          >
-            <div
-              class="flex-1 mr-2 text-xl font-semibold"
-            >
-              Question 2
-            </div>
-          </div>
-          <hr
-            class="shrink-0 bg-divider border-none w-full h-divider mt-4 mb-2"
-            role="separator"
-          />
-          <div
-            class="flex mt-3"
-          >
-            <div
-              class="text-md text-justify"
-            >
-              description 2
-            </div>
-          </div>
-        </div>
+          class="relative w-64 space-y-3 overflow-hidden rounded-md bg-logo p-3 shadow before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-slate-200 hover:shadow-lg before:animate-[shimmer_1.5s_infinite]"
+        />
       </div>
     </div>
   </div>
@@ -264,7 +194,7 @@ exports[`Page Snapshot tests Loading Assignment Page Snapshot test 1`] = `
 exports[`Page Snapshot tests Login Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"
@@ -414,7 +344,7 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
 exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"

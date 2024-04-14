@@ -40,6 +40,9 @@ describe("Unit Tests for Grading Controller", () => {
         expect(response.body).toEqual({
           parser: expectedParserString,
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
 
@@ -115,6 +118,9 @@ describe("Unit Tests for Grading Controller", () => {
           message:
             "Invalid source_code. Failed to generate parser string from ITS API",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });
@@ -259,6 +265,9 @@ describe("Unit Tests for Grading Controller", () => {
           message:
             "Invalid source_code. Failed to generate parser string from ITS API",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
 
@@ -449,6 +458,9 @@ describe("Unit Tests for Grading Controller", () => {
           error: "INTERNAL SERVER ERROR",
           message: "An unexpected error has occurred. Please try again later",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });
@@ -476,19 +488,14 @@ describe("Unit Tests for Grading Controller", () => {
 
         // Assert
         expect(response.status).toBe(HttpStatusCode.OK);
-        expect(response.body).toBeInstanceOf(Array);
-        expect(response.body as Array<any>).toHaveLength(1);
-
-        const firstSubmission = (response.body as Array<any>)[0];
-
-        expect(Object.keys(firstSubmission).length).toBe(7);
-        expect(firstSubmission).toHaveProperty("id");
-        expect(firstSubmission).toHaveProperty("questionId");
-        expect(firstSubmission).toHaveProperty("studentId");
-        expect(firstSubmission).toHaveProperty("language");
-        expect(firstSubmission).toHaveProperty("code");
-        expect(firstSubmission).toHaveProperty("feedbacks");
-        expect(firstSubmission).toEqual({
+        expect(Object.keys(response.body).length).toBe(7);
+        expect(response.body).toHaveProperty("id");
+        expect(response.body).toHaveProperty("questionId");
+        expect(response.body).toHaveProperty("studentId");
+        expect(response.body).toHaveProperty("language");
+        expect(response.body).toHaveProperty("code");
+        expect(response.body).toHaveProperty("feedbacks");
+        expect(response.body).toEqual({
           ...StudentSolution.submissions[0],
           createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
         });
@@ -574,6 +581,9 @@ describe("Unit Tests for Grading Controller", () => {
           error: "INTERNAL SERVER ERROR",
           message: "An unexpected error has occurred. Please try again later",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });

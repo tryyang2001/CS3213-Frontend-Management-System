@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
+
 export const GetAssignmentsResponse = (userId: string) => {
   const deadline = new Date("2024-12-31T00:00:00.000Z").getTime();
   const createdOn = new Date("2024-03-12T00:00:00.000Z").getTime();

@@ -4,7 +4,7 @@ import HttpStatusCode from "../../../libs/enums/HttpStatusCode";
 import createUnitTestServer from "../../utils/create-test-server-utils";
 import supertest from "supertest";
 import * as Response from "../../payloads/responses";
-import { Assignment } from "../../../models/types/assignment";
+import { Assignment } from "../../../types/assignment";
 
 const API_PREFIX = "/assignment/api";
 
@@ -105,7 +105,6 @@ describe("Unit Tests for getAssignmentById", () => {
 
 describe("Unit Tests for GET /assignment/api/assignments/:id", () => {
   const app = createUnitTestServer();
-  const assignmentServiceMock = GetHandler as jest.Mocked<typeof GetHandler>;
 
   describe("Given an existing assignment id", () => {
     it("should return 200 and the assignment with questions", async () => {
@@ -182,7 +181,7 @@ describe("Unit Tests for GET /assignment/api/assignments/:id", () => {
   });
 });
 
-function assertAssignment(assignment: Assignment | null) {
+function assertAssignment(assignment: Assignment | null): void {
   expect(assignment).not.toBeNull();
 
   if (assignment) {

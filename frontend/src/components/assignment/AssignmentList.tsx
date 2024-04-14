@@ -3,14 +3,23 @@
 import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
 import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LogoLoading from "../common/LogoLoading";
 
 interface Props {
   assignments: Assignment[] | undefined;
-  userRole: string;
+  userRole: string | undefined;
 }
 
 function AssignmentList({ assignments, userRole }: Props) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userRole) {
+      setIsLoading(false);
+    }
+  }, [userRole]);
 
   if (!assignments) {
     return notFound();
@@ -20,9 +29,13 @@ function AssignmentList({ assignments, userRole }: Props) {
     router.push(`/assignments/${id}`);
   };
 
+  if (isLoading) {
+    return <LogoLoading />;
+  }
+
   return (
     <div>
-      <b>Assignments</b>
+      <h1 className="text-2xl font-bold">Assignments</h1>
       <Spacer y={4} />
       <div className="gap-2 grid grid-cols-1 sm:grid-cols-1">
         {assignments.length === 0 && <div>There is no assignment due</div>}

@@ -9,7 +9,7 @@ import CodeFunctionNameError from "../libs/errors/CodeFunctionNameError";
 import { GetHandler } from "../services/get-handler";
 import { PostParserValidator } from "../libs/validators/post-parser-validator";
 import { ZodError } from "zod";
-import { formatZodErrorMessage } from "../libs/utils/errorUtils";
+import { formatZodErrorMessage } from "../libs/utils/error-utils";
 import { PostFeedbackValidator } from "../libs/validators/post-feedback-validator";
 import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import { GetSubmissionQueryValidator } from "../libs/validators/get-submission-query-validator";
@@ -17,7 +17,7 @@ import { GetSubmissionQueryValidator } from "../libs/validators/get-submission-q
 const getSubmissionsByQuestionIdAndStudentId = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const { questionId } = request.params;
     const { studentId } = GetSubmissionQueryValidator.parse(request.query);
@@ -59,7 +59,7 @@ const getSubmissionsByQuestionIdAndStudentId = async (
 const getLatestSubmissionByQuestionIdAndStudentId = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const { questionId } = request.params;
     const { studentId } = GetSubmissionQueryValidator.parse(request.query);
@@ -111,7 +111,7 @@ const getLatestSubmissionByQuestionIdAndStudentId = async (
 const getSubmittersByAssignmentId = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const { assignmentId } = request.params;
 
@@ -129,7 +129,10 @@ const getSubmittersByAssignmentId = async (
   }
 };
 
-const postParser = async (request: Request, response: Response) => {
+const postParser = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     const { language, source_code } = PostParserValidator.parse(request.body);
 
@@ -162,7 +165,10 @@ const postParser = async (request: Request, response: Response) => {
   }
 };
 
-const postFeedback = async (request: Request, response: Response) => {
+const postFeedback = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     // take in language, source_code, question_id, student_id
     const { language, source_code, question_id, student_id } =

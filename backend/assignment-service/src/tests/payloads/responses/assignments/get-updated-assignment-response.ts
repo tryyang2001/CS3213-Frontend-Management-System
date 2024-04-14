@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
+
 export const getUpdatedAssignmentDbResponse = () => {
   return {
     id: "existing-assignment-id",

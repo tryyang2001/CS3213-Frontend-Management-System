@@ -2,9 +2,8 @@ import express from "express";
 import cors from "../../middlewares/cors";
 import bodyParser from "body-parser";
 import router from "../../routes";
-import HttpStatusCode from "../../libs/enums/HttpStatusCode";
 
-export default function createUnitTestServer() {
+export default function createUnitTestServer(): express.Application {
   const app = express();
 
   app.use(cors);

@@ -1,6 +1,7 @@
 import db from "../../models/db";
+import { Assignment } from "../../types/assignment";
 
-const deleteAssignmentById = async (id: string) => {
+const deleteAssignmentById = async (id: string): Promise<Assignment | null> => {
   const assignmentExists = await db.assignment.findUnique({
     where: {
       id: id,
@@ -17,7 +18,19 @@ const deleteAssignmentById = async (id: string) => {
     },
   });
 
-  return assignment;
+  const deletedAssignment: Assignment = {
+    id: assignment.id,
+    title: assignment.title,
+    deadline: assignment.deadline.getTime(),
+    description: assignment.description ?? undefined,
+    isPublished: assignment.isPublished,
+    numberOfQuestions: assignment.numberOfQuestions,
+    authors: assignment.authors,
+    createdOn: assignment.createdOn.getTime(),
+    updatedOn: assignment.updatedOn.getTime(),
+  };
+
+  return deletedAssignment;
 };
 
 export const DeleteHandler = {

@@ -110,16 +110,6 @@ export default function SubmissionPage({ params }: Props) {
         <div className="h-dvh flex p-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-1 overflow-y-auto flex-1 max-w-1/2">
-              <div>
-                <ButtonGroup>
-                  {assignment.questions?.map((question, index) => (
-                    <Button
-                      key={question.id}
-                      onClick={() => handleQuestionChange(index, question.id)}
-                    >{`${index + 1}`}</Button>
-                  ))}
-                </ButtonGroup>
-              </div>
               <div className="flex gap-2">
                 <div>
                   <h1 className="text-3xl font-semibold ">
@@ -133,6 +123,18 @@ export default function SubmissionPage({ params }: Props) {
                       </span>
                     </p>
                   </div>
+                  <div>
+                    <ButtonGroup>
+                      {assignment.questions?.map((question, index) => (
+                        <Button
+                          key={question.id}
+                          onClick={() =>
+                            handleQuestionChange(index, question.id)
+                          }
+                        >{`${index + 1}`}</Button>
+                      ))}
+                    </ButtonGroup>
+                  </div>
                 </div>
               </div>
               {assignment.questions && (
@@ -145,8 +147,9 @@ export default function SubmissionPage({ params }: Props) {
             <div className="col-span-1">
               <div className="flex justify-end">
                 <Select
+                  isDisabled={submissions ? false : true}
                   items={submissions ? submissions : []}
-                  label="Past Submissions"
+                  label={submissions ? "Past Submissions" : "No previous submissions for this question"}
                   selectedKeys={[selectedSubmissionId]}
                   className="max-w-xs"
                   onChange={handleSubmissionSelect}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import AssignmentPage from "@/components/assignment/AssignmentPage";
 import AssignmentQuestion from "@/components/assignment/AssignmentQuestion";
 import FileUpload from "@/components/common/FileUpload";
@@ -30,6 +31,11 @@ interface Props {
   };
 }
 
+interface FileContent {
+  language: string;
+  fileContent: string;
+}
+
 export default function Page({ params }: Props) {
   const router = useRouter();
 
@@ -39,14 +45,27 @@ export default function Page({ params }: Props) {
 
   const { toast } = useToast();
 
-  // TODO: replace below code with actual user context to check for user role
   const { user } = useUserContext();
+
   const userId = user?.uid ?? 0;
-  const userRole = user?.role ?? "student";
+  const userRole = user?.role;
+
+  const [isLoadingUserRole, setIsLoadingUserRole] = useState(true);
+
+  useEffect(() => {
+    if (userRole) {
+      setIsLoadingUserRole(false);
+    }
+  }, [userRole]);
+
+  const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
+    {}
+  );
+  const [submissionStatus, setSubmissionStatus] =
+    useState<Record<string, boolean>>();
 
   const {
     data: assignment,
-    isLoading,
     isFetched,
     isError,
   } = useQuery({
@@ -67,6 +86,10 @@ export default function Page({ params }: Props) {
     router.push(`/assignments/${params.id}/edit`);
   };
 
+  const redirectToSubmissionPage = () => {
+    router.push(`/assignments/${params.id}/submission`);
+  };
+
   const handleDeleteAssignment = (closeModal: () => void) => {
     assignmentService
       .deleteAssignment(params.id)
@@ -84,16 +107,24 @@ export default function Page({ params }: Props) {
       );
   };
 
-  const handleSubmitCode = (
+  const handleFileUpload = (
     fileContent: string,
     questionId: string,
     language: string
   ) => {
-    if (fileContent) {
+    setFileContents((prevState) => ({
+      ...prevState,
+      [questionId]: { fileContent: fileContent, language: language },
+    }));
+  };
+
+  const handleSubmitCode = (questionId: string) => {
+    if (fileContents?.[questionId]) {
+      const { language, fileContent } = fileContents[questionId];
       const requestBody: PostFeedbackBody = {
-        language: language, // need to change
+        language: language,
         source_code: fileContent,
-        question_id: questionId, // need to change
+        question_id: questionId,
         student_id: userId,
       };
       GradingService.postFeedback(requestBody)
@@ -104,6 +135,10 @@ export default function Page({ params }: Props) {
               "Code uploaded successfully. Feedback will be available shortly.",
             variant: "success",
           });
+          setSubmissionStatus((prevState) => ({
+            ...prevState,
+            [questionId]: true,
+          }));
         })
         .catch((_err) => {
           toast({
@@ -116,11 +151,13 @@ export default function Page({ params }: Props) {
     }
   };
 
+  if (isLoadingUserRole) {
+    return <LogoLoading />;
+  }
+
   return (
     <div>
-      {isLoading ? (
-        <LogoLoading />
-      ) : (
+      {isFetched ? (
         <div className="ml-[12%] mt-[5%] mr-[8%]">
           <div className="flex gap-2">
             {/* Assignment details */}
@@ -128,11 +165,12 @@ export default function Page({ params }: Props) {
 
             {/* Button for submission */}
             {userRole === "student" && (
-              <div className="ml-auto mr-4 my-2">
+              <div className="ml-auto my-2">
                 <Button className="px-6" color="primary" onPress={onOpen}>
                   Submit
                 </Button>
                 <Modal
+                  size={"xl"}
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   isDismissable={false}
@@ -141,8 +179,11 @@ export default function Page({ params }: Props) {
                   <ModalContent>
                     {(onClose) => (
                       <>
-                        <ModalHeader className="flex flex-col gap-1">
+                        <ModalHeader className="flex items-center justify-between mt-4">
                           Submit
+                          <Button onPress={redirectToSubmissionPage}>
+                            View Previous Submissions
+                          </Button>
                         </ModalHeader>
                         <ModalBody>
                           <p>
@@ -151,28 +192,49 @@ export default function Page({ params }: Props) {
                           <Divider className="my-4" />
                           {assignment!.questions!.map((question) => {
                             return (
-                              <div
-                                className="flex items-center"
-                                key={question.id}
-                              >
-                                <p>{question.title}</p>
-                                <FileUpload
-                                  expectedFileTypes={["py"]}
-                                  onFileUpload={(fileContent) => {
-                                    if (
-                                      !fileContent ||
-                                      fileContent.length === 0
-                                    ) {
-                                      return;
-                                    }
+                              <div key={question.id}>
+                                <div
+                                  className="flex items-center"
+                                  key={question.id}
+                                >
+                                  <p className="w-1/4">{question.title}</p>
+                                  <div className="w-1/2 m-1">
+                                    <FileUpload
+                                      expectedFileTypes={["py"]}
+                                      onFileUpload={(fileContent) => {
+                                        if (
+                                          !fileContent ||
+                                          fileContent.length === 0
+                                        ) {
+                                          return;
+                                        }
 
-                                    handleSubmitCode(
-                                      fileContent,
-                                      question.id,
-                                      "python"
-                                    );
-                                  }}
-                                />
+                                        handleFileUpload(
+                                          fileContent,
+                                          question.id,
+                                          "python"
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <Button
+                                    className="w-1/4"
+                                    onPress={() =>
+                                      handleSubmitCode(question.id)
+                                    }
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                                {submissionStatus?.[question.id] && (
+                                  <Button
+                                    onPress={redirectToSubmissionPage}
+                                    fullWidth={true}
+                                  >
+                                    View Feedback
+                                  </Button>
+                                )}
+                                <Divider className="my-4" />
                               </div>
                             );
                           })}
@@ -253,6 +315,8 @@ export default function Page({ params }: Props) {
             return <AssignmentQuestion question={question} key={question.id} />;
           })}
         </div>
+      ) : (
+        <LogoLoading />
       )}
     </div>
   );
