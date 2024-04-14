@@ -152,6 +152,37 @@ paths:
           example: "sample_assignment_id"
       produces:
         - "application/json"
+      responses:
+        200:
+          description: "An array of student IDs"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                studentId:
+                  type: "number"
+                  example: 11
+                name:
+                  type: "string"
+                  example: "John Doe"
+                createdOn:
+                  type: "number"
+                  description: "Creation date in timestamp format"
+                  format: "int"
+                  example: 1630000000000
+
+        404:
+          description: "Assignment ID not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "Assignment not found"
 
   /feedback/generate:
     post:
