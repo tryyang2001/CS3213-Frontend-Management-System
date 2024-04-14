@@ -69,7 +69,10 @@ async function registerUser(req: Request, res: Response): Promise<Response> {
   }
 }
 
-async function loginUser(req: Request, res: Response): Promise<Response> {
+async function loginUser(
+  req: Request,
+  res: Response
+): Promise<Response | void> {
   const { email, password } = req.body;
   const emailSearch = await db.getUserByEmail(email);
   if (emailSearch.rows.length == 0) {
@@ -127,12 +130,12 @@ async function loginUser(req: Request, res: Response): Promise<Response> {
           .send({ message: "Internal server error checking password." });
       });
   }
-  return res
-    .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
-    .send({ message: "Internal server error checking password." });
 }
 
-async function getUserInfo(req: Request, res: Response): Promise<Response> {
+async function getUserInfo(
+  req: Request,
+  res: Response
+): Promise<Response | void> {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
   if (typeof queryUidString !== "string") {
@@ -169,15 +172,12 @@ async function getUserInfo(req: Request, res: Response): Promise<Response> {
       message: "Internal server error getting user by uid.",
     });
   }
-  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-    message: "Internal server error getting user by uid.",
-  });
 }
 
 async function updateUserPassword(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<Response | void> {
   try {
     const { uid, old_password, new_password } = req.body as UpdatePasswordBody;
     const userIdSearch = await db.getUserByUserId(uid);
@@ -239,9 +239,6 @@ async function updateUserPassword(
       message: "Internal server error updating user password.",
     });
   }
-  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-    message: "Internal server error updating user password.",
-  });
 }
 
 async function updateUserInfo(req: Request, res: Response): Promise<Response> {
