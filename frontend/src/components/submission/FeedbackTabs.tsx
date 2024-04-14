@@ -20,23 +20,16 @@ export default function FeedbackTabs({ submission, testcases }: Props) {
   );
   const testcase = testcases ? testcases : [];
   const testcaseContent = testcase.map((tc) => `${tc.input}`);
-  const grade = ["5/5"];
-
   const tabs = [
+    {
+      id: "feedback",
+      label: "Feedback",
+      content: feedbackContent.length ? feedbackContent : ["Code is correct, no feedback required."],
+    },
     {
       id: "testcases",
       label: "Test Cases",
       content: testcaseContent,
-    },
-    {
-      id: "feedback",
-      label: "Feedback",
-      content: feedbackContent,
-    },
-    {
-      id: "grades",
-      label: "Grades",
-      content: grade,
     },
   ];
 
