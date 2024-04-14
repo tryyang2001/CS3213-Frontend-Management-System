@@ -14,10 +14,10 @@ export default function Create() {
 
   return (
     <div className="h-dvh">
-      <b>Create a new assignment</b>
+      <b className="text-2xl font-bold">Create a new assignment</b>
       <Spacer y={4} />
 
-      <div className="my-[5%]">
+      <div className="my-[3%]">
         <AssignmentEditor />
       </div>
     </div>

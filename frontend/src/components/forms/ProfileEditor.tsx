@@ -151,18 +151,18 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
         ""
       )}
       <Popover
-        color="danger"
+        color="primary"
         isOpen={message != ""}
         onOpenChange={() => setMessage("")}
       >
         <PopoverTrigger>
-          <Button color="danger" onClick={() => void handleProfileSubmit()}>
+          <Button color="primary" onClick={() => void handleProfileSubmit()}>
             {" "}
             Save Changes{" "}
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <p className="text-small" color="danger">
+          <p className="text-small" color="primary">
             {message}
           </p>
         </PopoverContent>

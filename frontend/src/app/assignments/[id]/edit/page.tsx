@@ -343,14 +343,14 @@ function Page({ params }: Props) {
             </ModalContent>
           </Modal>
         </div>
-        <b>Update assignment details</b>
+        <b className="text-xl font-bold ml-6 my-4">Update assignment details</b>
         <div className="my-4">
           <AssignmentEditor isEditing />
         </div>
       </div>
 
       <div className="my-4">
-        <b>Update questions</b>
+        <b className="text-xl font-bold ml-6 my-4">Update questions</b>
 
         <div className="mx-[8%] my-4">
           {updatedQuestions.map((question, index) => {
