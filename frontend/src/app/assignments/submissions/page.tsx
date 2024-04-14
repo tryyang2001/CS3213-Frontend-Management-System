@@ -82,10 +82,11 @@ export default function Submissions() {
               const submissionDate = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({
                 questionId: tempQuestionId, studentId: student.uid
               }).then(submission => submission.createdOn);
-              // Set question ID and number to null equivalent as tutor does not require this information
-              assignmentSubmissionsData.push({questionId: "", questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
+              // Set question number to null equivalent as tutor does not require this information
+              assignmentSubmissionsData.push({questionId: crypto.randomUUID(), questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
             }
           }
+          console.log(assignmentSubmissionsData);
           submissionsData[assignment.id] = assignmentSubmissionsData;
         }
         setSubmissions(submissionsData);
