@@ -11,3 +11,28 @@ jobs:
         uses: ./.github/workflows/frontend_CI.yml
     backend_ci:
         uses: ./.github/workflows/Backend_CI.yml
+    deploy_production:
+        name: Deploy Production
+        needs: [frontend_ci, backend_ci]      
+        permissions:
+            checks: write
+            pull-requests: write
+            contents: write
+        runs-on: ${{matrix.os}}
+        strategy:
+            matrix:
+              os: [ubuntu-latest]
+              node-version: [20.x]
+        steps:
+            - name: Checkout Current Branch
+              uses: actions/checkout@v4
+      
+            - name: Use Node.js ${{matrix.node-version}}
+              uses: actions/setup-node@v3
+              with:
+                node-version: ${{matrix.node-version}}
+      
+            - name: Clean up
+              run: |
+                rm -rf frontend/node_modules
+                rm -rf frontend/coverage
