@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
-
 export default function Home() {
   return (
     // feel free to edit/remove this code
