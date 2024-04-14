@@ -29,7 +29,6 @@ model Submission {
 
     createdOn DateTime @default(now())
 
-    @@unique([questionId, studentId])
     @@schema("grading")
 }
 

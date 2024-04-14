@@ -453,7 +453,7 @@ describe("Unit Tests for Grading Controller", () => {
     });
   });
 
-  describe("Unit Test for getSubmissionByQuestionIdAndStudentId", () => {
+  describe("Unit Test for getSubmissionsByQuestionIdAndStudentId", () => {
     describe("Given an existing question id and student id", () => {
       it("should return 200 with the submission", async () => {
         // Arrange
@@ -461,11 +461,13 @@ describe("Unit Tests for Grading Controller", () => {
         const studentId = "1";
 
         const spy = jest
-          .spyOn(GetHandler, "getSubmissionByQuestionIdAndStudentId")
-          .mockResolvedValue({
-            ...StudentSolution.submission,
-            createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
-          });
+          .spyOn(GetHandler, "getSubmissionsByQuestionIdAndStudentId")
+          .mockResolvedValue([
+            {
+              ...StudentSolution.submissions[0],
+              createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
+            },
+          ]);
 
         // Act
         const response = await supertest(app)
@@ -474,15 +476,20 @@ describe("Unit Tests for Grading Controller", () => {
 
         // Assert
         expect(response.status).toBe(HttpStatusCode.OK);
-        expect(Object.keys(response.body).length).toBe(7);
-        expect(response.body).toHaveProperty("id");
-        expect(response.body).toHaveProperty("questionId");
-        expect(response.body).toHaveProperty("studentId");
-        expect(response.body).toHaveProperty("language");
-        expect(response.body).toHaveProperty("code");
-        expect(response.body).toHaveProperty("feedbacks");
-        expect(response.body).toEqual({
-          ...StudentSolution.submission,
+        expect(response.body).toBeInstanceOf(Array);
+        expect(response.body as Array<any>).toHaveLength(1);
+
+        const firstSubmission = (response.body as Array<any>)[0];
+
+        expect(Object.keys(firstSubmission).length).toBe(7);
+        expect(firstSubmission).toHaveProperty("id");
+        expect(firstSubmission).toHaveProperty("questionId");
+        expect(firstSubmission).toHaveProperty("studentId");
+        expect(firstSubmission).toHaveProperty("language");
+        expect(firstSubmission).toHaveProperty("code");
+        expect(firstSubmission).toHaveProperty("feedbacks");
+        expect(firstSubmission).toEqual({
+          ...StudentSolution.submissions[0],
           createdOn: new Date("2024-04-08T00:00:00Z").getTime(),
         });
 
@@ -498,8 +505,8 @@ describe("Unit Tests for Grading Controller", () => {
         const studentId = "999";
 
         const spy = jest
-          .spyOn(GetHandler, "getSubmissionByQuestionIdAndStudentId")
-          .mockResolvedValue(null);
+          .spyOn(GetHandler, "getSubmissionsByQuestionIdAndStudentId")
+          .mockRejectedValue(new NotExistingStudentError(999));
 
         // Act
         const response = await supertest(app)
@@ -513,7 +520,7 @@ describe("Unit Tests for Grading Controller", () => {
         expect(response.body).toHaveProperty("message");
         expect(response.body).toEqual({
           error: "NOT FOUND",
-          message: "No submission found",
+          message: `Invalid student_id. Student with id ${studentId} does not exist`,
         });
 
         // reset the mocks
@@ -550,7 +557,7 @@ describe("Unit Tests for Grading Controller", () => {
         const studentId = "1";
 
         const spy = jest
-          .spyOn(GetHandler, "getSubmissionByQuestionIdAndStudentId")
+          .spyOn(GetHandler, "getSubmissionsByQuestionIdAndStudentId")
           .mockRejectedValue(new Error("Database is down"));
 
         // Act

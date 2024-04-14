@@ -1,10 +1,22 @@
+import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import db from "../models/db";
 
-const getSubmissionByQuestionIdAndStudentId = async (
+const getSubmissionsByQuestionIdAndStudentId = async (
   questionId: string,
   studentId: number
 ) => {
-  const submission = await db.submission.findFirst({
+  // check if the user exists
+  const student = await db.user.findUnique({
+    where: {
+      uid: studentId,
+    },
+  });
+
+  if (!student) {
+    throw new NotExistingStudentError(studentId);
+  }
+
+  const submissions = await db.submission.findMany({
     where: {
       questionId: questionId,
       studentId: studentId,
@@ -23,30 +35,66 @@ const getSubmissionByQuestionIdAndStudentId = async (
       },
       createdOn: true,
     },
+    orderBy: {
+      createdOn: "desc",
+    },
   });
 
-  if (!submission) {
+  return submissions.map((submission) => {
+    return {
+      ...submission,
+      createdOn: submission.createdOn.getTime(),
+    };
+  });
+};
+
+const getLatestSubmissionByQuestionIdAndStudentId = async (
+  questionId: string,
+  studentId: number
+) => {
+  // check if the user exists
+  const student = await db.user.findUnique({
+    where: {
+      uid: studentId,
+    },
+  });
+
+  if (!student) {
+    throw new NotExistingStudentError(studentId);
+  }
+
+  const latestSubmission = await db.submission.findFirst({
+    where: {
+      questionId: questionId,
+      studentId: studentId,
+    },
+    select: {
+      id: true,
+      questionId: true,
+      studentId: true,
+      language: true,
+      code: true,
+      feedbacks: {
+        select: {
+          line: true,
+          hints: true,
+        },
+      },
+      createdOn: true,
+    },
+    orderBy: {
+      createdOn: "desc",
+    },
+  });
+
+  if (!latestSubmission) {
     return null;
   }
 
-  return {
-    id: submission.id,
-    questionId: submission.questionId,
-    studentId: submission.studentId,
-    language: submission.language,
-    code: submission.code,
-    feedbacks: submission.feedbacks.map(
-      (feedback: { line: number; hints: string[] }) => {
-        return {
-          line: feedback.line,
-          hints: feedback.hints,
-        };
-      }
-    ),
-    createdOn: submission.createdOn.getTime(),
-  };
+  return latestSubmission;
 };
 
 export const GetHandler = {
-  getSubmissionByQuestionIdAndStudentId,
+  getSubmissionsByQuestionIdAndStudentId,
+  getLatestSubmissionByQuestionIdAndStudentId,
 };

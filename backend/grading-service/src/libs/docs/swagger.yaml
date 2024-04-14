@@ -90,6 +90,52 @@ paths:
                 type: "string"
                 example: "userId not found"
 
+  /grading/api/questions/:questionId/submission/latest:
+    get:
+      tags:
+        - "Submission"
+      summary: "Get latest submission for a question"
+      description: "Retrieve the latest submission for a question that is associated with a particular student"
+      operationId: "getLatestSubmissionByQuestionIdAndStudentId"
+      parameters:
+        - in: "query"
+          name: "userId"
+          description: "User ID to get the latest submission for"
+          required: true
+          type: "string"
+          example: "sample_user_id"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Latest submission object"
+          schema:
+            $ref: "#/schemas/responses/Submission"
+
+        400:
+          description: "Missing user ID in the query params"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "BAD REQUEST"
+              message:
+                type: "string"
+                example: "userId is required in the query params"
+
+        404:
+          description: "User ID not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "NOT FOUND"
+              message:
+                type: "string"
+                example: "userId not found"
+
   /feedback/generate:
     post:
       tags:
