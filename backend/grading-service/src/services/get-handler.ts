@@ -1,6 +1,10 @@
 import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import db from "../models/db";
-import { Submission, SubmissionInfo, Submitter } from "../types/grading-service";
+import {
+  Submission,
+  SubmissionInfo,
+  Submitter,
+} from "../types/grading-service";
 
 const getSubmissionsByQuestionIdAndStudentId = async (
   questionId: string,
