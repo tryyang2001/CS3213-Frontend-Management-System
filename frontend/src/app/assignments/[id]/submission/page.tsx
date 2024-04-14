@@ -25,13 +25,27 @@ interface Props {
 
 export default function SubmissionPage({ params }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [currentQuestionId, setCurrentQuestionId] = useState("");
+  const [currentQuestionId, setCurrentQuestionId] = useState<string>(localStorage.getItem('currentQuestionId') ?? "");
   const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
   const search = useSearchParams();
+  localStorage.removeItem('currentQuestionId');
+
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
     setCurrentQuestionId(questionId);
+
+    const fetchData = async () => {
+      try {
+        await refetchSubmissions();
+        await refetchTestCases();
+      } catch (error) {
+        console.log("Error fetching submission:", error);
+      }
+    };
+    fetchData().catch((error) => {
+      console.error("Error in fetchData:", error);
+    });
   };
 
   const handleSubmissionSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -46,15 +60,15 @@ export default function SubmissionPage({ params }: Props) {
     queryKey: ["get-assignment", params.id],
     queryFn: async () => {
       const assignment = await assignmentService.getAssignmentById(params.id);
+      // Set the default question to be the first question if it was not found in local store.
+      if (currentQuestionId === "" && assignment && assignment.questions) {
+        setCurrentQuestionId(assignment.questions[0].id)
+      }
       return assignment;
     },
   });
 
-  useEffect(() => {
-    setCurrentQuestionId(assignment?.questions?.[0]?.id ?? "");
-  }, [assignment]);
-
-  const { data: submissions, refetch: refetchSubmissions } = useQuery({
+  const { data: submissions, refetch: refetchSubmissions, isLoading } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
       const studentId = search.get('studentId') as string | undefined;
@@ -64,11 +78,13 @@ export default function SubmissionPage({ params }: Props) {
           questionId: currentQuestionId,
           studentId: parsedStudentId,
         });
-
+      
+      // Latest submission is displayed first
       const sortedSubmissions = submissions.sort(
-        (a, b) => a.createdOn - b.createdOn
+        (a, b) => b.createdOn - a.createdOn
       );
-
+      // Set latest submission to be viewed by default
+      setSelectedSubmissionId(sortedSubmissions[0].id);
       return sortedSubmissions;
     },
   });
@@ -78,25 +94,9 @@ export default function SubmissionPage({ params }: Props) {
     queryFn: async () => {
       const testCases =
         await assignmentService.getQuestionTestCases(currentQuestionId);
-
       return testCases;
     },
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await refetchSubmissions();
-        await refetchTestCases();
-      } catch (error) {
-        console.log("Error fetching submission:", error);
-      }
-    };
-
-    fetchData().catch((error) => {
-      console.error("Error in fetchData:", error);
-    });
-  }, [currentQuestionId, refetchSubmissions, refetchTestCases]);
 
   useEffect(() => {
     if (submissions && submissions.length > 0) {
@@ -151,13 +151,14 @@ export default function SubmissionPage({ params }: Props) {
                 <Select
                   items={submissions ? submissions : []}
                   label="Past Submissions"
-                  placeholder="Select a submission"
+                  selectedKeys={[selectedSubmissionId]}
                   className="max-w-xs"
                   onChange={handleSubmissionSelect}
+                  disallowEmptySelection={true}
                 >
                   {(submission) => (
                     <SelectItem key={submission.id} value={submission.id}>
-                      {submission.createdOn}
+                      {DateUtils.parseTimestampToDate(submission.createdOn)}
                     </SelectItem>
                   )}
                 </Select>

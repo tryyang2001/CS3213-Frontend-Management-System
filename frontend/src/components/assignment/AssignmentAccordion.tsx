@@ -23,8 +23,9 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
   if (!assignments) {
     return notFound();
   }
-  const handleButtonClick = (assignmentId: string, studentId: number) => {
+  const handleButtonClick = (assignmentId: string, studentId: number, questionId: string) => {
     // Navigate to the desired route when the button is clicked
+    localStorage.setItem('currentQuestionId', questionId);
     router.push(`/assignments/${assignmentId}/submission?studentId=${studentId}`);
   };
   
@@ -38,14 +39,6 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
             aria-label={assignment.title}
             title={assignment.title}
           >
-            {userRole === 'student' && (<Button
-              className="bg-primary text-white float-right"
-              onPress={() =>
-                handleButtonClick(assignment.id, submissions[assignment.id][0].studentId)
-              }
-            >
-              View Submission
-            </Button>)}
             <Table
               color="default"
               selectionMode="single"
@@ -56,7 +49,7 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
               <TableHeader>
                 <TableColumn>{userRole === 'student' ? 'Question Number' : 'Student Name'}</TableColumn>
                 <TableColumn>Submission Date and Time</TableColumn>
-                {userRole === 'tutor' ? (<TableColumn>Click to view</TableColumn>) : <TableColumn><></></TableColumn>}
+                <TableColumn>Click to view</TableColumn>
               </TableHeader>
               <TableBody
                 items={submissions[assignment.id] 
@@ -70,18 +63,17 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
                     <TableCell>{submission.submissionDate === 0 ?
                       "Not Submitted" : 
                       DateUtils.parseTimestampToDate(submission.submissionDate)}</TableCell>
-                    {userRole === 'tutor' ? 
-                    (<TableCell>
+                    <TableCell>
                       <Button
                         className = "bg-primary text-white"
                         isDisabled={submission.submissionDate === 0}
                         onClick={() =>
-                          handleButtonClick(assignment.id, submission.studentId)
+                          handleButtonClick(assignment.id, submission.studentId, submission.questionId)
                         }
                       >
                         {submission.submissionDate !== 0 ? 'View Submission' : 'No Submission'}
                       </Button>
-                    </TableCell>) : <TableCell><></></TableCell>}
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
