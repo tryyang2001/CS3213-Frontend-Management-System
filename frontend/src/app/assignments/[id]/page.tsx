@@ -23,11 +23,21 @@ import {
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   params: {
     id: string;
   };
+}
+
+interface FileContent {
+  language: string;
+  fileContent: string;
+}
+
+interface FileContentsState {
+  [questionId: string]: FileContent;
 }
 
 export default function Page({ params }: Props) {
@@ -43,6 +53,8 @@ export default function Page({ params }: Props) {
   const { user } = useUserContext();
   const userId = user?.uid ?? 0;
   const userRole = user?.role ?? "student";
+
+  const [fileContents, setFileContents] = useState<FileContentsState>({});
 
   const {
     data: assignment,
@@ -84,16 +96,31 @@ export default function Page({ params }: Props) {
       );
   };
 
-  const handleSubmitCode = (
+  const handleFileUpload = (
     fileContent: string,
     questionId: string,
     language: string
   ) => {
-    if (fileContent) {
+    setFileContents((prevState) => ({
+      ...prevState,
+      [questionId]: { fileContent: fileContent, language: language },
+    }));
+    // console.log(fileContents);
+  };
+
+  useEffect(() => {
+    console.log(fileContents);
+  }, [fileContents]);
+
+  const handleSubmitCode = (questionId: string) => {
+    if (fileContents && fileContents[questionId]) {
+      const { language, fileContent } = fileContents[questionId];
+      console.log(language);
+      console.log(fileContent);
       const requestBody: PostFeedbackBody = {
-        language: language, // need to change
+        language: language,
         source_code: fileContent,
-        question_id: questionId, // need to change
+        question_id: questionId,
         student_id: userId,
       };
 
@@ -169,7 +196,7 @@ export default function Page({ params }: Props) {
                                         return;
                                       }
 
-                                      handleSubmitCode(
+                                      handleFileUpload(
                                         fileContent,
                                         question.id,
                                         "python"
@@ -178,7 +205,12 @@ export default function Page({ params }: Props) {
                                   />
                                 </div>
 
-                                <Button className="w-1/4">Submit</Button>
+                                <Button
+                                  className="w-1/4"
+                                  onPress={() => handleSubmitCode(question.id)}
+                                >
+                                  Submit
+                                </Button>
                               </div>
                             );
                           })}
