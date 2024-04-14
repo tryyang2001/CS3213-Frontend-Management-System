@@ -1,12 +1,14 @@
 name: Backend Services CI
 # targeting pull requests to master branch
 on:
+  workflow_call:
   pull_request:
     branches: [master]
   push:
     branches: [master]
 jobs:
-  tests:
+  Backend_build:
+    name: Backend build
     permissions:
       checks: write
       pull-requests: write
@@ -38,18 +40,42 @@ jobs:
           cmd: install
           dir: backend/${{matrix.service}}
 
-      - name: Run Test Suites
-        env:
-          NODE_ENV: test
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: test
-          dir: backend/${{matrix.service}}
-
       - name: Run Yarn Build
         env:
           NODE_ENV: test
         uses: borales/actions-yarn@v4
         with:
           cmd: build
+          dir: backend/${{matrix.service}}
+  Backend_tests:
+    name: Backend tests
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: write
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [20.x]
+        service: [assignment-service, grading-service, user-service]
+
+    steps:
+      - name: Checkout Current Branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: Clean up
+        run: |
+          rm -rf backend/${{matrix.service}}/node_modules
+          rm -rf backend/${{matrix.service}}/coverage
+
+      - name: Install Dependencies Using yarn
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
           dir: backend/${{matrix.service}}
