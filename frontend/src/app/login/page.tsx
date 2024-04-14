@@ -74,7 +74,7 @@ export default function Home() {
         />
 
         <PasswordInput
-          label={"Password"}
+          label="Password"
           password={password}
           setPassword={setPassword}
         />
@@ -106,3 +106,4 @@ export default function Home() {
     </div>
   );
 }
+/* eslint-enable @typescript-eslint/no-misused-promises */

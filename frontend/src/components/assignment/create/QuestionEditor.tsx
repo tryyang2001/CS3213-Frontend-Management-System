@@ -50,6 +50,8 @@ function QuestionEditor({
     setLanguage(initialQuestion.referenceSolution?.language ?? "python");
     setReferenceSolutionCode(initialQuestion.referenceSolution?.code ?? "");
     setTestCases(initialQuestion.testCases ?? []);
+    // runs once when loaded, does not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -71,6 +73,8 @@ function QuestionEditor({
     ) {
       onQuestionChange(newQuestion);
     }
+    // onQuestionChange and initialQuestion do not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     title,
     description,
@@ -203,11 +207,13 @@ function QuestionEditor({
                   vertical: "hidden",
                   horizontal: "hidden",
                 },
-                readOnly: true,
               }}
               height={editorHeight}
               defaultLanguage={language}
               value={referenceSolutionCode}
+              onChange={(code) =>
+                setReferenceSolutionCode(code ?? referenceSolutionCode)
+              }
               className="mt-2"
             />
           )}

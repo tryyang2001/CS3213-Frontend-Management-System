@@ -82,13 +82,15 @@ export default function SideBar() {
         return;
       });
     }
+    // router does not change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // obtain current path, if is login/sign up, don't render SideBar
   const currentPath = usePathname();
 
   if (currentPath === "/login" || currentPath === "/sign-up") {
-    return null;
+    return <></>;
   }
 
   return (
@@ -160,7 +162,7 @@ export default function SideBar() {
               <Spacer y={60} />
               {menuItems.map((item: MenuItem) => {
                 if (item.id === 2 && (user?.role ?? "student") === "student") {
-                  return null;
+                  return <></>;
                 }
 
                 return (

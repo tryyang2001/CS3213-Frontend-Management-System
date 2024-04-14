@@ -4,8 +4,14 @@ export const config = {
   matchers: "/:path*",
 };
 
-export default function middleware(request: NextRequest) {
-  const publicRoutes = ["/_next", "/public", "/login", "/sign-up"];
+const middleware = (request: NextRequest) => {
+  const publicRoutes = [
+    "/_next",
+    "/public",
+    "/login",
+    "/sign-up",
+    "/api/uploadthing",
+  ];
   const redirectRoutes = ["/"];
 
   const path = request.nextUrl.pathname;
@@ -18,15 +24,17 @@ export default function middleware(request: NextRequest) {
   const userCookie = request.cookies.get("token");
 
   if (!userCookie) {
-    const newURL = new URL("/login", request.nextUrl.origin)
+    const newURL = new URL("/login", request.nextUrl.origin);
     return NextResponse.redirect(newURL);
   }
 
   // redirect to dashboard page if home page is accessed
   if (redirectRoutes.includes(path)) {
-    const newURL = new URL("/dashboard", request.nextUrl.origin)
+    const newURL = new URL("/dashboard", request.nextUrl.origin);
     return NextResponse.redirect(newURL);
   }
 
   return NextResponse.next();
-}
+};
+
+export default middleware;
