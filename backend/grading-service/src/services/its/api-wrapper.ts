@@ -203,4 +203,27 @@ async function saveSubmissionWithFeedbacks(
       };
     }),
   });
+
+  // find which assignmentId the question belongs to
+  const questionAssignmentId = await db.question.findUnique({
+    where: {
+      id: questionId,
+    },
+    select: {
+      assignmentId: true,
+    },
+  });
+
+  if (!questionAssignmentId) {
+    return;
+  }
+
+  // register submitter
+  await db.submitter.create({
+    data: {
+      studentId: studentId,
+      assignmentId: questionAssignmentId.assignmentId!,
+      submissionId: submission.id,
+    },
+  });
 }

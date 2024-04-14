@@ -94,7 +94,59 @@ const getLatestSubmissionByQuestionIdAndStudentId = async (
   return latestSubmission;
 };
 
+interface Submitter {
+  studentId: number;
+  name: string;
+  createdOn: number;
+}
+
+const getSubmittersByAssignmentId = async (
+  assignmentId: string
+): Promise<Submitter[] | null> => {
+  // check if the assignment exists
+  const assignment = await db.assignment.findUnique({
+    where: {
+      id: assignmentId,
+    },
+  });
+
+  if (!assignment) {
+    return null;
+  }
+
+  // find all unique submitters (student id) with the latest submission createdOn
+  const submitters = await db.submission.findMany({
+    where: {
+      question: {
+        assignmentId: assignmentId,
+      },
+    },
+    select: {
+      studentId: true,
+      student: {
+        select: {
+          name: true,
+        },
+      },
+      createdOn: true,
+    },
+    orderBy: {
+      createdOn: "desc",
+    },
+    distinct: ["studentId"],
+  });
+
+  return submitters.map((submitter) => {
+    return {
+      studentId: submitter.studentId,
+      name: submitter.student.name,
+      createdOn: submitter.createdOn.getTime(),
+    } as Submitter;
+  });
+};
+
 export const GetHandler = {
   getSubmissionsByQuestionIdAndStudentId,
   getLatestSubmissionByQuestionIdAndStudentId,
+  getSubmittersByAssignmentId,
 };

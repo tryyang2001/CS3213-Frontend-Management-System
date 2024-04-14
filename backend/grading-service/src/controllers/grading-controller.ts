@@ -108,6 +108,27 @@ const getLatestSubmissionByQuestionIdAndStudentId = async (
   }
 };
 
+const getSubmittersByAssignmentId = async (
+  request: Request,
+  response: Response
+) => {
+  try {
+    const { assignmentId } = request.params;
+
+    const submitters =
+      await GetHandler.getSubmittersByAssignmentId(assignmentId);
+
+    response.status(HttpStatusCode.OK).json(submitters);
+  } catch (error) {
+    console.log(error);
+
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      error: "INTERNAL SERVER ERROR",
+      message: "An unexpected error has occurred. Please try again later",
+    });
+  }
+};
+
 const postParser = async (request: Request, response: Response) => {
   try {
     const { language, source_code } = PostParserValidator.parse(request.body);
@@ -223,6 +244,7 @@ const postFeedback = async (request: Request, response: Response) => {
 export const GradingController = {
   getSubmissionsByQuestionIdAndStudentId,
   getLatestSubmissionByQuestionIdAndStudentId,
+  getSubmittersByAssignmentId,
   postParser,
   postFeedback,
 };

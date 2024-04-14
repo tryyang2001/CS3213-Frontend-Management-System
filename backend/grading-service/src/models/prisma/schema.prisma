@@ -27,6 +27,24 @@ model Submission {
 
     feedbacks Feedback[]
 
+    createdOn DateTime    @default(now())
+    Submitter Submitter[]
+
+    @@schema("grading")
+}
+
+model Submitter {
+    id String @id @default(cuid())
+
+    submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    submissionId String
+
+    student   User @relation(fields: [studentId], references: [uid], onDelete: Cascade)
+    studentId Int
+
+    assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+    assignmentId String
+
     createdOn DateTime @default(now())
 
     @@schema("grading")
@@ -107,8 +125,9 @@ model Assignment {
     // string for now, will be replaced by user model
     authors String[]
 
-    createdOn DateTime @default(now())
-    updatedOn DateTime @updatedAt
+    createdOn DateTime    @default(now())
+    updatedOn DateTime    @updatedAt
+    Submitter Submitter[]
 
     @@schema("assignments")
 }
@@ -127,6 +146,7 @@ model User {
 
     role       String
     Submission Submission[]
+    Submitter  Submitter[]
 
     @@schema("users")
 }
