@@ -4,7 +4,20 @@ export const getCreateQuestionRequestBody = ({
 }: {
   includeReferenceSolution?: boolean;
   includeTestCases?: boolean;
-} = {}) => {
+} = {}): {
+  title: string;
+  description: string;
+  deadline: number;
+  testCases?: {
+    input: string;
+    output: string;
+    isPublic: boolean;
+  }[];
+  referenceSolution?: {
+    language: "python" | "c";
+    code: string;
+  };
+} => {
   includeReferenceSolution = includeReferenceSolution ?? true;
   includeTestCases = includeTestCases ?? true;
 

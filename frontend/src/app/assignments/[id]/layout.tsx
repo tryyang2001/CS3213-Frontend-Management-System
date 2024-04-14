@@ -23,7 +23,7 @@ export const generateMetadata = async ({
   const assignmentTitle = currentAssignment?.title ?? "No such assignment";
 
   const metadata: Metadata = {
-    title: assignmentTitle,
+    title: `Assignment - ${assignmentTitle}`,
     description: `Assignment page for ${assignmentTitle}`,
   };
 

@@ -1,4 +1,10 @@
-export const getCreateQuestionTestCasesRequestBody = () => {
+export const getCreateQuestionTestCasesRequestBody = (): {
+  testCases: {
+    input: string;
+    output: string;
+    isPublic: boolean;
+  }[];
+} => {
   return {
     testCases: [
       {

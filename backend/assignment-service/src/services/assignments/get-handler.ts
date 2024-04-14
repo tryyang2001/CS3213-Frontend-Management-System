@@ -1,12 +1,12 @@
 import db from "../../models/db";
-import { Assignment } from "../../models/types/assignment";
-import { Question } from "../../models/types/question";
+import { Assignment } from "../../types/assignment";
+import { Question } from "../../types/question";
 
 const getAssignmentsByUserId = async (
   userId: number,
   includePast?: boolean,
   isPublishedOnly?: boolean
-) => {
+): Promise<Assignment[] | null> => {
   // check if the user exists
   const user = await db.user.findUnique({
     where: {
@@ -29,8 +29,6 @@ const getAssignmentsByUserId = async (
     },
   });
 
-  // TODO: search user under courses, what assignments are there
-
   const assignmentsDto: Assignment[] = assignments.map((assignment) => {
     return {
       id: assignment.id,
@@ -47,7 +45,7 @@ const getAssignmentsByUserId = async (
   return assignmentsDto;
 };
 
-const getAssignmentById = async (id: string) => {
+const getAssignmentById = async (id: string): Promise<Assignment | null> => {
   const assignment = await db.assignment.findUnique({
     where: {
       id: id,

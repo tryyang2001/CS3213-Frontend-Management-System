@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 import db from "../models/db";
 
-const getHealth = async (_: Request, response: Response) => {
+const getHealth = async (_: Request, response: Response): Promise<void> => {
   try {
     await db.$queryRaw`SELECT 1`;
 

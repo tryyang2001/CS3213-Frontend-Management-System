@@ -95,7 +95,7 @@ export default function Submissions() {
   });
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       {(isLoading) ?
        (<LogoLoading/>) :
        (<AssignmentAccordion assignments={assignments} userRole={user?.role ?? ""} submissions={submissions}/>)

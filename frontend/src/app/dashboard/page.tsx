@@ -31,14 +31,11 @@ export default function DashBoard() {
   });
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <AssignmentList
-          assignments={assignments}
-          userRole={user?.role ?? "student"}
-        />
+        <AssignmentList assignments={assignments} userRole={user?.role} />
       )}
     </div>
   );

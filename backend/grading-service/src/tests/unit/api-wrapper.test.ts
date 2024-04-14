@@ -12,8 +12,6 @@ import HttpStatusCode from "../../libs/enums/HttpStatusCode";
 import CodeError from "../payloads/code-error";
 import NotExistingStudentError from "../../libs/errors/NotExistingStudentError";
 
-const NODE_ENV = "test";
-
 const axiosMock = api as jest.Mocked<typeof api>;
 
 describe("Unit tests for generateParser service", () => {
@@ -129,7 +127,7 @@ describe("Unit tests for generateFeedback service", () => {
         output: "False",
       });
 
-      axiosMock.post = jest.fn().mockImplementation((url, data) => {
+      axiosMock.post = jest.fn().mockImplementation((url, _) => {
         if (url.includes("feedback_error")) {
           return Promise.resolve({
             data: [
@@ -374,6 +372,9 @@ describe("Unit tests for generateFeedback service", () => {
 
       // Assert
       await expect(apiCall).rejects.toThrow(NotExistingTestCaseError);
+
+      // reset the mocks
+      spy.mockRestore();
     });
   });
 
@@ -510,7 +511,12 @@ function setupMockedGenerateErrorFeedbackParams(
     studentExists: true,
     withoutTargetFunction: false,
   }
-) {
+): {
+  language: string;
+  studentCode: string;
+  questionId: string;
+  studentId: number;
+} {
   let language: string;
   let studentCode: string;
 

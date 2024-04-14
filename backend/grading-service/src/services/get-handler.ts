@@ -1,5 +1,6 @@
 import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import db from "../models/db";
+import { Submission } from "../types/grading-service";
 
 const getSubmissionsByQuestionIdAndStudentId = async (
   questionId: string,
@@ -51,7 +52,7 @@ const getSubmissionsByQuestionIdAndStudentId = async (
 const getLatestSubmissionByQuestionIdAndStudentId = async (
   questionId: string,
   studentId: number
-) => {
+): Promise<Submission | null> => {
   // check if the user exists
   const student = await db.user.findUnique({
     where: {

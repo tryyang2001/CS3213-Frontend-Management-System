@@ -19,13 +19,13 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     id: 1,
-    label: "Dashboard",
+    label: "Assignments",
     icon: <Icons.Dashboard className="text-2xl" />,
     link: "/dashboard",
   },
   {
     id: 2,
-    label: "Create New Assignment",
+    label: "Create Assignment",
     icon: <Icons.CreateNewInstance className="text-2xl" />,
     link: "/assignments/create",
   },
@@ -50,6 +50,8 @@ export default function SideBar() {
       ["w-20"]: isCollapsed,
     }
   );
+
+  const [isLoadingUserRole, setIsLoadingUserRole] = useState(true);
 
   const onMouseOver = () => {
     setIsCollapsible(!isCollapsible);
@@ -81,6 +83,8 @@ export default function SideBar() {
       fetchUserInfo().catch((_err) => {
         return;
       });
+
+      setIsLoadingUserRole(false);
     }
     // router does not change
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,7 +93,11 @@ export default function SideBar() {
   // obtain current path, if is login/sign up, don't render SideBar
   const currentPath = usePathname();
 
-  if (currentPath === "/login" || currentPath === "/sign-up") {
+  if (
+    currentPath === "/login" ||
+    currentPath === "/sign-up" ||
+    isLoadingUserRole
+  ) {
     return <></>;
   }
 
@@ -99,10 +107,10 @@ export default function SideBar() {
       onMouseEnter={onMouseOver}
       onMouseLeave={onMouseOver}
     >
-      <div className="flex flex-col relative">
-        <div className="flex items-center pl-1 gap-4">
+      <div className="flex flex-col relative h-full">
+        <div className="flex h-full pl-1 gap-4">
           {isCollapsed ? (
-            <div className="block">
+            <div className="flex flex-col h-full">
               <div className="mb-4">
                 <Button
                   isIconOnly
@@ -121,22 +129,33 @@ export default function SideBar() {
                 />
               </UserDropdown>
 
-              <Spacer y={60} />
+              <div className="flex-1 flex flex-col justify-center items-center">
+                <Spacer y={1.5} />
+                {menuItems.map((item: MenuItem) => {
+                  if (
+                    item.id === 2 &&
+                    (user?.role ?? "student") === "student"
+                  ) {
+                    return <div key={item.id}></div>;
+                  }
 
-              {menuItems.map((item: MenuItem) => (
-                <Button
-                  isIconOnly
-                  key={item.id}
-                  // onClick={handleToggleCollapse}
-                  className="text-black"
-                  onPress={() => handleNavigate(item.link)}
-                >
-                  {item.icon}
-                </Button>
-              ))}
+                  return (
+                    <Button
+                      isIconOnly
+                      key={item.id}
+                      className="flex text-black text-left items-center h-10"
+                      onPress={() => handleNavigate(item.link)}
+                    >
+                      {item.icon}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              <Spacer y={20} />
             </div>
           ) : (
-            <div className="flex flex-col w-full items-start">
+            <div className="flex flex-col h-full w-full items-start">
               <div className="mb-4">
                 <Button
                   isIconOnly
@@ -159,24 +178,29 @@ export default function SideBar() {
                 />
               </UserDropdown>
 
-              <Spacer y={60} />
-              {menuItems.map((item: MenuItem) => {
-                if (item.id === 2 && (user?.role ?? "student") === "student") {
-                  return <></>;
-                }
+              <div className="flex-1 flex flex-col justify-center items-center">
+                {menuItems.map((item: MenuItem) => {
+                  if (
+                    item.id === 2 &&
+                    (user?.role ?? "student") === "student"
+                  ) {
+                    return <div key={item.id}></div>;
+                  }
 
-                return (
-                  <Button
-                    key={item.id}
-                    className="flex text-black text-left items-center justify-start p-2"
-                    fullWidth={true}
-                    startContent={item.icon}
-                    onPress={() => handleNavigate(item.link)}
-                  >
-                    {item.label}
-                  </Button>
-                );
-              })}
+                  return (
+                    <Button
+                      key={item.id}
+                      className="flex text-black text-left justify-start h-10 pl-2"
+                      fullWidth={true}
+                      startContent={item.icon}
+                      onPress={() => handleNavigate(item.link)}
+                    >
+                      {item.label}
+                    </Button>
+                  );
+                })}
+              </div>
+              <Spacer y={20} />
             </div>
           )}
         </div>

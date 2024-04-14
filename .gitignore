@@ -1,3 +1,5 @@
 # ignoring any env files and node_modules in each microservice, will be helpful for local development
 **/.env*
 **/node_modules/**
+node_modules
+.env*

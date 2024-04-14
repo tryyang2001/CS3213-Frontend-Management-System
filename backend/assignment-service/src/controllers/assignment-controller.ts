@@ -10,7 +10,10 @@ import { PutHandler } from "../services/assignments/put-handler";
 import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
 import { GetAssignmentsQueryValidator } from "../libs/validators/assignments/get-assignments-validator";
 
-const getAssignmentsByUserId = async (request: Request, response: Response) => {
+const getAssignmentsByUserId = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     // obtain userId from the query param
 
@@ -24,12 +27,12 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
 
     const { userId, includePast, isPublished } =
       GetAssignmentsQueryValidator.parse(request.query);
-    
-      const assignments = await GetHandler.getAssignmentsByUserId(
-        userId,
-        includePast,
-        isPublished
-      );
+
+    const assignments = await GetHandler.getAssignmentsByUserId(
+      userId,
+      includePast,
+      isPublished
+    );
 
     if (!assignments) {
       response.status(HttpStatusCode.NOT_FOUND).json({
@@ -56,7 +59,10 @@ const getAssignmentsByUserId = async (request: Request, response: Response) => {
   }
 };
 
-const getAssignmentById = async (request: Request, response: Response) => {
+const getAssignmentById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     const assignmentId = request.params.id;
 
@@ -79,7 +85,10 @@ const getAssignmentById = async (request: Request, response: Response) => {
   }
 };
 
-const createAssignment = async (request: Request, response: Response) => {
+const createAssignment = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     // request body cannot be empty
     if (!request.body || Object.keys(request.body).length === 0) {
@@ -123,7 +132,10 @@ const createAssignment = async (request: Request, response: Response) => {
   }
 };
 
-const updateAssignmentById = async (request: Request, response: Response) => {
+const updateAssignmentById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -177,7 +189,10 @@ const updateAssignmentById = async (request: Request, response: Response) => {
   }
 };
 
-const deleteAssignmentById = async (request: Request, response: Response) => {
+const deleteAssignmentById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     const assignmentId = request.params.id;
 
