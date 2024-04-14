@@ -12,6 +12,12 @@ import { getUserResponseBody } from "../../payload/response/get-user-response-bo
 import { getUpdateUserPasswordRequestBody } from "../../payload/request/update-user-password-request-body";
 import { NextFunction } from "express";
 import HttpStatusCode from "../../../libs/enums/HttpStatusCode";
+import { User } from "../../../types/user";
+import {
+  LoginBody,
+  RegisterBody,
+  UpdatePasswordBody,
+} from "../../../types/request-body";
 
 process.env.NODE_ENV = "test";
 

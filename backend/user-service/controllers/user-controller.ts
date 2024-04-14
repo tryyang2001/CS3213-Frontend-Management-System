@@ -3,6 +3,7 @@ import jwt, { Secret } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../models/user-model";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
+import { UpdateFields, UpdatePasswordBody } from "../types/request-body";
 
 async function health(_req: Request, res: Response): Promise<Response> {
   try {

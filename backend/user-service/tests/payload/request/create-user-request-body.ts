@@ -1,3 +1,5 @@
+import { RegisterBody } from "../../../types/request-body";
+
 export const getCreateUserRequestBody: () => RegisterBody = () => {
   return {
     email: "test@example.com",

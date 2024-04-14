@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { Secret } from "jsonwebtoken";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 import db from "../models/user-model";
+import { DecryptedToken } from "../types/decryptedo-token";
 
 async function verifyToken(
   req: Request,

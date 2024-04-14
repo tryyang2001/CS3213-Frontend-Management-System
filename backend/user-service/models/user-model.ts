@@ -1,5 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../psql";
+import { UpdateFields } from "../types/request-body";
 
 async function checkDatabase(): Promise<QueryResult> {
   const result: QueryResult = await pool.query('SELECT * FROM users."User"');

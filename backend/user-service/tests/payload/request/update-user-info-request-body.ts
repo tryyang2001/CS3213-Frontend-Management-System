@@ -1,3 +1,5 @@
+import { UpdateFields } from "../../../types/request-body";
+
 export const getUpdateUserInfoRequestBody: () => UpdateFields = () => {
   return {
     email: "test@example.com",
