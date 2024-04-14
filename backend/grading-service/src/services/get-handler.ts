@@ -1,6 +1,6 @@
 import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import db from "../models/db";
-import { Submission } from "../types/grading-service";
+import { Submission, SubmissionInfo, Submitter } from "../types/grading-service";
 
 const getSubmissionsByQuestionIdAndStudentId = async (
   questionId: string,
@@ -110,12 +110,6 @@ const getLatestSubmissionByQuestionIdAndStudentId = async (
   };
 };
 
-interface Submitter {
-  studentId: number;
-  name: string;
-  createdOn: number;
-}
-
 const getSubmittersByAssignmentId = async (
   assignmentId: string
 ): Promise<Submitter[] | null> => {
@@ -160,11 +154,6 @@ const getSubmittersByAssignmentId = async (
     } as Submitter;
   });
 };
-
-interface SubmissionInfo {
-  questionId: string;
-  createdOn: number;
-}
 
 const getSubmissionInfo = async (
   assignmentId: string,
