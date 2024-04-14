@@ -110,7 +110,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: users
-        image: fmdevsimgs.azurecr.io/cs3213-users
+        image: fmdevsimgs.azurecr.io/cs3213-user
         imagePullPolicy: Always
         ports:
         - containerPort: 3001
