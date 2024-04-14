@@ -2,7 +2,7 @@ version: '3'
 services:
   users:
     container_name: users
-    image: fmdevsimages.azurecr.io/cs3213-users:latest
+    image: users:latest
     hostname: users
     build:
       context: ./backend/user-service
@@ -13,7 +13,7 @@ services:
 
   assignment:
     container_name: assignment
-    image: fmdevsimages.azurecr.io/cs3213-assignment:latest
+    image: assignment:latest
     hostname: assignment
     build:
       context: ./backend/assignment-service
@@ -24,7 +24,7 @@ services:
 
   grading:
     container_name: grading
-    image: fmdevsimages.azurecr.io/cs3213-grading:latest
+    image: grading:latest
     hostname: grading
     build:
       context: ./backend/grading-service
@@ -35,13 +35,12 @@ services:
 
   frontend:
     container_name: frontend
-    image: fmdevsimages.azurecr.io/cs3213-frontend:latest
+    image: frontend:latest
     hostname: frontend
     build:
       context: ./frontend
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
+    env_file:
+      - ./frontend/.env
     ports:
       - "3000:3000"
 
