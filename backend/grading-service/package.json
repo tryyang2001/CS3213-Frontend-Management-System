@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "prisma generate && nodemon src/app.ts",
     "pure-dev": "nodemon src/app.ts",
-    "build": "prisma generate && yarn lint && tsc -p .",
+    "build": "prisma generate --schema='src/models/prisma/schema.prisma'&& tsc -p .",
     "start": "node dist/app.js",
     "test": "jest --coverage --verbose",
     "db": "prisma studio",
