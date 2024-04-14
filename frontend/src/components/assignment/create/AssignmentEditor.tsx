@@ -3,7 +3,7 @@
 import { Button, Input, Switch, Tooltip } from "@nextui-org/react";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import DescriptionField from "./DescriptionField";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import { notFound, useRouter } from "next/navigation";
 import DateUtils from "@/utils/dateUtils";
 import FieldLabel from "./FieldLabel";
@@ -49,6 +49,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
       setDescription(assignment.description ?? "");
       setIsPublished(assignment.isPublished);
     }
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const { toast } = useToast();
   const { user } = useUserContext();
@@ -69,6 +71,8 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
           break;
       }
     },
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [title, deadline, description]
   );
 
@@ -79,16 +83,17 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
 
     if (isEditing) {
       // update assignment
-      AssignmentService.updateAssignment(assignment!.id, {
-        title,
-        deadline,
-        description,
-        isPublished,
-        // if uid is alr in authors, don't add it again
-        authors: assignment!.authors.includes(user?.uid ?? 0)
-          ? assignment!.authors
-          : [...assignment!.authors, user?.uid ?? 0],
-      })
+      assignmentService
+        .updateAssignment(assignment!.id, {
+          title,
+          deadline,
+          description,
+          isPublished,
+          // if uid is alr in authors, don't add it again
+          authors: assignment!.authors.includes(user?.uid ?? 0)
+            ? assignment!.authors
+            : [...assignment!.authors, user?.uid ?? 0],
+        })
         .then((updatedAssignment) => {
           if (!updatedAssignment) {
             return notFound();
@@ -110,13 +115,14 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         });
     } else {
       // create assignment
-      AssignmentService.createAssignment({
-        title,
-        deadline,
-        description,
-        isPublished,
-        authors: [user?.uid ?? 0],
-      })
+      assignmentService
+        .createAssignment({
+          title,
+          deadline,
+          description,
+          isPublished,
+          authors: [user?.uid ?? 0],
+        })
         .then((createdAssignment) => {
           if (!createdAssignment) {
             return notFound();

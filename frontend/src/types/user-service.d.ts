@@ -7,7 +7,7 @@ interface UserInfo {
   name: string;
   email: string;
   bio: string;
-  photo?: string;
+  avatarUrl?: string;
 }
 
 interface ErrorResponse {

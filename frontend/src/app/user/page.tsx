@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 export default function Page() {
   const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [ userInfo, setUserInfo ] = useState<UserInfo>({} as UserInfo);
+  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -39,7 +39,7 @@ export default function Page() {
             setIsLoading(false);
           }
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error fetching user info:", error);
         toast({
           title: "Cannot fetch userpaage",
@@ -51,11 +51,15 @@ export default function Page() {
       }
     };
     if (user) {
-      fetchUserInfo().catch((_err) => {return;});
+      fetchUserInfo().catch((_err) => {
+        return;
+      });
     } else {
       setIsLoading(true);
       router.push("/");
     }
+    // only fetch once, we do not need to update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -66,7 +70,7 @@ export default function Page() {
         <div className="w-full">
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Account </div>
-            <ProfileEditor userInfo={userInfo}/>
+            <ProfileEditor userInfo={userInfo} />
           </div>
           <div className="flex w-full justify-around gap-12 pt-10">
             <div> Your Profile </div>

@@ -6,8 +6,8 @@ import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
 import { Button, Tooltip } from "@nextui-org/react";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -80,7 +80,8 @@ function Page({ params }: Props) {
 
   const handleSaveCreatedQuestions = () => {
     // create questions
-    AssignmentService.createQuestions(assignment.id, questions)
+    assignmentService
+      .createQuestions(assignment.id, questions)
       .then(() => {
         // so that the user can't revisit this page again
         disableAddingQuestion();
