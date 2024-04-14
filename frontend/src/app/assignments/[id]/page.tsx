@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AssignmentPage from "@/components/assignment/AssignmentPage";
 import AssignmentQuestion from "@/components/assignment/AssignmentQuestion";
 import FileUpload from "@/components/common/FileUpload";
@@ -24,7 +24,6 @@ import {
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface Props {
   params: {
@@ -194,7 +193,7 @@ export default function Page({ params }: Props) {
                           <Divider className="my-4" />
                           {assignment!.questions!.map((question) => {
                             return (
-                              <div>
+                              <div key={question.id}>
                                 <div
                                   className="flex items-center"
                                   key={question.id}
