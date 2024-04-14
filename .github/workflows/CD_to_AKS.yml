@@ -51,20 +51,14 @@ jobs:
       - name: Build and push grading service image to ACR
         run: |
           cd backend/grading-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.GRADING_SECRETS }}"
           docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
-        env:
-          ITS_API_URL: ${{ secrets.ITS_API_URL }}
-          POSTGRESQL_DB_URL: ${{ secrets.POSTGRESQL_DB_URL }}
 
       - name: Build and push assignment image to ACR
         run: |
           cd backend/assignment-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.ASSIGNMENT_SECRETS }}"
           docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
-        env:
-          POSTGRESQL_DB_PASSWORD: ${{ secrets.POSTGRESQL_DB_PASSWORD }}
-          POSTGRESQL_DB_URL: ${{ secrets.POSTGRESQL_DB_URL }}
           
   deploy:
     permissions:
