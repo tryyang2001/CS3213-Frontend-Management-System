@@ -68,7 +68,11 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
                         className = "bg-primary text-white"
                         isDisabled={submission.submissionDate === 0}
                         onClick={() =>
-                          handleButtonClick(assignment.id, submission.studentId, submission.questionId)
+                          handleButtonClick(
+                            assignment.id, 
+                            submission.studentId, 
+                            (submission.questionNo !== 0 ? submission.questionId : "")
+                          )
                         }
                       >
                         {submission.submissionDate !== 0 ? 'View Submission' : 'No Submission'}

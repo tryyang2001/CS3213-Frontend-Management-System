@@ -74,6 +74,30 @@ const getSubmissionsByQuestionIdAndStudentId = async ({
   }
 };
 
+const getSubmittersByAssignmentId = async (
+  assignmentId : string
+) => {
+  try {
+    const response = await api.get(
+      `/assignments/${assignmentId}/submitters`
+    );
+    const submitters = response.data as Submitter[];
+    return submitters;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      switch ((error as AxiosError).response?.status) {
+        case HttpStatusCode.NOT_FOUND:
+          // Returns a null equivalent of Submitters
+          return [];
+        default:
+          throw new Error("Failed to fetch submitters");
+      }
+    }
+
+    throw new Error("Failed to fetch submitters");
+  }
+};
+
 const postFeedback = async (requestBody: PostFeedbackBody) => {
   try {
     const response = await api.post("/feedback/generate", requestBody);
@@ -88,6 +112,7 @@ const postFeedback = async (requestBody: PostFeedbackBody) => {
 
 const GradingService = {
   getLatestSubmissionByQuestionIdAndStudentId,
+  getSubmittersByAssignmentId,
   getSubmissionsByQuestionIdAndStudentId,
   postFeedback,
 };

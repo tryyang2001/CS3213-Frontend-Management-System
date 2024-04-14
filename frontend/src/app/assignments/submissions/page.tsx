@@ -74,18 +74,18 @@ export default function Submissions() {
         );
         const students = await userService.getAllStudents(user.uid);
         for (const assignment of assignments) {
-          const assignmentSubmissionsData = [];
-          const assignmentData = await assignmentService.getAssignmentById(assignment.id);
-          if (assignmentData?.questions && students) {
-            const tempQuestionId = assignmentData.questions[0].id;
-            for (const student of students) {
-              const submissionDate = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({
-                questionId: tempQuestionId, studentId: student.uid
-              }).then(submission => submission.createdOn);
-              // Set question number to null equivalent as tutor does not require this information
-              assignmentSubmissionsData.push({questionId: crypto.randomUUID(), questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
-            }
-          }
+          const assignmentSubmissionsData: SubmissionData[] = [];
+          const submitters = await GradingService.getSubmittersByAssignmentId(assignment.id)
+          students?.forEach(student => {
+            const submitted = submitters.find(submitter => submitter.studentId === student.uid);
+            assignmentSubmissionsData.push({
+              questionId: crypto.randomUUID(),
+              questionNo: 0,
+              name: student.name,
+              submissionDate: submitted ? submitted.createdOn : 0,
+              studentId: student.uid
+            });
+          })
           submissionsData[assignment.id] = assignmentSubmissionsData;
         }
         setSubmissions(submissionsData);

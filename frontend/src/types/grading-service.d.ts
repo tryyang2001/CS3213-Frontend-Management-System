@@ -24,3 +24,9 @@ interface Submission {
   }[];
   createdOn: number;
 }
+
+interface Submitter {
+  studentId: number;
+  name: string;
+  createdOn: number;
+}
