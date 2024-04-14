@@ -3,8 +3,8 @@ import { CreateQuestionBody } from "../../libs/validators/questions/create-quest
 import { CreateQuestionReferenceSolutionBody } from "../../libs/validators/questions/create-reference-solution-validator";
 import { CreateQuestionTestCasesBody } from "../../libs/validators/questions/create-test-cases-validator";
 import db from "../../models/db";
-import { Question } from "../../models/types/question";
-import { ReferenceSolution } from "../../models/types/reference-solution";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
 
 const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
   // check if assignment exists

@@ -4,7 +4,7 @@ import HttpStatusCode from "../../../libs/enums/HttpStatusCode";
 import createUnitTestServer from "../../utils/create-test-server-utils";
 import supertest from "supertest";
 import * as Response from "../../payloads/responses";
-import { Assignment } from "../../../models/types/assignment";
+import { Assignment } from "../../../types/assignment";
 
 const API_PREFIX = "/assignment/api";
 

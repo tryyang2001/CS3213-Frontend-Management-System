@@ -1,6 +1,6 @@
 import { CreateAssignmentBody } from "../../libs/validators/assignments/create-assignment-validator";
 import db from "../../models/db";
-import { Assignment } from "../../models/types/assignment";
+import { Assignment } from "../../types/assignment";
 
 const createAssignment = async (createAssignmentBody: CreateAssignmentBody) => {
   // convert deadline to Date object

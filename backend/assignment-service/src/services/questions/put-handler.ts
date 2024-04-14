@@ -1,8 +1,8 @@
 import { UpdateQuestionReferenceSolutionBody } from "../../libs/validators/questions/update-reference-solution-validator";
 import { UpdateQuestionBody } from "../../libs/validators/questions/update-question-validator";
 import db from "../../models/db";
-import { Question } from "../../models/types/question";
-import { ReferenceSolution } from "../../models/types/reference-solution";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
 
 const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
   const updatedQuestion = await db.question.update({

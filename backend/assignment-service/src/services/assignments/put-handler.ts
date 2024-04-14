@@ -1,6 +1,6 @@
 import { UpdateAssignmentBody } from "../../libs/validators/assignments/update-assignment-validator";
 import db from "../../models/db";
-import { Assignment } from "../../models/types/assignment";
+import { Assignment } from "../../types/assignment";
 
 const updateAssignment = async (updateAssignmentBody: UpdateAssignmentBody) => {
   const updatedAssignment = await db.assignment.update({

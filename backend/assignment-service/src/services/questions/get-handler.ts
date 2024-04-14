@@ -1,7 +1,7 @@
 import db from "../../models/db";
-import { Question } from "../../models/types/question";
-import { ReferenceSolution } from "../../models/types/reference-solution";
-import { TestCase } from "../../models/types/test-case";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
+import { TestCase } from "../../types/test-case";
 
 const getQuestionById = async (questionId: string) => {
   const question = await db.question.findUnique({
