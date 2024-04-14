@@ -16,7 +16,7 @@ function AssignmentPage({ assignment, showNumberOfQuestions = true }: Props) {
     <div>
       <h1 className="text-3xl font-semibold ">{assignment.title}</h1>
 
-      <div className="flex flex-col ml-4 my-4 gap-2">
+      <div className="flex flex-col my-4 gap-2">
         <p className="text-lg font-semibold">
           Due on:{" "}
           <span className="italic font-medium">

@@ -122,14 +122,14 @@ export default function Page({ params }: Props) {
       {isLoading ? (
         <LogoLoading />
       ) : (
-        <div className="ml-[12%] mt-[5%] mr-[8%]">
+        <div>
           <div className="flex gap-2">
             {/* Assignment details */}
             <AssignmentPage assignment={assignment} />
 
             {/* Button for submission */}
             {userRole === "student" && (
-              <div className="ml-auto mr-4 my-2">
+              <div className="ml-auto my-2">
                 <Button className="px-6" color="primary" onPress={onOpen}>
                   Submit
                 </Button>
