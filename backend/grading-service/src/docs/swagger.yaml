@@ -136,6 +136,23 @@ paths:
                 type: "string"
                 example: "userId not found"
 
+  /grading/api/assignments/:assignmentId/submitters:
+    get:
+      tags:
+        - "Submission"
+      summary: "Get all students who have made at least 1 submission for an assignment"
+      description: "Retrieve all students who have made at least 1 submission for an assignment"
+      operationId: "getSubmittersByAssignmentId"
+      parameters:
+        - in: "params"
+          name: "assignmentId"
+          description: "Assignment ID to get the submitters for"
+          required: true
+          type: "string"
+          example: "sample_assignment_id"
+      produces:
+        - "application/json"
+
   /feedback/generate:
     post:
       tags:

@@ -147,6 +147,12 @@ describe("Unit tests for generateFeedback service", () => {
         id: "submission-id",
       });
       dbMock.feedback.createMany = jest.fn().mockResolvedValue(null);
+
+      dbMock.question.findUnique = jest.fn().mockResolvedValue({
+        id: questionId,
+      });
+
+      dbMock.submitter.create = jest.fn().mockResolvedValue(null);
     });
 
     describe("Given the reference solution parser string exists in the database", () => {
@@ -173,6 +179,8 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.testCase.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
+        expect(dbMock.question.findUnique).toHaveBeenCalledTimes(1);
+        expect(dbMock.submitter.create).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
         expect(feedbacks[0].line).toBe(2);
         expect(feedbacks[0].hints).toContain(CodeError.hintStrings[0]);
@@ -212,6 +220,8 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.testCase.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
+        expect(dbMock.question.findUnique).toHaveBeenCalledTimes(1);
+        expect(dbMock.submitter.create).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
         expect(feedbacks[0].line).toBe(2);
         expect(feedbacks[0].hints).toContain(
