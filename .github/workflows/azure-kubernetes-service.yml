@@ -36,18 +36,11 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }} 
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Build and push frontend image
+      - name: Build and push user service image
         run: |
           cd backend/user-service
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.USER_SECRETS }}"
           docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
-        env:
-          PSQL_HOSTNAME: ${{ secrets.PSQL_HOSTNAME }}
-          PSQL_DATABASE: ${{ secrets.PSQL_DATABASE }}
-          PSQL_USERNAME: ${{ secrets.PSQL_USERNAME }}
-          PSQL_PASSWORD: ${{ secrets.PSQL_PASSWORD }}
-          PSQL_PORT: ${{ secrets.PSQL_PORT }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
       - name: Build and push frontend image to ACR
         run: |
@@ -116,4 +109,4 @@ jobs:
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
