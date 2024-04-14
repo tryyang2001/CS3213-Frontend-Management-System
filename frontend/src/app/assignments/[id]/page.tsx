@@ -77,6 +77,10 @@ export default function Page({ params }: Props) {
     router.push(`/assignments/${params.id}/edit`);
   };
 
+  const redirectToSubmissionPage = () => {
+    router.push(`/assignments/${params.id}/submission`);
+  };
+
   const handleDeleteAssignment = (closeModal: () => void) => {
     assignmentService
       .deleteAssignment(params.id)
@@ -161,8 +165,11 @@ export default function Page({ params }: Props) {
                   <ModalContent>
                     {(onClose) => (
                       <>
-                        <ModalHeader className="flex flex-col gap-1">
+                        <ModalHeader className="flex items-center justify-between mt-4">
                           Submit
+                          <Button onPress={redirectToSubmissionPage}>
+                            View Previous Submissions
+                          </Button>
                         </ModalHeader>
                         <ModalBody>
                           <p>
