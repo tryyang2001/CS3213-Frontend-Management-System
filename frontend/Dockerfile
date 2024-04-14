@@ -18,6 +18,8 @@ FROM base AS build
 WORKDIR /build
 
 COPY --from=base /base ./
+COPY --from=base /base/.env ./
+
 RUN yarn build
 
 
