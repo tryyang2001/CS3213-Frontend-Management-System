@@ -90,7 +90,7 @@ export default function SideBar() {
   const currentPath = usePathname();
 
   if (currentPath === "/login" || currentPath === "/sign-up") {
-    return null;
+    return <></>;
   }
 
   return (
@@ -162,7 +162,7 @@ export default function SideBar() {
               <Spacer y={60} />
               {menuItems.map((item: MenuItem) => {
                 if (item.id === 2 && (user?.role ?? "student") === "student") {
-                  return null;
+                  return <></>;
                 }
 
                 return (
