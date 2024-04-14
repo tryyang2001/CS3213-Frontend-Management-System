@@ -8,7 +8,7 @@ COPY . .
 
 RUN if [ ! -f ".env" ]; then printf "$PROD_ENV" >> .env; fi
 
-RUN yarn build
+RUN yarn build-docker
 
 EXPOSE 8088
 
