@@ -40,10 +40,9 @@ describe("Unit Tests for getAssignmentsByUserId", () => {
 });
 
 describe("Unit Tests for GET /assignments?userId=:userId", () => {
-  let app: Express;
+  const app = createUnitTestServer();
 
   beforeAll(() => {
-    app = createUnitTestServer();
     jest.mock("../../../services/assignments/get-handler", () => ({
       GetHandler: {
         getAssignmentsByUserId: jest.fn(),

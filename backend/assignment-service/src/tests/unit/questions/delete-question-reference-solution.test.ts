@@ -102,7 +102,6 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id/solution", () => {
           questionId: questionId,
           language: "python",
           code: "print('Hello, World!')",
-          codeParser: "some code parser value",
         });
 
       // Act

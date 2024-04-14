@@ -4,7 +4,9 @@ import db from "../../models/db";
 import { Question } from "../../types/question";
 import { ReferenceSolution } from "../../types/reference-solution";
 
-const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
+const updateQuestionById = async (
+  updateQuestionBody: UpdateQuestionBody
+): Promise<Question | null> => {
   const updatedQuestion = await db.question.update({
     where: {
       id: updateQuestionBody.questionId,
@@ -51,7 +53,7 @@ const updateQuestionById = async (updateQuestionBody: UpdateQuestionBody) => {
 
 const updateQuestionReferenceSolution = async (
   updateQuestionReferenceSolutionBody: UpdateQuestionReferenceSolutionBody
-) => {
+): Promise<ReferenceSolution | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: updateQuestionReferenceSolutionBody.id,

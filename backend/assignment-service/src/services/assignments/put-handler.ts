@@ -2,7 +2,9 @@ import { UpdateAssignmentBody } from "../../libs/validators/assignments/update-a
 import db from "../../models/db";
 import { Assignment } from "../../types/assignment";
 
-const updateAssignment = async (updateAssignmentBody: UpdateAssignmentBody) => {
+const updateAssignment = async (
+  updateAssignmentBody: UpdateAssignmentBody
+): Promise<Assignment | null> => {
   const updatedAssignment = await db.assignment.update({
     where: {
       id: updateAssignmentBody.assignmentId,

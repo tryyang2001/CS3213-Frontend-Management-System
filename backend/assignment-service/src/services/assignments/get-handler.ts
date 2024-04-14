@@ -45,7 +45,7 @@ const getAssignmentsByUserId = async (
   return assignmentsDto;
 };
 
-const getAssignmentById = async (id: string) => {
+const getAssignmentById = async (id: string): Promise<Assignment | null> => {
   const assignment = await db.assignment.findUnique({
     where: {
       id: id,

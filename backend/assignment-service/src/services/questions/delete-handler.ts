@@ -1,6 +1,9 @@
 import db from "../../models/db";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
+import { Prisma } from "@prisma/client";
 
-const deleteQuestion = async (questionId: string) => {
+const deleteQuestion = async (questionId: string): Promise<Question | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: questionId,
@@ -29,10 +32,20 @@ const deleteQuestion = async (questionId: string) => {
     },
   });
 
-  return question;
+  const deletedQuestion: Question = {
+    id: question.id,
+    title: question.title,
+    description: question.description ?? undefined,
+    numberOfTestCases: question.numberOfTestCases,
+    createdOn: question.createdOn.getTime(),
+  };
+
+  return deletedQuestion;
 };
 
-const deleteQuestionReferenceSolution = async (questionId: string) => {
+const deleteQuestionReferenceSolution = async (
+  questionId: string
+): Promise<ReferenceSolution | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: questionId,
@@ -75,7 +88,7 @@ const deleteQuestionReferenceSolution = async (questionId: string) => {
 const deleteQuestionTestCases = async (
   questionId: string,
   testCaseIds: string[]
-) => {
+): Promise<Prisma.BatchPayload | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: questionId,
