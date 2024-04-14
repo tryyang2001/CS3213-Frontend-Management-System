@@ -177,7 +177,7 @@ function Page({ params }: Props) {
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       <div>
         <div className="ml-[5%] mr-[8%]">
           <AssignmentPage

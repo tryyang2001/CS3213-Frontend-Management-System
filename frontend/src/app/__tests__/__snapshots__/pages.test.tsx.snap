@@ -3,7 +3,7 @@
 exports[`Page Snapshot tests Landing Page Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"
@@ -194,7 +194,7 @@ exports[`Page Snapshot tests Loading Assignment Page Snapshot test 1`] = `
 exports[`Page Snapshot tests Login Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"
@@ -344,7 +344,7 @@ exports[`Page Snapshot tests Login Snapshot test 1`] = `
 exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
 <div>
   <div
-    class="w-screen h-screen flex items-center justify-center"
+    class="w-screen h-dvh flex items-center justify-center"
   >
     <div
       class="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4"
