@@ -36,23 +36,31 @@ export default function Submissions() {
           true,
           true
         );
-        for (const assignment of assignments) {
-          const assignmentSubmissionsData = [];
-          // Get the questions belonging to the assignments
+
+        // Fetch assignment data for all assignments in parallel
+        const assignmentDataPromises = assignments.map(async (assignment) => {
           const assignmentData = await assignmentService.getAssignmentById(assignment.id);
+          return assignmentData
+        });
+        const assignmentDataArray = await Promise.all(assignmentDataPromises);
+         // Process each assignment's data
+        await Promise.all(assignmentDataArray.map(async (assignmentData, index) => {
+          const assignment = assignments[index];
+          const assignmentSubmissionsData: SubmissionData[] = [];
           if (assignmentData?.questions) {
             const questionIds = assignmentData.questions.map(question => question.id);
             let questionNo = 1;
             for (const questionId of questionIds) {
-              // Get the submission date of each of the question if exists
-              const submissionData = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({questionId: questionId, studentId: user.uid})
-              const submissionDate = submissionData.createdOn 
-              // Set question name to null equivalent as it is not required
-              assignmentSubmissionsData.push({questionId: questionId, questionNo: questionNo++, submissionDate: submissionDate, name: '', studentId: user.uid})
+                // Get the submission date of each of the question if exists
+                const submissionData = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({questionId: questionId, studentId: user.uid})
+                const submissionDate = submissionData.createdOn 
+                // Set question name to null equivalent as it is not required
+                assignmentSubmissionsData.push({questionId: questionId, questionNo: questionNo++, submissionDate: submissionDate, name: '', studentId: user.uid})
+              }
             }
-          }
           submissionsData[assignment.id] = assignmentSubmissionsData;
-        }
+        }));
+        
         setSubmissions(submissionsData);
         return assignments;
       }
