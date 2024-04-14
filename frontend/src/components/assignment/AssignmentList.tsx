@@ -15,15 +15,15 @@ function AssignmentList({ assignments, userRole }: Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  if (!assignments) {
-    return notFound();
-  }
-
   useEffect(() => {
     if (userRole) {
       setIsLoading(false);
     }
   }, [userRole]);
+
+  if (!assignments) {
+    return notFound();
+  }
 
   const handleButtonClick = (id: string) => {
     router.push(`/assignments/${id}`);
