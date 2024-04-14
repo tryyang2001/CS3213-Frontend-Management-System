@@ -5,19 +5,12 @@ import db from "../../../models/user-model";
 import createUnitTestServer from "../../utils/create-test-server-utils";
 import { getCreateUserRequestBody } from "../../payload/request/create-user-request-body";
 import { getLoginUserRequestBody } from "../../payload/request/login-user-request-body";
-import { getGetUserRequestBody } from "../../payload/request/get-user-request-body";
 import { QueryResult } from "pg";
-import { getLoginUserResponseBody } from "../../payload/response/login-user-response-body";
-import { getCreateUserResponseBody } from "../../payload/response/create-user-response-body";
-import { getGetUserResponseBody } from "../../payload/response/get-user-response-body";
-import { getGetUserByEmailRequestBody } from "../../payload/request/get-user-by-email-request-body";
-import { getGetUserByEmailResponseBody } from "../../payload/response/get-user-by-email-response-body";
-import { getGetAllUsersResponseBody } from "../../payload/response/get-all-users-response-body";
+import { loginUserResponseBody } from "../../payload/response/login-user-response-body";
+import { createUserResponseBody } from "../../payload/response/create-user-response-body";
+import { getUserResponseBody } from "../../payload/response/get-user-response-body";
 import { getUpdateUserPasswordRequestBody } from "../../payload/request/update-user-password-request-body";
-import { getUpdateUserInfoRequestBody } from "../../payload/request/update-user-info-request-body";
-import { getDeleteUserRequestBody } from "../../payload/request/delete-user-request-body";
 import { NextFunction } from "express";
-import auth from '../../../middleware/auth';
 import HttpStatusCode from "../../../libs/enums/HttpStatusCode";
 
 process.env.NODE_ENV = "test";
@@ -27,8 +20,8 @@ jest.mock("../../../psql", () => ({
   connect: jest.fn(),
 }));
 
-jest.mock('../../../middleware/auth', () => {
-  return jest.fn(async (req: Request, res: Response, next: NextFunction) => {
+jest.mock("../../../middleware/auth", () => {
+  return jest.fn(async (_req: Request, _res: Response, next: NextFunction) => {
     // Always call next() without performing any authentication checks
     next();
   });
@@ -41,36 +34,42 @@ describe("health function", () => {
     jest.clearAllMocks();
   });
 
-  it("should return \"User microservice is working\" when the database check is successful", async () => {
+  it('should return "User microservice is working" when the database check is successful', async () => {
     // Arrange
-    jest.spyOn(db, "checkDatabase").mockResolvedValue([0]);
+    jest
+      .spyOn(db, "checkDatabase")
+      .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
 
     // Act
-    const response = await supertest(app)
-      .get("/user/health")
+    const response = await supertest(app).get("/user/health");
 
     // Assert
     expect(db.checkDatabase).toHaveBeenCalled();
     expect(response.body).toEqual({ message: "User microservice is working." });
   });
 
-  it("should return 500 status code and \"Internal User microservice internal error\" message when the database check fails", async () => {
+  it('should return 500 status code and "Internal User microservice internal error" message when the database check fails', async () => {
     // Arrange
-    jest.spyOn(db, "checkDatabase").mockRejectedValue(new Error("Database error"));
+    jest
+      .spyOn(db, "checkDatabase")
+      .mockRejectedValue(new Error("Database error"));
 
     // Act
-    const response = await supertest(app)
-      .get("/user/health")
+    const response = await supertest(app).get("/user/health");
 
     expect(db.checkDatabase).toHaveBeenCalled();
-    expect(response.status).toEqual(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf());
-    expect(response.body).toEqual({ message: "Internal User microservice internal error." });
+    expect(response.status).toEqual(
+      HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()
+    );
+    expect(response.body).toEqual({
+      message: "Internal User microservice internal error.",
+    });
   });
 });
 
 describe("Unit Tests for /user/register endpoint", () => {
   const app = createUnitTestServer();
-  let reqBody: any;
+  let reqBody: RegisterBody;
   beforeEach(() => {
     reqBody = getCreateUserRequestBody();
   });
@@ -84,7 +83,7 @@ describe("Unit Tests for /user/register endpoint", () => {
 
       jest
         .spyOn(db, "getUserByEmail")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
       jest.spyOn(db, "createNewUser").mockResolvedValue(1);
       bcrypt.hash = jest.fn().mockResolvedValue("hashedpassword");
 
@@ -94,7 +93,7 @@ describe("Unit Tests for /user/register endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual(getCreateUserResponseBody());
+      expect(response.body).toEqual(createUserResponseBody);
       // expect(response.status).toBe(201);
     });
   });
@@ -104,7 +103,7 @@ describe("Unit Tests for /user/register endpoint", () => {
       // Arrange
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
         rows: [{ email: reqBody.email }],
-      } as unknown as QueryResult<any>);
+      } as unknown as QueryResult<User>);
       jest.spyOn(db, "createNewUser").mockResolvedValue(1);
       bcrypt.hash = jest.fn().mockResolvedValue("hashedpassword");
 
@@ -126,7 +125,7 @@ describe("Unit Tests for /user/register endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByEmail")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
       jest.spyOn(db, "createNewUser").mockResolvedValue(1);
       bcrypt.hash = jest.fn().mockResolvedValue("hashedpassword");
 
@@ -146,7 +145,7 @@ describe("Unit Tests for /user/register endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByEmail")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
       jest
         .spyOn(db, "createNewUser")
         .mockRejectedValue(new Error("Failed to create user."));
@@ -168,7 +167,7 @@ describe("Unit Tests for /user/register endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByEmail")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
       jest.spyOn(db, "createNewUser").mockResolvedValue(1);
       bcrypt.hash = jest
         .fn()
@@ -210,7 +209,7 @@ describe("Unit Tests for /user/register endpoint", () => {
 
 describe("Unit Tests for /user/login endpoint", () => {
   const app = createUnitTestServer();
-  let reqBody: any;
+  let reqBody: LoginBody;
 
   beforeEach(() => {
     reqBody = getLoginUserRequestBody();
@@ -224,24 +223,28 @@ describe("Unit Tests for /user/login endpoint", () => {
     it("Should return 200 and a token", async () => {
       // Arrange
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
-        rows: [{
-          uid: 1,
-          email: 'test@example.com',
-          password: 'password12345',
-          name: 'Test',
-          major: 'Computer Science',
-          role: 'student'}
+        rows: [
+          {
+            uid: 1,
+            email: "test@example.com",
+            password: "password12345",
+            name: "Test",
+            major: "Computer Science",
+            role: "student",
+          },
         ],
-      } as unknown as QueryResult<any>);
+      } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       jwt.sign = jest.fn().mockResolvedValue("fake_token");
       process.env.JWT_SECRET_KEY = "secretkey";
       // Act
-      const response = await supertest(app).post("/user/login").send({email: 'test@example.com', password: 'password12345'});
+      const response = await supertest(app)
+        .post("/user/login")
+        .send({ email: "test@example.com", password: "password12345" });
       console.log("Response:", response.body);
 
       // Assert
-      expect(response.body).toEqual(getLoginUserResponseBody());
+      expect(response.body).toEqual(loginUserResponseBody);
       expect(response.status).toBe(200);
     });
   });
@@ -251,7 +254,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByEmail")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
 
       // Act
       const response = await supertest(app).post("/user/login").send(reqBody);
@@ -268,7 +271,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       reqBody.password = "wrongpassword";
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
         rows: [{ email: reqBody.email, password: "hashedpassword" }],
-      } as unknown as QueryResult<any>);
+      } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(false);
 
       // Act
@@ -284,8 +287,8 @@ describe("Unit Tests for /user/login endpoint", () => {
     it("Should return a 500 status and an error message", async () => {
       // Mock process.env.JWT_SECRET_KEY to be undefined
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
-        rows: [getLoginUserResponseBody()],
-      } as unknown as QueryResult<any>);
+        rows: [loginUserResponseBody],
+      } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       delete process.env.JWT_SECRET_KEY;
 
@@ -293,7 +296,9 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error cannot authenticate user logging in" });
+      expect(response.body).toEqual({
+        message: "Internal server error cannot authenticate user logging in",
+      });
       // expect(response.status).toBe(500);
     });
   });
@@ -303,7 +308,7 @@ describe("Unit Tests for /user/login endpoint", () => {
       // Arrange
       jest.spyOn(db, "getUserByEmail").mockResolvedValue({
         rows: [{ email: reqBody.email, password: "hashedpassword" }],
-      } as unknown as QueryResult<any>);
+      } as unknown as QueryResult<User>);
       bcrypt.compare = jest
         .fn()
         .mockRejectedValue(new Error("Error checking password."));
@@ -312,15 +317,17 @@ describe("Unit Tests for /user/login endpoint", () => {
       const response = await supertest(app).post("/user/login").send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error checking password." });
+      expect(response.body).toEqual({
+        message: "Internal server error checking password.",
+      });
       // expect(response.status).toBe(500);
     });
   });
 });
 
-describe('Unit Tests for /user/getUserInfo endpoint', () => {
+describe("Unit Tests for /user/getUserInfo endpoint", () => {
   const app = createUnitTestServer();
-  let uid: any;
+  let uid: number;
   const existingUserId = 1;
   const nonExistingUserId = -1;
   afterEach(() => {
@@ -331,14 +338,14 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
     it("return a bad request response", async () => {
       // Arrange
       const request = {
-        query: {uid: {}}
+        query: { uid: {} },
       };
 
       // Act
       const response = await supertest(app)
         .get(`/user/getUserInfo?`)
         .send(request);
-        
+
       // Assert
       expect(response.status).toEqual(HttpStatusCode.BAD_REQUEST.valueOf());
     });
@@ -347,16 +354,15 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
   describe("Given a valid user ID", () => {
     it("Should return the user object", async () => {
       // Arrange
-      uid = existingUserId
+      uid = existingUserId;
       jest.spyOn(db, "getUserByUserId").mockResolvedValue({
-        rows: [getGetUserResponseBody()],
-      } as unknown as QueryResult<any>);
+        rows: [getUserResponseBody],
+      } as unknown as QueryResult<User>);
 
       // Act
-      const response = await supertest(app)
-        .get(`/user/getUserInfo?uid=${uid}`)
+      const response = await supertest(app).get(`/user/getUserInfo?uid=${uid}`);
       // Assert
-      expect(response.body).toEqual(getGetUserResponseBody());
+      expect(response.body).toEqual(getUserResponseBody);
     });
   });
 
@@ -366,12 +372,11 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
       uid = nonExistingUserId;
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
 
       // Act
-      const response = await supertest(app)
-        .get(`/user/getUserInfo?uid=${uid}`)
-      
+      const response = await supertest(app).get(`/user/getUserInfo?uid=${uid}`);
+
       // Assert
       expect(response.body).toEqual({ message: "User does not exist." });
     });
@@ -386,18 +391,19 @@ describe('Unit Tests for /user/getUserInfo endpoint', () => {
         .mockRejectedValue(new Error("Database error"));
 
       // Act
-      const response = await supertest(app)
-        .get(`/user/getUserInfo?uid=${uid}`)
+      const response = await supertest(app).get(`/user/getUserInfo?uid=${uid}`);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error getting user by uid." });
+      expect(response.body).toEqual({
+        message: "Internal server error getting user by uid.",
+      });
     });
   });
 });
 
 describe("Unit Tests for /user/updateUserPassword endpoint", () => {
   const app = createUnitTestServer();
-  let reqBody: any;
+  let reqBody: UpdatePasswordBody;
   const user = {
     uid: 1,
     email: "test@example.com",
@@ -420,7 +426,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       bcrypt.hash = jest.fn().mockResolvedValue("newhashedpassword");
       jest.spyOn(db, "updateUserPassword").mockResolvedValue();
@@ -443,7 +449,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [] } as unknown as QueryResult<User>);
 
       // Act
       const response = await supertest(app)
@@ -461,7 +467,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(false);
 
       // Act
@@ -480,7 +486,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       bcrypt.hash = jest.fn().mockResolvedValue("newhashedpassword");
       jest
@@ -505,7 +511,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       bcrypt.hash = jest
         .fn()
@@ -517,7 +523,9 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error updating user password." });
+      expect(response.body).toEqual({
+        message: "Internal server error updating user password.",
+      });
       // expect(response.status).toBe(500);
     });
   });
@@ -527,7 +535,7 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "getUserByUserId")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
       bcrypt.compare = jest
         .fn()
         .mockRejectedValue(new Error("Error checking password."));
@@ -538,7 +546,9 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error updating user password." });
+      expect(response.body).toEqual({
+        message: "Internal server error updating user password.",
+      });
       // expect(response.status).toBe(500);
     });
   });
@@ -556,7 +566,9 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error updating user password." });
+      expect(response.body).toEqual({
+        message: "Internal server error updating user password.",
+      });
       // expect(response.status).toBe(500);
     });
   });
@@ -564,11 +576,6 @@ describe("Unit Tests for /user/updateUserPassword endpoint", () => {
 
 describe("Unit Tests for /user/updateUserInfo endpoint", () => {
   const app = createUnitTestServer();
-  let reqBody: any;
-
-  beforeEach(() => {
-    reqBody = getUpdateUserInfoRequestBody();
-  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -581,7 +588,7 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
         name: "Updated Name",
         major: "Updated Major",
         email: "updated@example.com",
-        role: "updatedRole"
+        role: "updatedRole",
       };
       jest.spyOn(db, "updateUserInfo").mockResolvedValue();
 
@@ -610,13 +617,15 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "No fields provided for update." });
+      expect(response.body).toEqual({
+        message: "No fields provided for update.",
+      });
       // expect(response.status).toBe(400);
     });
 
     it("Should return an error message if database is not working", async () => {
       // Arrange
-      const reqBody = { email: "abdef@gmail.com"};
+      const reqBody = { email: "abdef@gmail.com" };
       jest
         .spyOn(db, "updateUserInfo")
         .mockRejectedValue(new Error("Database is not working"));
@@ -627,7 +636,9 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
         .send(reqBody);
 
       // Assert
-      expect(response.body).toEqual({ message: "Internal server error updating user info." });
+      expect(response.body).toEqual({
+        message: "Internal server error updating user info.",
+      });
       // expect(response.status).toBe(400);
     });
 
@@ -652,7 +663,6 @@ describe("Unit Tests for /user/updateUserInfo endpoint", () => {
 
 describe("Unit Tests for /user/deleteUser endpoint", () => {
   const app = createUnitTestServer();
-  let reqBody: any;
   const user = {
     uid: 1,
     email: "test@example.com",
@@ -671,12 +681,10 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
       // Arrange
       jest
         .spyOn(db, "deleteUser")
-        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<any>);
+        .mockResolvedValue({ rows: [user] } as unknown as QueryResult<User>);
 
       // Act
-      const response = await supertest(app)
-        .delete("/user/deleteUser?uid=1")
-        .send(reqBody);
+      const response = await supertest(app).delete("/user/deleteUser?uid=1");
 
       // Assert
       expect(response.body).toEqual({ message: "User deleted successfully." });
@@ -689,10 +697,9 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
       jest
         .spyOn(db, "deleteUser")
         .mockRejectedValue(new Error("Failed to delete user."));
-      
+
       // Act
-      const response = await supertest(app)
-        .delete("/user/deleteUser")
+      const response = await supertest(app).delete("/user/deleteUser");
 
       // Assert
       expect(response.body).toEqual({
@@ -708,10 +715,9 @@ describe("Unit Tests for /user/deleteUser endpoint", () => {
       jest
         .spyOn(db, "deleteUser")
         .mockRejectedValue(new Error("Failed to delete user."));
-      
+
       // Act
-      const response = await supertest(app)
-        .delete("/user/deleteUser?uid=1")
+      const response = await supertest(app).delete("/user/deleteUser?uid=1");
 
       // Assert
       expect(response.body).toEqual({
@@ -733,7 +739,9 @@ describe("Unit Tests for /user/clearCookie endpoint", () => {
     // Act
     const response = await supertest(app).delete("/user/clearCookie");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: "Authentication token cleared successfully" });
+    expect(response.body).toEqual({
+      message: "Authentication token cleared successfully",
+    });
     expect(response.headers["set-cookie"]).toEqual([
       "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT",
     ]);

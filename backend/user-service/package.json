@@ -2,7 +2,7 @@
   "name": "user-service",
   "version": "1.0.0",
   "description": "A Microservice that provides API for frontend to perform CRUD operations on the users database",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.ts",

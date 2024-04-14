@@ -1,23 +1,22 @@
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import router from './routes';
-import HttpStatusCode from "./libs/enums/HttpStatusCode";
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import router from "./routes";
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-    cors({
-      credentials: true,
-      origin: true,
-      optionsSuccessStatus: 200,
-    })
-  );
+  cors({
+    credentials: true,
+    origin: true,
+    optionsSuccessStatus: 200,
+  })
+);
 
-app.get("/", (req, res) => {
-    res.json("Connected to user microservice");
+app.get("/", (_req, res) => {
+  res.json("Connected to user microservice");
 });
 
 app.use("/user", router);

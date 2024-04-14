@@ -1,8 +1,8 @@
-export const getUpdateUserPasswordRequestBody = () => {
+export const getUpdateUserPasswordRequestBody: () => UpdatePasswordBody =
+  () => {
     return {
       uid: 1,
-      old_password: 'password12345',
-      new_password: 'password54321',
+      old_password: "password12345",
+      new_password: "password54321",
     };
   };
-  

@@ -1,7 +1,4 @@
-export const getCreateUserResponseBody = () => {
-    return {
-      uid: 1,
-      message: "User registered successfully."
-    };
-  };
-  
+export const createUserResponseBody = {
+  uid: 1,
+  message: "User registered successfully.",
+};

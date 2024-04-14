@@ -20,7 +20,7 @@ paths:
     get:
       summary: Check if the user microservice is connected.
       responses:
-        '200':
+        "200":
           description: User microservice is connected.
           example: "Connected to user microservice"
   /user/health:
@@ -50,7 +50,7 @@ paths:
               message:
                 type: "string"
                 example: "Internal User microservice internal error"
-  
+
   /user/register:
     post:
       tags:
@@ -109,7 +109,7 @@ paths:
               message:
                 type: "string"
                 example: "Internal server error creating users."
-          
+
   /user/login:
     post:
       tags:
@@ -314,7 +314,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Invalid uid."   
+                example: "Invalid uid."
         401:
           description: "Unauthorize due to invalid or no authentication token"
           schema:
@@ -330,7 +330,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "User does not exist."        
+                example: "User does not exist."
         500:
           description: "Internal server error"
           schema:
@@ -338,7 +338,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Internal server error getting user by uid."   
+                example: "Internal server error getting user by uid."
 
   /user/updateUserPassword:
     put:
@@ -475,4 +475,3 @@ paths:
               message:
                 type: "string"
                 example: "Internal server error updating user info."
-

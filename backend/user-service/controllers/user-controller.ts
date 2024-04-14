@@ -4,21 +4,21 @@ import bcrypt from "bcrypt";
 import db from "../models/user-model";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 
-async function health(req: Request, res: Response) {
+async function health(_req: Request, res: Response): Promise<Response> {
   try {
     await db.checkDatabase();
-    return res.json({ 
-      message: "User microservice is working." 
+    return res.json({
+      message: "User microservice is working.",
     });
   } catch (err) {
     console.log(err);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-      message: "Internal User microservice internal error."
+      message: "Internal User microservice internal error.",
     });
   }
 }
 
-async function registerUser(req: Request, res: Response) {
+async function registerUser(req: Request, res: Response): Promise<Response> {
   const { email, password, name, major, role } = req.body;
 
   console.log("registering new user", req.body);
@@ -36,32 +36,30 @@ async function registerUser(req: Request, res: Response) {
         message: "Password not long enough.",
       });
     }
-    bcrypt
+    return bcrypt
       .hash(password, 10)
       .then(async (hash) => {
         console.log(hash);
         try {
-          const uid = await db.createNewUser(
-            name,
-            major,
-            email,
-            hash,
-            role
-          );
+          const uid = await db.createNewUser(name, major, email, hash, role);
           return res.json({
             uid: uid,
-            message: "User registered successfully."
+            message: "User registered successfully.",
           });
         } catch (err) {
           console.log(err);
-          return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-            message: "Failed to create user.",
-          });
+          return res
+            .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+            .json({
+              message: "Failed to create user.",
+            });
         }
       })
       .catch((err) => {
         console.log(err);
-        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: "Error crypting password." });
+        return res
+          .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+          .json({ message: "Error crypting password." });
       });
   } catch (err) {
     console.log(err);
@@ -71,7 +69,7 @@ async function registerUser(req: Request, res: Response) {
   }
 }
 
-async function loginUser(req: Request, res: Response) {
+async function loginUser(req: Request, res: Response): Promise<Response> {
   const { email, password } = req.body;
   const emailSearch = await db.getUserByEmail(email);
   if (emailSearch.rows.length == 0) {
@@ -83,7 +81,7 @@ async function loginUser(req: Request, res: Response) {
     const user = emailSearch.rows[0];
     const hash = user.password;
 
-    bcrypt
+    return bcrypt
       .compare(password, hash)
       .then((result) => {
         if (!result) {
@@ -95,9 +93,12 @@ async function loginUser(req: Request, res: Response) {
           const jwtSecretKey: Secret | undefined = process.env.JWT_SECRET_KEY;
           if (!jwtSecretKey) {
             console.error("JWT secret key is not defined.");
-            return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-              message: "Internal server error cannot authenticate user logging in",
-            });
+            return res
+              .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+              .json({
+                message:
+                  "Internal server error cannot authenticate user logging in",
+              });
           }
 
           const payload = {
@@ -109,8 +110,8 @@ async function loginUser(req: Request, res: Response) {
           const responseData = {
             uid: user.uid,
             role: user.role,
-          }
-          res
+          };
+          return res
             .cookie("token", token, {
               path: "/",
               httpOnly: true,
@@ -121,16 +122,23 @@ async function loginUser(req: Request, res: Response) {
       })
       .catch((err) => {
         console.log(err);
-        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({ message: "Internal server error checking password." });
+        return res
+          .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+          .send({ message: "Internal server error checking password." });
       });
   }
+  return res
+    .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+    .send({ message: "Internal server error checking password." });
 }
 
-async function getUserInfo(req: Request, res: Response) {
+async function getUserInfo(req: Request, res: Response): Promise<Response> {
   const queryUidString = req.query.uid;
   console.log(queryUidString);
-  if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
+  if (typeof queryUidString !== "string") {
+    return res
+      .status(HttpStatusCode.BAD_REQUEST.valueOf())
+      .json({ message: "Invalid uid." });
   }
 
   try {
@@ -152,7 +160,7 @@ async function getUserInfo(req: Request, res: Response) {
         avatarUrl: userRow.avatarUrl,
         role: userRow.role,
         bio: userRow.bio,
-      }
+      };
       return res.json(user);
     }
   } catch (err) {
@@ -161,12 +169,17 @@ async function getUserInfo(req: Request, res: Response) {
       message: "Internal server error getting user by uid.",
     });
   }
+  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
+    message: "Internal server error getting user by uid.",
+  });
 }
 
-async function updateUserPassword(req: Request, res: Response) {
-  const { uid, old_password, new_password } = req.body;
-
+async function updateUserPassword(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
+    const { uid, old_password, new_password } = req.body as UpdatePasswordBody;
     const userIdSearch = await db.getUserByUserId(uid);
     if (userIdSearch.rows.length == 0) {
       console.log("User does not exist.");
@@ -176,7 +189,7 @@ async function updateUserPassword(req: Request, res: Response) {
     } else if (userIdSearch.rows.length > 0) {
       const hash = userIdSearch.rows[0].password;
       console.log(hash);
-      bcrypt
+      return bcrypt
         .compare(old_password, hash)
         .then((result) => {
           if (!result) {
@@ -185,7 +198,7 @@ async function updateUserPassword(req: Request, res: Response) {
               message: "Incorrect password.",
             });
           } else {
-            bcrypt
+            return bcrypt
               .hash(new_password, 10)
               .then(async (hash) => {
                 try {
@@ -193,25 +206,31 @@ async function updateUserPassword(req: Request, res: Response) {
                   return res.json({
                     message: "Update password successfully.",
                   });
-                } catch (err) {
-                  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({
-                    message: "Internal server error updating user password.",
-                  });
+                } catch (_err) {
+                  return res
+                    .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+                    .json({
+                      message: "Internal server error updating user password.",
+                    });
                 }
               })
               .catch((err) => {
                 console.log(err);
-                return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-                  message: "Internal server error updating user password.",
-                });
+                return res
+                  .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+                  .send({
+                    message: "Internal server error updating user password.",
+                  });
               });
           }
         })
         .catch((err) => {
           console.log(err);
-          return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
-            message: "Internal server error updating user password.",
-          });
+          return res
+            .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+            .send({
+              message: "Internal server error updating user password.",
+            });
         });
     }
   } catch (err) {
@@ -220,21 +239,27 @@ async function updateUserPassword(req: Request, res: Response) {
       message: "Internal server error updating user password.",
     });
   }
+  return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({
+    message: "Internal server error updating user password.",
+  });
 }
 
-async function updateUserInfo(req: Request, res: Response) {
+async function updateUserInfo(req: Request, res: Response): Promise<Response> {
   const queryUidString = req.query.uid;
-  if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
+  if (typeof queryUidString !== "string") {
+    return res
+      .status(HttpStatusCode.BAD_REQUEST.valueOf())
+      .json({ message: "Invalid uid." });
   }
   const uid = parseInt(queryUidString);
-  const updateFields = req.body;
 
   try {
+    const updateFields = req.body as UpdateFields;
     if (Object.keys(updateFields).length === 0) {
-      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "No fields provided for update." });
+      return res
+        .status(HttpStatusCode.BAD_REQUEST.valueOf())
+        .json({ message: "No fields provided for update." });
     }
-
     await db.updateUserInfo(uid, updateFields);
 
     return res.json({
@@ -242,14 +267,18 @@ async function updateUserInfo(req: Request, res: Response) {
     });
   } catch (err) {
     console.error("Error updating user info:", err);
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).json({ message: "Internal server error updating user info." });
+    return res
+      .status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf())
+      .json({ message: "Internal server error updating user info." });
   }
 }
 
-async function deleteUser(req: Request, res: Response) {
+async function deleteUser(req: Request, res: Response): Promise<Response> {
   const queryUidString = req.query.uid;
-  if (typeof queryUidString !== 'string') {
-    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: "Invalid uid." });
+  if (typeof queryUidString !== "string") {
+    return res
+      .status(HttpStatusCode.BAD_REQUEST.valueOf())
+      .json({ message: "Invalid uid." });
   }
   const uid = parseInt(queryUidString);
   try {
@@ -267,7 +296,7 @@ async function deleteUser(req: Request, res: Response) {
   }
 }
 
-async function clearCookie(req: Request, res: Response) {
+async function clearCookie(_req: Request, res: Response): Promise<Response> {
   res.clearCookie("token");
   return res.send({
     message: "Authentication token cleared successfully",

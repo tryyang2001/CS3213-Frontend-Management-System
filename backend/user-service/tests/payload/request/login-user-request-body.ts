@@ -1,7 +1,6 @@
-export const getLoginUserRequestBody = () => {
-    return {
-      email: 'test@example.com',
-      password: 'password12345',
-    };
+export const getLoginUserRequestBody: () => LoginBody = () => {
+  return {
+    email: "test@example.com",
+    password: "password12345",
   };
-  
+};
