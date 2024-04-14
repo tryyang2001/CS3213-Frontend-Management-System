@@ -73,7 +73,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: frontend
-        image: fmdevsimgs.azurecr.io/cs3213-frontend
+        image: fmdevsimages.azurecr.io/cs3213-frontend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -110,7 +110,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: users
-        image: fmdevsimgs.azurecr.io/cs3213-user
+        image: fmdevsimages.azurecr.io/cs3213-users:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3001
@@ -147,7 +147,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: assignment
-        image: fmdevsimgs.azurecr.io/cs3213-assignment
+        image: fmdevsimages.azurecr.io/cs3213-assignment:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -184,6 +184,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: grading
-        image: fmdevsimgs.azurecr.io/cs3213-grading
+        image: fmdevsimages.azurecr.io/cs3213-grading:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8088

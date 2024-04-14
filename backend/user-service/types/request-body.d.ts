@@ -25,3 +25,5 @@ interface UpdateFields {
   bio?: string;
   role?: string;
 }
+
+export { RegisterBody, LoginBody, UpdatePasswordBody, UpdateFields };
