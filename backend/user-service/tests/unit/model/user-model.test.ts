@@ -9,13 +9,13 @@ jest.mock("../../../psql", () => ({
   connect: jest.fn(),
 }));
 
-describe("getAllUsers function", () => {
+describe("checkDatabase function", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it("should return all users", async () => {
-    // Arrange
+    // Arrange  const { uid, old_password, new_password } = req.body;
     const mockResult = {
       rows: [
         {
@@ -31,10 +31,10 @@ describe("getAllUsers function", () => {
     (pool.query as jest.Mock).mockResolvedValue(mockResult as QueryResult);
 
     // Act
-    const result = await model.getAllUsers();
+    const result = await model.checkDatabase();
 
     // Assert
-    expect(result).toEqual(mockResult.rows);
+    expect(result.rows).toEqual(mockResult.rows);
   });
 
   it("should throw an error if query fails", async () => {
@@ -43,7 +43,7 @@ describe("getAllUsers function", () => {
     (pool.query as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
     // Act and Assert
-    await expect(model.getAllUsers()).rejects.toThrow(errorMessage);
+    await expect(model.checkDatabase()).rejects.toThrow(errorMessage);
   });
 });
 
@@ -127,6 +127,51 @@ describe("getUserByEmail function", () => {
   });
 });
 
+describe("findUser function", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return the user if found in the database", async () => {
+    const uid = 123;
+    const email = "test@example.com";
+    const expectedResult: QueryResult = {
+      rows: [{ uid: 123, email: "test@example.com" }],
+      rowCount: 1,
+      command: "",
+      oid: 0,
+      fields: [],
+    };
+
+    (pool.query as jest.Mock).mockResolvedValueOnce(expectedResult);
+
+    const result = await model.findUser(uid, email);
+
+    expect(pool.query).toHaveBeenCalledWith(
+      'SELECT * FROM users."User" WHERE uid = $1 AND email = $2',
+      [uid, email]
+    );
+    expect(result).toEqual(expectedResult);
+  });
+
+  it("should throw an error if the database query fails", async () => {
+    const uid = 123;
+    const email = "test@example.com";
+    const errorMessage = "Database error";
+
+    (pool.query as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(model.findUser(uid, email)).rejects.toThrow(errorMessage);
+    expect(pool.query).toHaveBeenCalledWith(
+      'SELECT * FROM users."User" WHERE uid = $1 AND email = $2',
+      [uid, email]
+    );
+  });
+});
+
 describe("createNewUser function", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -146,13 +191,7 @@ describe("createNewUser function", () => {
     (pool.query as jest.Mock).mockResolvedValue(mockResult as QueryResult);
 
     // Act
-    const result = await model.createNewUser(
-      name,
-      major,
-      email,
-      hash,
-      role
-    );
+    const result = await model.createNewUser(name, major, email, hash, role);
 
     // Assert
     expect(result).toBe(1);
@@ -223,7 +262,7 @@ describe("updateUserInfo function", () => {
       name: "Updated Name",
       major: "Updated Major",
       email: "updated@example.com",
-      role: "updatedRole"
+      role: "updatedRole",
     };
 
     const mockResult = {
@@ -232,10 +271,7 @@ describe("updateUserInfo function", () => {
     (pool.query as jest.Mock).mockResolvedValue(mockResult as QueryResult);
 
     // Act
-    const result = await model.updateUserInfo(
-      uid,
-      updateFields
-    );
+    const result = await model.updateUserInfo(uid, updateFields);
 
     // Assert
     expect(result).toBeUndefined();
@@ -248,15 +284,15 @@ describe("updateUserInfo function", () => {
       name: "Updated Name",
       major: "Updated Major",
       email: "updated@example.com",
-      role: "updatedRole"
+      role: "updatedRole",
     };
     const errorMessage = "Failed to update user";
     (pool.query as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
     // Act and Assert
-    await expect(
-      model.updateUserInfo(uid, updateFields)
-    ).rejects.toThrow(errorMessage);
+    await expect(model.updateUserInfo(uid, updateFields)).rejects.toThrow(
+      errorMessage
+    );
   });
 });
 
