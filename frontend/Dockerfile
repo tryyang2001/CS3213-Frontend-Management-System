@@ -1,16 +1,19 @@
 # Use Node.js base image
 FROM node:alpine AS base
+
+ARG PROD_ENV=""
+
 WORKDIR /base
 
 COPY package.json ./
 COPY yarn.lock ./
-
 
 # Install dependencies
 RUN yarn install
 
 # Copy rest of the application files
 COPY . .
+RUN printf "$PROD_ENV" >> .env
 
 # STAGE 2: build
 FROM base AS build

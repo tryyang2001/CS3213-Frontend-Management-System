@@ -52,11 +52,8 @@ jobs:
       - name: Build and push frontend image to ACR
         run: |
           cd frontend
-          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.FRONTEND_SECRETS }}"
           docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
-        env:
-          NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
-          NEXT_PUBLIC_UPLOADTHING_SECRET: ${{ secrets.UPLOADTHING_SECRET }}
 
       - name: Build and push grading service image to ACR
         run: |
