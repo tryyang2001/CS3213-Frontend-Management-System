@@ -61,14 +61,14 @@ export default function SubmissionPage({ params }: Props) {
     queryFn: async () => {
       const assignment = await assignmentService.getAssignmentById(params.id);
       // Set the default question to be the first question if it was not found in local store.
-      if (currentQuestionId === "" && assignment && assignment.questions) {
+      if (currentQuestionId === "" && assignment?.questions) {
         setCurrentQuestionId(assignment.questions[0].id)
       }
       return assignment;
     },
   });
 
-  const { data: submissions, refetch: refetchSubmissions, isLoading } = useQuery({
+  const { data: submissions, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
       const studentId = search.get('studentId') as string | undefined;
