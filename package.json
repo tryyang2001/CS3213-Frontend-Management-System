@@ -1,0 +1,15 @@
+{
+  "name": "frontend-management-system",
+  "version": "1.0.0",
+  "author": "fmdevs",
+  "license": "MIT",
+  "scripts": {
+    "setup:assignment": "cd backend/assignment-service && yarn install && yarn prisma generate",
+    "setup:user": "cd backend/user-service && yarn install && yarn build",
+    "setup:grading": "cd backend/grading-service && yarn install && yarn prisma generate",
+    "setup:frontend": "cd frontend && yarn install && yarn build",
+    "setup": "yarn setup:assignment && yarn setup:user && yarn setup:grading && yarn setup:frontend",
+    "start": "cd frontend && yarn start-all",
+    "dev": "cd frontend && yarn dev-all"
+  }
+}
