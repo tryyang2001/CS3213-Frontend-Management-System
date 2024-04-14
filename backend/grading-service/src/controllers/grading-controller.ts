@@ -59,7 +59,7 @@ const getSubmissionsByQuestionIdAndStudentId = async (
 const getLatestSubmissionByQuestionIdAndStudentId = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const { questionId } = request.params;
     const { studentId } = GetSubmissionQueryValidator.parse(request.query);

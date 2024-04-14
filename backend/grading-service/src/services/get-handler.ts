@@ -5,7 +5,7 @@ import { Submission } from "../types/grading-service";
 const getSubmissionsByQuestionIdAndStudentId = async (
   questionId: string,
   studentId: number
-) => {
+): Promise<Submission[] | null> => {
   // check if the user exists
   const student = await db.user.findUnique({
     where: {
@@ -92,7 +92,22 @@ const getLatestSubmissionByQuestionIdAndStudentId = async (
     return null;
   }
 
-  return latestSubmission;
+  return {
+    id: latestSubmission.id,
+    questionId: latestSubmission.questionId,
+    studentId: latestSubmission.studentId,
+    language: latestSubmission.language,
+    code: latestSubmission.code,
+    feedbacks: latestSubmission.feedbacks.map(
+      (feedback: { line: number; hints: string[] }) => {
+        return {
+          line: feedback.line,
+          hints: feedback.hints,
+        };
+      }
+    ),
+    createdOn: latestSubmission.createdOn.getTime(),
+  };
 };
 
 export const GetHandler = {
