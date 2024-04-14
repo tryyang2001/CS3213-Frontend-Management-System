@@ -10,9 +10,6 @@ jobs:
       pull-requests: write
       contents: write
     runs-on: ${{matrix.os}}
-    concurrency:
-      group: build-test
-      cancel-in-progress: true
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -54,9 +51,6 @@ jobs:
       pull-requests: write
       contents: write
     runs-on: ${{matrix.os}}
-    concurrency:
-      group: build-test
-      cancel-in-progress: true
     strategy:
       matrix:
         os: [ubuntu-latest]
