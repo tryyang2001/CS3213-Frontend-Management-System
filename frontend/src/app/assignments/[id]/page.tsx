@@ -134,6 +134,7 @@ export default function Page({ params }: Props) {
                   Submit
                 </Button>
                 <Modal
+                  size={"xl"}
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   isDismissable={false}
@@ -156,24 +157,28 @@ export default function Page({ params }: Props) {
                                 className="flex items-center"
                                 key={question.id}
                               >
-                                <p>{question.title}</p>
-                                <FileUpload
-                                  expectedFileTypes={["py"]}
-                                  onFileUpload={(fileContent) => {
-                                    if (
-                                      !fileContent ||
-                                      fileContent.length === 0
-                                    ) {
-                                      return;
-                                    }
+                                <p className="w-1/4">{question.title}</p>
+                                <div className="w-1/2 m-1">
+                                  <FileUpload
+                                    expectedFileTypes={["py"]}
+                                    onFileUpload={(fileContent) => {
+                                      if (
+                                        !fileContent ||
+                                        fileContent.length === 0
+                                      ) {
+                                        return;
+                                      }
 
-                                    handleSubmitCode(
-                                      fileContent,
-                                      question.id,
-                                      "python"
-                                    );
-                                  }}
-                                />
+                                      handleSubmitCode(
+                                        fileContent,
+                                        question.id,
+                                        "python"
+                                      );
+                                    }}
+                                  />
+                                </div>
+
+                                <Button className="w-1/4">Submit</Button>
                               </div>
                             );
                           })}
