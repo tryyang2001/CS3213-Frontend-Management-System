@@ -3,22 +3,35 @@
 import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
 import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LogoLoading from "../common/LogoLoading";
 
 interface Props {
   assignments: Assignment[] | undefined;
-  userRole: string;
+  userRole: string | undefined;
 }
 
 function AssignmentList({ assignments, userRole }: Props) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   if (!assignments) {
     return notFound();
   }
 
+  useEffect(() => {
+    if (userRole) {
+      setIsLoading(false);
+    }
+  }, [userRole]);
+
   const handleButtonClick = (id: string) => {
     router.push(`/assignments/${id}`);
   };
+
+  if (isLoading) {
+    return <LogoLoading />;
+  }
 
   return (
     <div>
