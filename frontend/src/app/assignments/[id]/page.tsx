@@ -196,60 +196,57 @@ export default function Page({ params }: Props) {
                 </Modal>
               </div>
             )}
-            {
-              // TODO: replace !== "student" with actual user role check, as for now not sure what the user role value is
-              userRole === "tutor" && (
-                <div className="flex ml-auto mr-4 my-2">
-                  <Tooltip content="Edit assignment and questions">
-                    <Button
-                      isIconOnly
-                      color="primary"
-                      className="flex justify-center items-center bg-white text-black text-lg"
-                      onClick={redirectToEditAssignmentPage}
-                    >
-                      <Icons.Edit />
-                    </Button>
-                  </Tooltip>
+            {userRole === "tutor" && (
+              <div className="flex ml-auto mr-4 my-2">
+                <Tooltip content="Edit assignment and questions">
+                  <Button
+                    isIconOnly
+                    color="primary"
+                    className="flex justify-center items-center bg-white text-black text-lg"
+                    onClick={redirectToEditAssignmentPage}
+                  >
+                    <Icons.Edit />
+                  </Button>
+                </Tooltip>
 
-                  <Tooltip content="Delete the assignment and its relevant questions">
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      className="flex justify-center items-center bg-white text-danger text-lg"
-                      onClick={onOpen}
-                    >
-                      <Icons.Delete />
-                    </Button>
-                  </Tooltip>
-                  <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                    <ModalContent>
-                      {(onClose) => (
-                        <div>
-                          <ModalHeader>Confirm deletion?</ModalHeader>
-                          <ModalBody>
-                            <p>
-                              The assignment and all its questions will be
-                              deleted, and the action is irreversible.
-                            </p>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button color="secondary" onClick={onClose}>
-                              Return
-                            </Button>
-                            <Button
-                              color="danger"
-                              onClick={() => handleDeleteAssignment(onClose)}
-                            >
-                              Confirm
-                            </Button>
-                          </ModalFooter>
-                        </div>
-                      )}
-                    </ModalContent>
-                  </Modal>
-                </div>
-              )
-            }
+                <Tooltip content="Delete the assignment and its relevant questions">
+                  <Button
+                    isIconOnly
+                    color="danger"
+                    className="flex justify-center items-center bg-white text-danger text-lg"
+                    onClick={onOpen}
+                  >
+                    <Icons.Delete />
+                  </Button>
+                </Tooltip>
+                <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                  <ModalContent>
+                    {(onClose) => (
+                      <div>
+                        <ModalHeader>Confirm deletion?</ModalHeader>
+                        <ModalBody>
+                          <p>
+                            The assignment and all its questions will be
+                            deleted, and the action is irreversible.
+                          </p>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button color="secondary" onClick={onClose}>
+                            Return
+                          </Button>
+                          <Button
+                            color="danger"
+                            onClick={() => handleDeleteAssignment(onClose)}
+                          >
+                            Confirm
+                          </Button>
+                        </ModalFooter>
+                      </div>
+                    )}
+                  </ModalContent>
+                </Modal>
+              </div>
+            )}
           </div>
 
           {/* Assignment questions */}

@@ -353,45 +353,52 @@ function Page({ params }: Props) {
         <b>Update questions</b>
 
         <div className="mx-[8%] my-4">
-          <div className="flex">
-            <Tooltip content="Add more questions">
-              <Button
-                variant="bordered"
-                className="bg-white ml-auto text-xl"
-                onClick={handleAddQuestion}
-                isIconOnly
-              >
-                <Icons.Add />
-              </Button>
-            </Tooltip>
-          </div>
-
           {updatedQuestions.map((question, index) => {
             return (
               <div
                 key={questionUniqueIds[index]}
-                className="flex border px-4 py-10 my-2 justify-center"
+                className="flex flex-col border px-4 pt-5 my-2 justify-center"
               >
-                <QuestionEditor
-                  initialQuestion={question}
-                  assignmentDeadline={assignment!.deadline}
-                  onQuestionChange={(updatedQuestion) =>
-                    handleQuestionChange(updatedQuestion, index)
-                  }
-                />
+                <div className="flex">
+                  <QuestionEditor
+                    initialQuestion={question}
+                    assignmentDeadline={assignment!.deadline}
+                    onQuestionChange={(updatedQuestion) =>
+                      handleQuestionChange(updatedQuestion, index)
+                    }
+                  />
 
-                <Button
-                  className="bg-danger"
-                  isIconOnly
-                  onClick={() => handleDeleteQuestion(index)}
-                  size="sm"
-                  isDisabled={updatedQuestions.length === 1}
-                >
-                  <Icons.Delete className="text-lg text-white" />
-                </Button>
+                  <Tooltip content="Delete current question">
+                    <Button
+                      className="bg-danger"
+                      isIconOnly
+                      onClick={() => handleDeleteQuestion(index)}
+                      size="sm"
+                      isDisabled={updatedQuestions.length === 1}
+                    >
+                      <Icons.Delete className="text-lg text-white" />
+                    </Button>
+                  </Tooltip>
+                </div>
+
+                {index === updatedQuestions.length - 1 && (
+                  <div className="flex justify-end my-2 px-4">
+                    <Tooltip content="Add more questions">
+                      <Button
+                        className="bg-white ml-auto text-xl"
+                        variant="bordered"
+                        onClick={handleAddQuestion}
+                        isIconOnly
+                      >
+                        <Icons.Add />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
             );
           })}
+
           <div className="flex justify-end">
             <Button
               color="primary"
