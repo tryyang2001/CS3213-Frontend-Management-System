@@ -407,6 +407,88 @@ describe("Unit Tests for /user/getUserInfo endpoint", () => {
   });
 });
 
+describe("Unit Tests for /user/getAllStudents endpoint", () => {
+  const app = createUnitTestServer();
+  let uid: number;
+  const existingTutorId = 3;
+  const existingStudentId = 1;
+  const nonExistingUserId = -1;
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Given a valid tutor ID", () => {
+    it("Should return all students", async () => {
+      // Arrange
+      uid = existingTutorId;
+      const mockUserIdSearch = { rows: [{ uid: 3, role: "tutor" }] };
+      const mockAllStudents = [
+        { uid: 1, name: "Student 1" },
+        { uid: 2, name: "Student 2" },
+      ];
+      jest.spyOn(db, "getUserByUserId").mockResolvedValueOnce(mockUserIdSearch as unknown as QueryResult<User>);
+      jest.spyOn(db, "getAllStudents").mockResolvedValueOnce(mockAllStudents);
+      // Act
+      const response = await supertest(app)
+        .get(`/user/getAllStudents?uid={uid}`);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.OK);
+      expect(response.body).toEqual(mockAllStudents);
+    });
+  });
+  describe("Given an invalid or non-existent user ID", () => {
+    it("Should return an error if the UID query parameter is missing", async () => {
+      // Act
+      const response = await supertest(app).get("/user/getAllStudents");
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
+    });
+
+    it("Should return an error if the UID query parameter is not a number", async () => {
+      // Arrange
+      const invalidUid = "abc";
+
+      // Act
+      const response = await supertest(app).get(`/user/getAllStudents?uid=${invalidUid}`);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+    });
+
+    it("Should return an error if the user does not exist", async () => {
+      // Arrange
+      uid = nonExistingUserId;
+      const mockUserIdSearch = { rows: [] };
+      jest.spyOn(db, "getUserByUserId").mockResolvedValueOnce(mockUserIdSearch as unknown as QueryResult<User>);
+      const expectedErrorMessage = "User does not exist.";
+
+      // Act
+      const response = await supertest(app).get(`/user/getAllStudents?uid=${uid}`);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.BAD_REQUEST); // Assuming 400 for user not found
+      expect(response.body).toEqual({ message: expectedErrorMessage });
+    });
+
+    it("Should return a 403 error if the user is not a tutor", async () => {
+      // Arrange
+      uid = existingStudentId;
+      const mockUserIdSearch = { rows: [{ uid: existingStudentId, role: "student" }] };
+      jest.spyOn(db, "getUserByUserId").mockResolvedValueOnce(mockUserIdSearch as unknown as QueryResult<User>);
+      const expectedErrorMessage = "Access denied. User is not a tutor.";
+
+      // Act
+      const response = await supertest(app).get(`/user/getAllStudents?uid=${uid}`);
+
+      // Assert
+      expect(response.status).toBe(HttpStatusCode.FORBIDDEN); // Assuming 403 for access denied
+      expect(response.body).toEqual({ message: expectedErrorMessage });
+    });
+  });
+});
+
 describe("Unit Tests for /user/updateUserPassword endpoint", () => {
   const app = createUnitTestServer();
   let reqBody: UpdatePasswordBody;
