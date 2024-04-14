@@ -1,0 +1,106 @@
+name: Build and deploy an app to AKS
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+  workflow_dispatch:
+  
+env:
+  AZURE_CONTAINER_REGISTRY: "fmdevsimgs"
+  RESOURCE_GROUP: "FMDevs_group"
+  CLUSTER_NAME: "FMDevs"
+  DEPLOYMENT_MANIFEST_PATH: "k8s/startup.yaml"
+jobs:
+  buildImage:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out the repository this file is in
+      - uses: actions/checkout@v3
+
+      # Logs in with your Azure credentials
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      # Connect to Azure Container registry (ACR)
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }} 
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push user service image
+        run: |
+          cd backend/user-service
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.USER_SECRETS }}"
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
+
+      - name: Build and push frontend image to ACR
+        run: |
+          cd frontend
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.FRONTEND_SECRETS }}"
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+
+      - name: Build and push grading service image to ACR
+        run: |
+          cd backend/grading-service
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.GRADING_SECRETS }}"
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
+
+      - name: Build and push assignment image to ACR
+        run: |
+          cd backend/assignment-service
+          docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }} --build-arg PROD_ENV="${{ secrets.ASSIGNMENT_SECRETS }}"
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
+          
+  deploy:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: [buildImage]
+    steps:
+      # Checks out the repository this file is in
+      - uses: actions/checkout@v3
+
+      # Logs in with your Azure credentials
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      # Use kubelogin to configure your kubeconfig for Azure auth
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      # Deploys application based on given manifest file
+      - name: Deploys application
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          namespace: 'ingress-nginx'
+          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+          images: |
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-frontend:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-user:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-grading:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/cs3213-assignment:${{ github.sha }}
