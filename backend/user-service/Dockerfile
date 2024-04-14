@@ -1,4 +1,5 @@
 FROM node:alpine
+ARG PROD_ENV=""
 WORKDIR '/app'
 COPY package*.json ./
 RUN yarn install
