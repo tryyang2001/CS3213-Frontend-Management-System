@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, AccordionItem, Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Spacer, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
 import { notFound, useRouter } from "next/navigation";
 
@@ -31,7 +31,8 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
   
   return (
     <div>
-      <b>Submissions</b>
+      <h1 className="text-2xl font-bold">Submissions</h1>
+      <Spacer y={4} />
       <Accordion variant="splitted" selectionMode="multiple">
         {assignments.map((assignment) => (
           <AccordionItem
