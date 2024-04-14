@@ -1,0 +1,477 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "User Service"
+  description: API documentation for the user microservice.
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+
+tags:
+  - name: "CORS Policy"
+    description: "IMPORTANT: Due to CORS policy, only calls from `localhost:8080` and `localhost:3000` will be accepted for local development. Please make sure to run the assignment service & frontend on these ports."
+
+schemes:
+  - "http"
+  - "https"
+
+paths:
+  /:
+    get:
+      summary: Check if the user microservice is connected.
+      responses:
+        "200":
+          description: User microservice is connected.
+          example: "Connected to user microservice"
+  /user/health:
+    get:
+      summary: "Health check for the service"
+      description: "Checks if the service is up and running."
+      operationId: "healthCheck"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Service is healthy (connected to the database and is up and running)"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User microservice is working"
+        500:
+          description: "Service is down due to an internal error"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "INTERNAL SERVER ERROR"
+              message:
+                type: "string"
+                example: "Internal User microservice internal error"
+
+  /user/register:
+    post:
+      tags:
+        - "User"
+      summary: "Register a new user"
+      description: "Register a new user with email, password, name, major, and role."
+      operationId: "registerUser"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "User object that needs to be created"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+              password:
+                type: "string"
+              name:
+                type: "string"
+              major:
+                type: "string"
+              role:
+                type: "string"
+      responses:
+        200:
+          description: "User registered successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User registered succesfully."
+              uid:
+                type: "number"
+                example: 124
+        400:
+          description: "Bad request, email already exists or password not long enough"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Email already exists."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error creating users."
+
+  /user/login:
+    post:
+      tags:
+        - "User"
+      summary: "Log in a user"
+      description: "Log in a user with email and password."
+      operationId: "loginUser"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "credentials"
+          description: "Credentials for user login"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "User logged in successfully"
+          schema:
+            type: "object"
+            properties:
+              uid:
+                type: "number"
+                example: 124
+              role:
+                type: "string"
+                example: "student"
+          headers:
+            cookie.token:
+              description: "Authentication token signed by service after logging in succesfully"
+              type: "string"
+        400:
+          description: "User does not exist"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User does not exist."
+        403:
+          description: "Forbidden, incorrect password"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Incorrect password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error cannot authenticate user logging in."
+
+  /user/deleteUser:
+    delete:
+      tags:
+        - "User"
+      summary: "Delete user account"
+      description: "Delete the user account associated with the provided user ID."
+      operationId: "deleteUser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "userData"
+          description: "User ID"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              uid:
+                type: "string"
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User account deleted successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error checking password."
+        401:
+          description: "Unauthorize due to invalid or no authentication token"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Unauthorized, invalid token."
+        400:
+          description: "Invalid parameter uid"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "invalid uid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error deleting account."
+
+  /user/clearCookie:
+    delete:
+      tags:
+        - "User"
+      summary: "Clear user authentication token"
+      description: "Clear user authentication token"
+      operationId: "clearCookie"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User authentication token cleared successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Authentication token cleared successfully."
+
+  /user/getUserInfo:
+    get:
+      tags:
+        - "User"
+      summary: "Get user information by user ID"
+      description: "Retrieve user information by user ID."
+      operationId: "getUserInfo"
+      parameters:
+        - in: "query"
+          name: "uid"
+          description: "User ID to retrieve user information for"
+          required: true
+          type: "string"
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "User information retrieved successfully"
+          schema:
+            type: "object"
+            properties:
+              uid:
+                type: "number"
+                example: 2
+              name:
+                type: "string"
+                example: "Tutor Name"
+              email:
+                type: "string"
+                format: "email"
+                example: "tutor@email.com"
+              major:
+                type: "string"
+                example: "major placeholder"
+              avatarUrl:
+                type: "string"
+                format: "uri"
+                example: "https://utfs.io/f/a0584f1d-c6ae-41d0-9d12-783d01f5fdb0-sy2ruq.jpg"
+              role:
+                type: "string"
+                example: "tutor"
+              bio:
+                type: "string"
+                example: "This person has a bio!!!"
+        400:
+          description: "Invalid uid"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Invalid uid."
+        401:
+          description: "Unauthorize due to invalid or no authentication token"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Unauthorized, invalid token."
+        404:
+          description: "User not found"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User does not exist."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error getting user by uid."
+
+  /user/updateUserPassword:
+    put:
+      tags:
+        - "User"
+      summary: "Update user password"
+      description: "Update user password with the given user ID."
+      operationId: "updateUserPassword"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "passwordData"
+          description: "User ID and new password"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              uid:
+                type: "string"
+              old_password:
+                type: "string"
+              new_password:
+                type: "string"
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User password updated successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Update password successfully."
+        400:
+          description: "Incorrect old password"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Incorrect password."
+        401:
+          description: "Unauthorize due to invalid or no authentication token"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Unauthorized, invalid token."
+        404:
+          description: "User not found"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User does not exist."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error updating user password."
+
+  /user/updateUserInfo:
+    put:
+      tags:
+        - "User"
+      summary: "Update user information"
+      description: "Update information for a user identified by UID"
+      operationId: "updateUserInfo"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "uid"
+          description: "User ID (UID) to identify the user to update"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "updateFields"
+          description: "Fields to be updated for the user"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "My new display name"
+              avatarUrl:
+                type: "url"
+                example: "https://utfs.io/f/a0584f1d-c6ae-41d0-9d12-783d01f5fdb0-sy2ruq.jpg"
+              bio:
+                type: "string"
+                example: "This is my new bio"
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "User information updated successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User information updated."
+        400:
+          description: "Invalid uid or no fields provided for update"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "No fields provided for update."
+        500:
+          description: "Internal server error - Failed to update user info"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Internal server error updating user info."

@@ -24,6 +24,7 @@ import {
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   params: {
@@ -45,10 +46,18 @@ export default function Page({ params }: Props) {
 
   const { toast } = useToast();
 
-  // TODO: replace below code with actual user context to check for user role
   const { user } = useUserContext();
+
   const userId = user?.uid ?? 0;
-  const userRole = user?.role ?? "student";
+  const userRole = user?.role;
+
+  const [isLoadingUserRole, setIsLoadingUserRole] = useState(true);
+
+  useEffect(() => {
+    if (userRole) {
+      setIsLoadingUserRole(false);
+    }
+  }, [userRole]);
 
   const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
     {}
@@ -58,7 +67,6 @@ export default function Page({ params }: Props) {
 
   const {
     data: assignment,
-    isLoading,
     isFetched,
     isError,
   } = useQuery({
@@ -145,11 +153,13 @@ export default function Page({ params }: Props) {
     }
   };
 
+  if (isLoadingUserRole) {
+    return <LogoLoading />;
+  }
+
   return (
     <div>
-      {isLoading ? (
-        <LogoLoading />
-      ) : (
+      {isFetched ? (
         <div className="ml-[12%] mt-[5%] mr-[8%]">
           <div className="flex gap-2">
             {/* Assignment details */}
@@ -157,7 +167,7 @@ export default function Page({ params }: Props) {
 
             {/* Button for submission */}
             {userRole === "student" && (
-              <div className="ml-auto mr-4 my-2">
+              <div className="ml-auto my-2">
                 <Button className="px-6" color="primary" onPress={onOpen}>
                   Submit
                 </Button>
@@ -307,6 +317,8 @@ export default function Page({ params }: Props) {
             return <AssignmentQuestion question={question} key={question.id} />;
           })}
         </div>
+      ) : (
+        <LogoLoading />
       )}
     </div>
   );
