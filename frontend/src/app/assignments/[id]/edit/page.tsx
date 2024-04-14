@@ -7,7 +7,7 @@ import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
 import { useUserContext } from "@/contexts/user-context";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import {
   Button,
   Modal,
@@ -60,13 +60,13 @@ function Page({ params }: Props) {
 
       const referenceSolutions = await Promise.all(
         questionIds.map((questionId) =>
-          AssignmentService.getQuestionReferenceSolution(questionId)
+          assignmentService.getQuestionReferenceSolution(questionId)
         )
       );
 
       const questionTestCases = await Promise.all(
         questionIds.map((questionId) =>
-          AssignmentService.getQuestionTestCases(questionId)
+          assignmentService.getQuestionTestCases(questionId)
         )
       );
 
@@ -115,6 +115,8 @@ function Page({ params }: Props) {
     return () => {
       disableEditing();
     };
+    // Run once on page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddQuestion = () => {
@@ -172,7 +174,7 @@ function Page({ params }: Props) {
     // for each question ids in deletedQuestionIds, delete the question
     const deleteQuestionPromises = Promise.all(
       deletedQuestionIds.map((questionId) =>
-        AssignmentService.deleteQuestion(questionId)
+        assignmentService.deleteQuestion(questionId)
       )
     );
 
@@ -180,12 +182,12 @@ function Page({ params }: Props) {
     const updateQuestionPromises = Promise.all(
       updatedQuestions.map((question) => {
         if (question.id) {
-          return AssignmentService.updateQuestion(question.id, {
+          return assignmentService.updateQuestion(question.id, {
             ...question,
             id: undefined,
           });
         } else {
-          return AssignmentService.createQuestion(params.id, {
+          return assignmentService.createQuestion(params.id, {
             ...question,
             id: undefined,
           });
@@ -351,45 +353,52 @@ function Page({ params }: Props) {
         <b>Update questions</b>
 
         <div className="mx-[8%] my-4">
-          <div className="flex">
-            <Tooltip content="Add more questions">
-              <Button
-                variant="bordered"
-                className="bg-white ml-auto text-xl"
-                onClick={handleAddQuestion}
-                isIconOnly
-              >
-                <Icons.Add />
-              </Button>
-            </Tooltip>
-          </div>
-
           {updatedQuestions.map((question, index) => {
             return (
               <div
                 key={questionUniqueIds[index]}
-                className="flex border px-4 py-10 my-2 justify-center"
+                className="flex flex-col border px-4 pt-5 my-2 justify-center"
               >
-                <QuestionEditor
-                  initialQuestion={question}
-                  assignmentDeadline={assignment!.deadline}
-                  onQuestionChange={(updatedQuestion) =>
-                    handleQuestionChange(updatedQuestion, index)
-                  }
-                />
+                <div className="flex">
+                  <QuestionEditor
+                    initialQuestion={question}
+                    assignmentDeadline={assignment!.deadline}
+                    onQuestionChange={(updatedQuestion) =>
+                      handleQuestionChange(updatedQuestion, index)
+                    }
+                  />
 
-                <Button
-                  className="bg-danger"
-                  isIconOnly
-                  onClick={() => handleDeleteQuestion(index)}
-                  size="sm"
-                  isDisabled={updatedQuestions.length === 1}
-                >
-                  <Icons.Delete className="text-lg text-white" />
-                </Button>
+                  <Tooltip content="Delete current question">
+                    <Button
+                      className="bg-danger"
+                      isIconOnly
+                      onClick={() => handleDeleteQuestion(index)}
+                      size="sm"
+                      isDisabled={updatedQuestions.length === 1}
+                    >
+                      <Icons.Delete className="text-lg text-white" />
+                    </Button>
+                  </Tooltip>
+                </div>
+
+                {index === updatedQuestions.length - 1 && (
+                  <div className="flex justify-end my-2 px-4">
+                    <Tooltip content="Add more questions">
+                      <Button
+                        className="bg-white ml-auto text-xl"
+                        variant="bordered"
+                        onClick={handleAddQuestion}
+                        isIconOnly
+                      >
+                        <Icons.Add />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
             );
           })}
+
           <div className="flex justify-end">
             <Button
               color="primary"

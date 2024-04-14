@@ -6,10 +6,10 @@ import Icons from "@/components/common/Icons";
 import LogoLoading from "@/components/common/LogoLoading";
 import { useToast } from "@/components/ui/use-toast";
 import { useAssignmentContext } from "@/contexts/assignment-context";
-import AssignmentService from "@/helpers/assignment-service/api-wrapper";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
+import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   params: {
@@ -26,16 +26,23 @@ function Page({ params }: Props) {
       description: "",
     },
   ]);
-  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([]);
+  const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([
+    crypto.randomUUID(),
+  ]);
 
   const { toast } = useToast();
 
   const { assignment, isNewlyCreated, disableAddingQuestion } =
     useAssignmentContext();
 
+  useEffect(() => {
+    return () => {
+      disableAddingQuestion();
+    };
+  }, []);
+
   if (!assignment || !isNewlyCreated) {
     router.push(`/assignments/${params.id}`);
-
     return <LogoLoading />;
   }
 
@@ -73,7 +80,8 @@ function Page({ params }: Props) {
 
   const handleSaveCreatedQuestions = () => {
     // create questions
-    AssignmentService.createQuestions(assignment.id, questions)
+    assignmentService
+      .createQuestions(assignment.id, questions)
       .then(() => {
         // so that the user can't revisit this page again
         disableAddingQuestion();
@@ -180,41 +188,49 @@ function Page({ params }: Props) {
 
         <div className="border-b-2 my-2" />
 
-        <div className="flex ml-4 my-2">
-          <b className="flex items-center">Create new questions</b>
-          <Button
-            color="primary"
-            className="ml-auto"
-            onClick={handleAddQuestion}
-          >
-            Add more questions
-          </Button>
-        </div>
-
         {/* Question editor */}
         <div className="mx-[8%] my-4">
           {questions.map((question, index) => (
             <div
-              className="flex border px-4 py-10 my-2 justify-center"
+              className="flex flex-col border px-4 pt-5 my-2 justify-center"
               key={questionUniqueIds[index]}
             >
-              <QuestionEditor
-                assignmentDeadline={assignment.deadline}
-                initialQuestion={question}
-                onQuestionChange={(updatedQuestion) =>
-                  handleQuestionChange(updatedQuestion, index)
-                }
-              />
+              <div className="flex">
+                <QuestionEditor
+                  assignmentDeadline={assignment.deadline}
+                  initialQuestion={question}
+                  onQuestionChange={(updatedQuestion) =>
+                    handleQuestionChange(updatedQuestion, index)
+                  }
+                />
 
-              <Button
-                className="bg-danger"
-                isIconOnly
-                onClick={() => handleDeleteQuestion(index)}
-                size="sm"
-                isDisabled={questions.length === 1}
-              >
-                <Icons.Delete className="text-lg text-white" />
-              </Button>
+                <Tooltip content="Delete current question">
+                  <Button
+                    className="bg-danger"
+                    isIconOnly
+                    onClick={() => handleDeleteQuestion(index)}
+                    size="sm"
+                    isDisabled={questions.length === 1}
+                  >
+                    <Icons.Delete className="text-lg text-white" />
+                  </Button>
+                </Tooltip>
+              </div>
+
+              {index === questions.length - 1 && (
+                <div className="flex justify-end my-2 px-4">
+                  <Tooltip content="Add more questions">
+                    <Button
+                      className="bg-white ml-auto text-xl"
+                      variant="bordered"
+                      onClick={handleAddQuestion}
+                      isIconOnly
+                    >
+                      <Icons.Add />
+                    </Button>
+                  </Tooltip>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -15,6 +15,7 @@ import {
 import FileInput from "./FileInput";
 import userService from "@/helpers/user-service/api-wrapper";
 import { useUserContext } from "@/contexts/user-context";
+import { uploadFiles } from "@/utils/uploadthing";
 
 export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
   const { user, setUserContext } = useUserContext();
@@ -24,14 +25,16 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
     return name == "";
   }, [name]);
   const [bio, setBio] = useState<string>(info.bio);
-  const [photo, setPhoto] = useState<string | undefined>(info.photo);
+  const [photo, setPhoto] = useState<string | undefined>(info.avatarUrl);
   const [newPhoto, setNewPhoto] = useState<File>();
 
-  // userInfo is constant, do not change for now
   const hasChanged = useMemo(() => {
     if (name != info.name) return true;
     if (bio != info.bio) return true;
-    if (photo != info.photo && !(photo == "" && info.photo == undefined))
+    if (
+      photo != info.avatarUrl &&
+      !(photo == "" && info.avatarUrl == undefined)
+    )
       return true;
     return false;
   }, [name, bio, photo, info]);
@@ -41,14 +44,14 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       setPhoto(URL.createObjectURL(newPhoto));
     } else {
       setNewPhoto(undefined);
-      setPhoto(info.photo);
+      setPhoto(info.avatarUrl);
     }
-  }, [newPhoto, info.photo]);
+  }, [newPhoto, info.avatarUrl]);
 
   const handleDiscard = () => {
     setName(info.name);
     setBio(info.bio);
-    setPhoto(info.photo);
+    setPhoto(info.avatarUrl);
     setNewPhoto(undefined);
   };
 
@@ -59,32 +62,40 @@ export default function ProfileEditor({ userInfo }: { userInfo: UserInfo }) {
       return;
     }
 
-    if (name == info.name && bio == info.bio && photo == info.photo) {
+    if (name == info.name && bio == info.bio && photo == info.avatarUrl) {
       setMessage("Profile saved!");
       return;
     }
 
-    try { 
-      await userService.updateUserInfo(
-        user?.uid ?? 0,
-        {
-          name: name,
-          bio: bio
-        }
-      );
+    const dataUpdated: Record<string, string> = {
+      name: name,
+      bio: bio,
+    };
+
+    try {
+      let photoUrl = photo;
+      if (newPhoto) {
+        const fileResponse = await uploadFiles("imageUploader", {
+          files: [newPhoto],
+        });
+        photoUrl = fileResponse[0].url;
+        dataUpdated['"avatarUrl"'] = photoUrl;
+        setPhoto(photoUrl);
+      }
+      await userService.updateUserInfo(user?.uid ?? 0, dataUpdated);
       setMessage("Profile saved!");
       setInfo({
         name: name,
         email: info.email,
         bio: bio,
-        photo: photo!,
-      })
+        avatarUrl: photoUrl,
+      });
 
       setUserContext({
         uid: user?.uid ?? 0,
         role: user?.role ?? "student",
       });
-    }  catch (error) {
+    } catch (error) {
       if (error instanceof Error) {
         const errorMessage = error.message;
         setMessage(errorMessage);

@@ -269,7 +269,7 @@ const deleteTestCases = async (questionId: string, testCaseIds: string[]) => {
   }
 };
 
-const AssignmentService = {
+const assignmentService = {
   getAssignmentById,
   getAssignmentsByUserId,
   getQuestionReferenceSolution,
@@ -283,4 +283,4 @@ const AssignmentService = {
   deleteQuestion,
 };
 
-export default AssignmentService;
+export default assignmentService;
