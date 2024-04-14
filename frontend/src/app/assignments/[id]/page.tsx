@@ -87,7 +87,7 @@ export default function Page({ params }: Props) {
   };
 
   const redirectToSubmissionPage = () => {
-    router.push(`/assignments/${params.id}/submission`);
+    router.push(`/assignments/${params.id}/submission?studentId=${user?.uid}`);
   };
 
   const handleDeleteAssignment = (closeModal: () => void) => {
