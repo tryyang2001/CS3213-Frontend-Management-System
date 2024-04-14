@@ -18,19 +18,15 @@ jobs:
             checks: write
             pull-requests: write
             contents: write
-        runs-on: ${{matrix.os}}
-        strategy:
-            matrix:
-              os: [ubuntu-latest]
-              node-version: [20.x]
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout Current Branch
               uses: actions/checkout@v4
       
-            - name: Use Node.js ${{matrix.node-version}}
+            - name: Use Node.js 20.x
               uses: actions/setup-node@v3
               with:
-                node-version: ${{matrix.node-version}}
+                node-version: 20.x
       
             - name: Clean up
               run: |
