@@ -1,3 +1,5 @@
+import { UpdatePasswordBody } from "../../../types/request-body";
+
 export const getUpdateUserPasswordRequestBody: () => UpdatePasswordBody =
   () => {
     return {
