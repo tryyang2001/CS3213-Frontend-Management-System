@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import HttpStatusCode from "../libs/enums/HttpStatusCode";
 import db from "../models/db";
 
-const getHealth = async (_: Request, response: Response) => {
+const getHealth = async (_: Request, response: Response): Promise<void> => {
   try {
-    const result = await db.$queryRaw`SELECT 1`;
+    await db.$queryRaw`SELECT 1`;
 
     response.status(HttpStatusCode.OK).json({ message: "Healthy" });
   } catch (_error) {

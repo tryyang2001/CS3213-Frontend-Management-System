@@ -40,6 +40,9 @@ describe("Unit Tests for Grading Controller", () => {
         expect(response.body).toEqual({
           parser: expectedParserString,
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
 
@@ -115,6 +118,9 @@ describe("Unit Tests for Grading Controller", () => {
           message:
             "Invalid source_code. Failed to generate parser string from ITS API",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });
@@ -259,6 +265,9 @@ describe("Unit Tests for Grading Controller", () => {
           message:
             "Invalid source_code. Failed to generate parser string from ITS API",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
 
@@ -449,6 +458,9 @@ describe("Unit Tests for Grading Controller", () => {
           error: "INTERNAL SERVER ERROR",
           message: "An unexpected error has occurred. Please try again later",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });
@@ -567,6 +579,9 @@ describe("Unit Tests for Grading Controller", () => {
           error: "INTERNAL SERVER ERROR",
           message: "An unexpected error has occurred. Please try again later",
         });
+
+        // reset the mocks
+        spy.mockRestore();
       });
     });
   });

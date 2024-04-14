@@ -51,6 +51,8 @@ export default function SideBar() {
     }
   );
 
+  const [isLoadingUserRole, setIsLoadingUserRole] = useState(true);
+
   const onMouseOver = () => {
     setIsCollapsible(!isCollapsible);
   };
@@ -81,6 +83,8 @@ export default function SideBar() {
       fetchUserInfo().catch((_err) => {
         return;
       });
+
+      setIsLoadingUserRole(false);
     }
     // router does not change
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,7 +93,11 @@ export default function SideBar() {
   // obtain current path, if is login/sign up, don't render SideBar
   const currentPath = usePathname();
 
-  if (currentPath === "/login" || currentPath === "/sign-up") {
+  if (
+    currentPath === "/login" ||
+    currentPath === "/sign-up" ||
+    isLoadingUserRole
+  ) {
     return <></>;
   }
 

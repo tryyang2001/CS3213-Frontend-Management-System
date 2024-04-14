@@ -1,8 +1,10 @@
 import { CreateAssignmentBody } from "../../libs/validators/assignments/create-assignment-validator";
 import db from "../../models/db";
-import { Assignment } from "../../models/types/assignment";
+import { Assignment } from "../../types/assignment";
 
-const createAssignment = async (createAssignmentBody: CreateAssignmentBody) => {
+const createAssignment = async (
+  createAssignmentBody: CreateAssignmentBody
+): Promise<Assignment> => {
   // convert deadline to Date object
   const assignment = await db.assignment.create({
     data: {
