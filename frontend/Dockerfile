@@ -2,6 +2,9 @@
 FROM node:alpine AS base
 WORKDIR /base
 
+ARG URL
+ENV URL=${URL}
+
 COPY package.json ./
 COPY yarn.lock ./
 
@@ -11,6 +14,7 @@ RUN yarn install
 
 # Copy rest of the application files
 COPY . .
+COPY ./.env ./.env
 
 # STAGE 2: build
 FROM base AS build
@@ -18,7 +22,7 @@ FROM base AS build
 WORKDIR /build
 
 COPY --from=base /base ./
-
+COPY --from=base /base/.env ./.env
 RUN yarn build
 
 
