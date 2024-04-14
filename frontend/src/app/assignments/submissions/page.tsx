@@ -66,15 +66,14 @@ export default function Submissions() {
       }
       
       if (user.role === "tutor") {
-      // Retrieve all assignments
-        const assignments = await assignmentService.getAssignmentsByUserId(
-          user.uid,
-          true,
-          false
-        );
-        const students = await userService.getAllStudents(user.uid);
-        for (const assignment of assignments) {
+        const [assignments, students] = await Promise.all([
+          assignmentService.getAssignmentsByUserId(user.uid, true, false),
+          userService.getAllStudents(user.uid)
+        ]);
+        
+        await Promise.all(assignments.map(async (assignment) => {
           const assignmentSubmissionsData: SubmissionData[] = [];
+          // Fetch submitters for the current assignment
           const submitters = await GradingService.getSubmittersByAssignmentId(assignment.id)
           students?.forEach(student => {
             const submitted = submitters.find(submitter => submitter.studentId === student.uid);
@@ -87,7 +86,7 @@ export default function Submissions() {
             });
           })
           submissionsData[assignment.id] = assignmentSubmissionsData;
-        }
+        }))
         setSubmissions(submissionsData);
         return assignments;
       }
