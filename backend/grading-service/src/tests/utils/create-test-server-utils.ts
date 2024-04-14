@@ -3,7 +3,7 @@ import cors from "../../middlewares/cors";
 import bodyParser from "body-parser";
 import router from "../../routes/route";
 
-export default function createUnitTestServer() {
+export default function createUnitTestServer(): express.Application {
   const app = express();
 
   app.use(cors);

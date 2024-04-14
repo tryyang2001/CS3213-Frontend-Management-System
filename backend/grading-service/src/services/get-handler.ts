@@ -1,9 +1,10 @@
 import db from "../models/db";
+import { Submission } from "../types/grading-service";
 
 const getSubmissionByQuestionIdAndStudentId = async (
   questionId: string,
   studentId: number
-) => {
+): Promise<Submission | null> => {
   const submission = await db.submission.findFirst({
     where: {
       questionId: questionId,

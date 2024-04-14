@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import createUnitTestServer from "../utils/create-test-server-utils";
 import HttpStatusCode from "../../libs/enums/HttpStatusCode";
-import { BaseController } from "../../controllers/base-controller";
 import { Router } from "express";
 
 const app = createUnitTestServer();
