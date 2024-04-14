@@ -3,10 +3,12 @@ import { CreateQuestionBody } from "../../libs/validators/questions/create-quest
 import { CreateQuestionReferenceSolutionBody } from "../../libs/validators/questions/create-reference-solution-validator";
 import { CreateQuestionTestCasesBody } from "../../libs/validators/questions/create-test-cases-validator";
 import db from "../../models/db";
-import { Question } from "../../models/types/question";
-import { ReferenceSolution } from "../../models/types/reference-solution";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
 
-const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
+const createQuestion = async (
+  createQuestionBody: CreateQuestionBody
+): Promise<Question | null> => {
   // check if assignment exists
   const assignment = await db.assignment.findUnique({
     where: {
@@ -84,7 +86,7 @@ const createQuestion = async (createQuestionBody: CreateQuestionBody) => {
 
 const createQuestionReferenceSolution = async (
   createQuestionReferenceSolutionBody: CreateQuestionReferenceSolutionBody
-) => {
+): Promise<ReferenceSolution | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: createQuestionReferenceSolutionBody.id,
@@ -128,7 +130,14 @@ const createQuestionReferenceSolution = async (
 
 const createQuestionTestCases = async (
   createQuestionTestCasesBody: CreateQuestionTestCasesBody
-) => {
+): Promise<{
+  count: number;
+  testCases: {
+    input: string;
+    output: string;
+    isPublic?: boolean;
+  }[];
+} | null> => {
   const questionExists = await db.question.findUnique({
     where: {
       id: createQuestionTestCasesBody.questionId,

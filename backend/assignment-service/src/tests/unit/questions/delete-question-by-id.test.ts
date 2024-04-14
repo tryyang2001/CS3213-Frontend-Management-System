@@ -19,6 +19,10 @@ describe("Unit Tests for deleteQuestion", () => {
       });
       dbMock.question.delete = jest.fn().mockResolvedValue({
         id: questionId,
+        title: "Question Title",
+        description: "Question Description",
+        numberOfTestCases: 1,
+        createdOn: new Date(),
       });
       dbMock.assignment.update = jest.fn().mockResolvedValue({
         id: "assignment-id",
@@ -76,11 +80,7 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id", () => {
       const questionId = "existing-question-id";
       const spy = jest
         .spyOn(DeleteHandler, "deleteQuestion")
-        .mockResolvedValue({
-          ...Response.getQuestionByIdExpectedResponse(),
-          deadline: new Date(),
-          createdOn: new Date(),
-        });
+        .mockResolvedValue(Response.getQuestionByIdExpectedResponse());
 
       // Act
       const response = await supertest(app)
@@ -90,6 +90,9 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id", () => {
       // Assert
       expect(response.status).toBe(HttpStatusCode.NO_CONTENT);
       expect(response.body).toEqual({});
+
+      // reset the mocks
+      spy.mockRestore();
     });
   });
 
@@ -112,6 +115,9 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id", () => {
         error: "NOT FOUND",
         message: "Question not found",
       });
+
+      // reset the mocks
+      spy.mockRestore();
     });
   });
 
@@ -134,6 +140,9 @@ describe("Unit Tests for DELETE /assignment/api/questions/:id", () => {
         error: "INTERNAL SERVER ERROR",
         message: "An unexpected error has occurred. Please try again later",
       });
+
+      // reset the mocks
+      spy.mockRestore();
     });
   });
 });

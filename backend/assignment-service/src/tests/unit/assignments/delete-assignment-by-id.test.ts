@@ -77,7 +77,9 @@ describe("Unit Tests for DELETE /assignment/api/assignments/:id", () => {
       const assignmentId = "existing-assignment-id";
       const spy = jest
         .spyOn(DeleteHandler, "deleteAssignmentById")
-        .mockResolvedValue(Response.getAssignmentByIdDbResponse(assignmentId));
+        .mockResolvedValue(
+          Response.getAssignmentByIdExpectedResponse(assignmentId)
+        );
 
       // Act
       const response = await supertest(app).delete(
@@ -136,6 +138,9 @@ describe("Unit Tests for DELETE /assignment/api/assignments/:id", () => {
         error: "INTERNAL SERVER ERROR",
         message: "An unexpected error has occurred. Please try again later",
       });
+
+      // reset the mocks
+      spy.mockRestore();
     });
   });
 });

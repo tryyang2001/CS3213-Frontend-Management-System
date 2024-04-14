@@ -1,9 +1,11 @@
 import db from "../../models/db";
-import { Question } from "../../models/types/question";
-import { ReferenceSolution } from "../../models/types/reference-solution";
-import { TestCase } from "../../models/types/test-case";
+import { Question } from "../../types/question";
+import { ReferenceSolution } from "../../types/reference-solution";
+import { TestCase } from "../../types/test-case";
 
-const getQuestionById = async (questionId: string) => {
+const getQuestionById = async (
+  questionId: string
+): Promise<Question | null> => {
   const question = await db.question.findUnique({
     where: {
       id: questionId,
@@ -41,7 +43,9 @@ const getQuestionById = async (questionId: string) => {
   return questionDto;
 };
 
-const getQuestionReferenceSolution = async (questionId: string) => {
+const getQuestionReferenceSolution = async (
+  questionId: string
+): Promise<ReferenceSolution | null> => {
   const referenceSolution = await db.referenceSolution.findFirst({
     where: {
       questionId: questionId,
@@ -62,7 +66,9 @@ const getQuestionReferenceSolution = async (questionId: string) => {
   return referenceSolutionDto;
 };
 
-const getQuestionTestCases = async (questionId: string) => {
+const getQuestionTestCases = async (
+  questionId: string
+): Promise<TestCase[] | null> => {
   const testCases = await db.testCase.findMany({
     where: {
       questionId: questionId,

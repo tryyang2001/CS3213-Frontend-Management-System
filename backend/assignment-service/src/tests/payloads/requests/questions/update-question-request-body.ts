@@ -1,4 +1,8 @@
-export const getUpdateQuestionRequestBody = () => {
+export const getUpdateQuestionRequestBody = (): {
+  title: string;
+  description: string;
+  deadline: number;
+} => {
   return {
     title: "Updated Question Title",
     description: "<p>Updated Question Description</p>",

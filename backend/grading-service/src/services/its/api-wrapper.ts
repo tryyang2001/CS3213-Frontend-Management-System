@@ -5,10 +5,10 @@ import ITSPostParserError from "../../libs/errors/ITSPostParserError";
 import NotExistingReferencedSolutionError from "../../libs/errors/NotExistingReferencedSolutionError";
 import NotExistingTestCaseError from "../../libs/errors/NotExistingTestCaseError";
 import ITSPostFeedbackError from "../../libs/errors/ITSPostFeedbackError";
-import { ErrorFeedback } from "../../models/its/error-feedback";
 import CodeFunctionNameError from "../../libs/errors/CodeFunctionNameError";
 import HttpStatusCode from "../../libs/enums/HttpStatusCode";
 import NotExistingStudentError from "../../libs/errors/NotExistingStudentError";
+import { Feedback } from "../../types/grading-service";
 
 dotenv.config();
 
@@ -21,7 +21,10 @@ export const api = axios.create({
   },
 });
 
-async function generateParserString(language: string, source_code: string) {
+async function generateParserString(
+  language: string,
+  source_code: string
+): Promise<string> {
   try {
     const response = await api.post("/cs3213/parser", {
       language: language,
@@ -54,7 +57,7 @@ async function generateErrorFeedback(
   studentCode: string,
   questionId: string,
   studentId: number
-) {
+): Promise<Feedback[]> {
   // ensure that student exists
   const student = await db.user.findUnique({
     where: {
@@ -138,7 +141,7 @@ async function generateErrorFeedback(
       args: args,
     });
 
-    const feedbacks: ErrorFeedback[] = response.data.map(
+    const feedbacks: Feedback[] = response.data.map(
       (feedback: { lineNumber: number; hintStrings: string[] }) => {
         return {
           line: feedback.lineNumber,
@@ -181,8 +184,8 @@ async function saveSubmissionWithFeedbacks(
   language: string,
   studentCode: string,
   studentSolutionParserString: string,
-  feedbacks: ErrorFeedback[]
-) {
+  feedbacks: Feedback[]
+): Promise<void> {
   // if the submission already exists, delete it
   const existingSubmission = await db.submission.findFirst({
     where: {

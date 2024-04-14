@@ -14,7 +14,10 @@ import { CreateQuestionValidator } from "../libs/validators/questions/create-que
 import { formatZodErrorMessage } from "../libs/utils/error-message-utils";
 import DuplicateReferenceSolutionError from "../libs/errors/DuplicateReferenceSolutionError";
 
-const getQuestionById = async (request: Request, response: Response) => {
+const getQuestionById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -40,7 +43,7 @@ const getQuestionById = async (request: Request, response: Response) => {
 const getQuestionTestCasesById = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -66,7 +69,7 @@ const getQuestionTestCasesById = async (
 const getQuestionReferenceSolutionById = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -90,7 +93,10 @@ const getQuestionReferenceSolutionById = async (
   }
 };
 
-const createQuestion = async (request: Request, response: Response) => {
+const createQuestion = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -147,7 +153,7 @@ const createQuestion = async (request: Request, response: Response) => {
 const createQuestionReferenceSolution = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -216,7 +222,7 @@ const createQuestionReferenceSolution = async (
 const createQuestionTestCases = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -273,7 +279,10 @@ const createQuestionTestCases = async (
   }
 };
 
-const updateQuestionById = async (request: Request, response: Response) => {
+const updateQuestionById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({
@@ -331,7 +340,7 @@ const updateQuestionById = async (request: Request, response: Response) => {
 const updateQuestionReferenceSolution = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -390,7 +399,10 @@ const updateQuestionReferenceSolution = async (
   }
 };
 
-const deleteQuestionById = async (request: Request, response: Response) => {
+const deleteQuestionById = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -416,7 +428,7 @@ const deleteQuestionById = async (request: Request, response: Response) => {
 const deleteQuestionReferenceSolutionById = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     const questionId = request.params.questionId;
 
@@ -443,7 +455,7 @@ const deleteQuestionReferenceSolutionById = async (
 const deleteQuestionTestCasesById = async (
   request: Request,
   response: Response
-) => {
+): Promise<void> => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
       response.status(HttpStatusCode.BAD_REQUEST).json({

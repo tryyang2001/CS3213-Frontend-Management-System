@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 declare global {
+  // var is used to declare global variables
+  // eslint-disable-next-line no-var
   var cachedPrisma: PrismaClient;
 }
 
