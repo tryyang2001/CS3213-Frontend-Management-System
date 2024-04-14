@@ -133,7 +133,7 @@ export default function Submissions() {
   ];
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       <b>Submissions</b>
       <Spacer y={4} />
       <Switch isSelected={isSelected} onValueChange={setIsSelected}>

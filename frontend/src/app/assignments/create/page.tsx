@@ -13,7 +13,7 @@ export default function Create() {
   }
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       <b>Create a new assignment</b>
       <Spacer y={4} />
 

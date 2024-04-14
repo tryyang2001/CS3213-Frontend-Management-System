@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import AssignmentPage from "@/components/assignment/AssignmentPage";
 import AssignmentQuestion from "@/components/assignment/AssignmentQuestion";
 import FileUpload from "@/components/common/FileUpload";
@@ -23,12 +24,16 @@ import {
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface Props {
   params: {
     id: string;
   };
+}
+
+interface FileContent {
+  language: string;
+  fileContent: string;
 }
 
 export default function Page({ params }: Props) {
@@ -53,6 +58,12 @@ export default function Page({ params }: Props) {
     }
   }, [userRole]);
 
+  const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
+    {}
+  );
+  const [submissionStatus, setSubmissionStatus] =
+    useState<Record<string, boolean>>();
+
   const {
     data: assignment,
     isFetched,
@@ -75,6 +86,10 @@ export default function Page({ params }: Props) {
     router.push(`/assignments/${params.id}/edit`);
   };
 
+  const redirectToSubmissionPage = () => {
+    router.push(`/assignments/${params.id}/submission`);
+  };
+
   const handleDeleteAssignment = (closeModal: () => void) => {
     assignmentService
       .deleteAssignment(params.id)
@@ -92,16 +107,24 @@ export default function Page({ params }: Props) {
       );
   };
 
-  const handleSubmitCode = (
+  const handleFileUpload = (
     fileContent: string,
     questionId: string,
     language: string
   ) => {
-    if (fileContent) {
+    setFileContents((prevState) => ({
+      ...prevState,
+      [questionId]: { fileContent: fileContent, language: language },
+    }));
+  };
+
+  const handleSubmitCode = (questionId: string) => {
+    if (fileContents?.[questionId]) {
+      const { language, fileContent } = fileContents[questionId];
       const requestBody: PostFeedbackBody = {
-        language: language, // need to change
+        language: language,
         source_code: fileContent,
-        question_id: questionId, // need to change
+        question_id: questionId,
         student_id: userId,
       };
 
@@ -113,6 +136,10 @@ export default function Page({ params }: Props) {
               "Code uploaded successfully. Feedback will be available shortly.",
             variant: "success",
           });
+          setSubmissionStatus((prevState) => ({
+            ...prevState,
+            [questionId]: true,
+          }));
         })
         .catch((_err) => {
           toast({
@@ -144,6 +171,7 @@ export default function Page({ params }: Props) {
                   Submit
                 </Button>
                 <Modal
+                  size={"xl"}
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   isDismissable={false}
@@ -152,8 +180,11 @@ export default function Page({ params }: Props) {
                   <ModalContent>
                     {(onClose) => (
                       <>
-                        <ModalHeader className="flex flex-col gap-1">
+                        <ModalHeader className="flex items-center justify-between mt-4">
                           Submit
+                          <Button onPress={redirectToSubmissionPage}>
+                            View Previous Submissions
+                          </Button>
                         </ModalHeader>
                         <ModalBody>
                           <p>
@@ -162,28 +193,49 @@ export default function Page({ params }: Props) {
                           <Divider className="my-4" />
                           {assignment!.questions!.map((question) => {
                             return (
-                              <div
-                                className="flex items-center"
-                                key={question.id}
-                              >
-                                <p>{question.title}</p>
-                                <FileUpload
-                                  expectedFileTypes={["py"]}
-                                  onFileUpload={(fileContent) => {
-                                    if (
-                                      !fileContent ||
-                                      fileContent.length === 0
-                                    ) {
-                                      return;
-                                    }
+                              <div key={question.id}>
+                                <div
+                                  className="flex items-center"
+                                  key={question.id}
+                                >
+                                  <p className="w-1/4">{question.title}</p>
+                                  <div className="w-1/2 m-1">
+                                    <FileUpload
+                                      expectedFileTypes={["py"]}
+                                      onFileUpload={(fileContent) => {
+                                        if (
+                                          !fileContent ||
+                                          fileContent.length === 0
+                                        ) {
+                                          return;
+                                        }
 
-                                    handleSubmitCode(
-                                      fileContent,
-                                      question.id,
-                                      "python"
-                                    );
-                                  }}
-                                />
+                                        handleFileUpload(
+                                          fileContent,
+                                          question.id,
+                                          "python"
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <Button
+                                    className="w-1/4"
+                                    onPress={() =>
+                                      handleSubmitCode(question.id)
+                                    }
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                                {submissionStatus?.[question.id] && (
+                                  <Button
+                                    onPress={redirectToSubmissionPage}
+                                    fullWidth={true}
+                                  >
+                                    View Feedback
+                                  </Button>
+                                )}
+                                <Divider className="my-4" />
                               </div>
                             );
                           })}

@@ -65,7 +65,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="w-screen h-dvh flex items-center justify-center">
       <div className="flex flex-wrap md:max-w-md max-w-xs justify-center gap-4">
         <EmailInput
           email={email}

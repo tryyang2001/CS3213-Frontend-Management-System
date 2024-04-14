@@ -112,16 +112,6 @@ export default function SubmissionPage({ params }: Props) {
         <div className="h-dvh flex p-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-1 overflow-y-auto flex-1 max-w-1/2">
-              <div>
-                <ButtonGroup>
-                  {assignment.questions?.map((question, index) => (
-                    <Button
-                      key={question.id}
-                      onClick={() => handleQuestionChange(index, question.id)}
-                    >{`${index + 1}`}</Button>
-                  ))}
-                </ButtonGroup>
-              </div>
               <div className="flex gap-2">
                 <div>
                   <h1 className="text-3xl font-semibold ">
@@ -134,6 +124,18 @@ export default function SubmissionPage({ params }: Props) {
                         {DateUtils.parseTimestampToDate(assignment.deadline)}
                       </span>
                     </p>
+                  </div>
+                  <div>
+                    <ButtonGroup>
+                      {assignment.questions?.map((question, index) => (
+                        <Button
+                          key={question.id}
+                          onClick={() =>
+                            handleQuestionChange(index, question.id)
+                          }
+                        >{`${index + 1}`}</Button>
+                      ))}
+                    </ButtonGroup>
                   </div>
                 </div>
               </div>
