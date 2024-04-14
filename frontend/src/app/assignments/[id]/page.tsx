@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import AssignmentPage from "@/components/assignment/AssignmentPage";
 import AssignmentQuestion from "@/components/assignment/AssignmentQuestion";
 import FileUpload from "@/components/common/FileUpload";
@@ -23,7 +24,6 @@ import {
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface Props {
   params: {
@@ -34,10 +34,6 @@ interface Props {
 interface FileContent {
   language: string;
   fileContent: string;
-}
-
-interface FileContentsState {
-  [questionId: string]: FileContent;
 }
 
 export default function Page({ params }: Props) {
@@ -54,7 +50,9 @@ export default function Page({ params }: Props) {
   const userId = user?.uid ?? 0;
   const userRole = user?.role ?? "student";
 
-  const [fileContents, setFileContents] = useState<FileContentsState>({});
+  const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
+    {}
+  );
 
   const {
     data: assignment,
@@ -105,18 +103,11 @@ export default function Page({ params }: Props) {
       ...prevState,
       [questionId]: { fileContent: fileContent, language: language },
     }));
-    // console.log(fileContents);
   };
 
-  useEffect(() => {
-    console.log(fileContents);
-  }, [fileContents]);
-
   const handleSubmitCode = (questionId: string) => {
-    if (fileContents && fileContents[questionId]) {
+    if (fileContents?.[questionId]) {
       const { language, fileContent } = fileContents[questionId];
-      console.log(language);
-      console.log(fileContent);
       const requestBody: PostFeedbackBody = {
         language: language,
         source_code: fileContent,
