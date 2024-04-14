@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-const getSubmissionByQuestionIdAndStudentId = async ({
+const getLatestSubmissionByQuestionIdAndStudentId = async ({
   questionId,
   studentId,
 }: {
@@ -19,9 +19,8 @@ const getSubmissionByQuestionIdAndStudentId = async ({
 }) => {
   try {
     const response = await api.get(
-      `/questions/${questionId}/submissions?studentId=${studentId}`
+      `/questions/${questionId}/submission/latest?studentId=${studentId}`
     );
-
     const submission = response.data as Submission;
     return submission;
   } catch (error) {
@@ -47,6 +46,34 @@ const getSubmissionByQuestionIdAndStudentId = async ({
   }
 };
 
+const getSubmissionsByQuestionIdAndStudentId = async ({
+  questionId,
+  studentId,
+}: {
+  questionId: string;
+  studentId: number;
+}) => {
+  try {
+    const response = await api.get(
+      `/questions/${questionId}/submissions?studentId=${studentId}`
+    );
+    const submission = response.data as Submission[];
+    return submission;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      switch ((error as AxiosError).response?.status) {
+        case HttpStatusCode.NOT_FOUND:
+          // Returns a null equivalent of Submission
+          return [];
+        default:
+          throw new Error("Failed to fetch submissions");
+      }
+    }
+
+    throw new Error("Failed to fetch submissions");
+  }
+};
+
 const postFeedback = async (requestBody: PostFeedbackBody) => {
   try {
     const response = await api.post("/feedback/generate", requestBody);
@@ -60,7 +87,8 @@ const postFeedback = async (requestBody: PostFeedbackBody) => {
 };
 
 const GradingService = {
-  getSubmissionByQuestionIdAndStudentId,
+  getLatestSubmissionByQuestionIdAndStudentId,
+  getSubmissionsByQuestionIdAndStudentId,
   postFeedback,
 };
 

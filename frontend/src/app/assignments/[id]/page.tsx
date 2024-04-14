@@ -96,7 +96,6 @@ export default function Page({ params }: Props) {
         question_id: questionId, // need to change
         student_id: userId,
       };
-
       GradingService.postFeedback(requestBody)
         .then(() => {
           toast({

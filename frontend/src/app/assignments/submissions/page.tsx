@@ -45,7 +45,7 @@ export default function Submissions() {
             let questionNo = 1;
             for (const questionId of questionIds) {
               // Get the submission date of each of the question if exists
-              const submissionData = await GradingService.getSubmissionByQuestionIdAndStudentId({questionId: questionId, studentId: user.uid})
+              const submissionData = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({questionId: questionId, studentId: user.uid})
               const submissionDate = submissionData.createdOn 
               // Set question name to null equivalent as it is not required
               assignmentSubmissionsData.push({questionId: questionId, questionNo: questionNo++, submissionDate: submissionDate, name: '', studentId: user.uid})
@@ -71,7 +71,7 @@ export default function Submissions() {
           if (assignmentData?.questions && students) {
             const tempQuestionId = assignmentData.questions[0].id;
             for (const student of students) {
-              const submissionDate = await GradingService.getSubmissionByQuestionIdAndStudentId({
+              const submissionDate = await GradingService.getLatestSubmissionByQuestionIdAndStudentId({
                 questionId: tempQuestionId, studentId: student.uid
               }).then(submission => submission.createdOn);
               // Set question ID and number to null equivalent as tutor does not require this information

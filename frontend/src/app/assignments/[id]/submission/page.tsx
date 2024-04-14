@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Spacer,
   ButtonGroup,
   Button,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import GradingService from "@/helpers/grading-service/api-wrapper";
@@ -24,11 +26,16 @@ interface Props {
 export default function SubmissionPage({ params }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState("");
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
   const search = useSearchParams();
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
     setCurrentQuestionId(questionId);
+  };
+
+  const handleSubmissionSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubmissionId(e.target.value);
   };
 
   const {
@@ -47,15 +54,22 @@ export default function SubmissionPage({ params }: Props) {
     setCurrentQuestionId(assignment?.questions?.[0]?.id ?? "");
   }, [assignment]);
 
-  const { data: submission, refetch: refetchSubmissions } = useQuery({
+  const { data: submissions, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
       const studentId = search.get('studentId') as string | undefined;
       const parsedStudentId = studentId ? parseInt(studentId, 10) : 0;
-      return await GradingService.getSubmissionByQuestionIdAndStudentId({
-        questionId: currentQuestionId,
-        studentId: parsedStudentId,
-      });
+      const submissions =
+        await GradingService.getSubmissionsByQuestionIdAndStudentId({
+          questionId: currentQuestionId,
+          studentId: parsedStudentId,
+        });
+
+      const sortedSubmissions = submissions.sort(
+        (a, b) => a.createdOn - b.createdOn
+      );
+
+      return sortedSubmissions;
     },
   });
 
@@ -83,6 +97,12 @@ export default function SubmissionPage({ params }: Props) {
       console.error("Error in fetchData:", error);
     });
   }, [currentQuestionId, refetchSubmissions, refetchTestCases]);
+
+  useEffect(() => {
+    if (submissions && submissions.length > 0) {
+      setSelectedSubmissionId(submissions[0].id);
+    }
+  }, [submissions]);
 
   if (isError) {
     return notFound();
@@ -127,12 +147,29 @@ export default function SubmissionPage({ params }: Props) {
               )}
             </div>
             <div className="col-span-1">
+              <div className="flex justify-end">
+                <Select
+                  items={submissions ? submissions : []}
+                  label="Past Submissions"
+                  placeholder="Select a submission"
+                  className="max-w-xs"
+                  onChange={handleSubmissionSelect}
+                >
+                  {(submission) => (
+                    <SelectItem key={submission.id} value={submission.id}>
+                      {submission.createdOn}
+                    </SelectItem>
+                  )}
+                </Select>
+              </div>
               <Spacer y={4} />
               <div className="row-span-1 border border-black">
-                {submission ? (
+                {submissions ? (
                   <FeedbackCodeEditor
-                    submission={submission}
-                    key={submission.id}
+                    submission={submissions.find(
+                      (submission) => submission.id === selectedSubmissionId
+                    )}
+                  key={selectedSubmissionId}
                   />
                 ) : (
                   <FeedbackCodeEditor key="0" />
@@ -140,9 +177,11 @@ export default function SubmissionPage({ params }: Props) {
               </div>
               <Spacer y={4} />
               <div className="row-span-1">
-                {submission ? (
+                {submissions ? (
                   <FeedbackTabs
-                    submission={submission}
+                    submission={submissions.find(
+                      (submission) => submission.id === selectedSubmissionId
+                    )}
                     testcases={testCases}
                   />
                 ) : (
