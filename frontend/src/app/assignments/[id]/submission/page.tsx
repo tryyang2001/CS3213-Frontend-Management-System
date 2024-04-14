@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Spacer,
   ButtonGroup,
@@ -54,7 +54,6 @@ export default function SubmissionPage({ params }: Props) {
 
   const {
     data: assignment,
-    // isLoading,
     isError,
   } = useQuery({
     queryKey: ["get-assignment", params.id],
@@ -63,6 +62,9 @@ export default function SubmissionPage({ params }: Props) {
       // Set the default question to be the first question if it was not found in local store.
       if (currentQuestionId === "" && assignment?.questions) {
         setCurrentQuestionId(assignment.questions[0].id)
+        setCurrentQuestion(0);
+      } else if (currentQuestionId !== "" && assignment?.questions) {
+        setCurrentQuestion(assignment.questions.findIndex(question => question.id === currentQuestionId));
       }
       return assignment;
     },
@@ -97,12 +99,6 @@ export default function SubmissionPage({ params }: Props) {
       return testCases;
     },
   });
-
-  useEffect(() => {
-    if (submissions && submissions.length > 0) {
-      setSelectedSubmissionId(submissions[0].id);
-    }
-  }, [submissions]);
 
   if (isError) {
     return notFound();
