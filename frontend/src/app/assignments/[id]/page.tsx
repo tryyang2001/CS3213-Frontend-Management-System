@@ -53,6 +53,8 @@ export default function Page({ params }: Props) {
   const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
     {}
   );
+  const [submissionStatus, setSubmissionStatus] =
+    useState<Record<string, boolean>>();
 
   const {
     data: assignment,
@@ -127,6 +129,10 @@ export default function Page({ params }: Props) {
               "Code uploaded successfully. Feedback will be available shortly.",
             variant: "success",
           });
+          setSubmissionStatus((prevState) => ({
+            ...prevState,
+            [questionId]: true,
+          }));
         })
         .catch((_err) => {
           toast({
@@ -178,37 +184,49 @@ export default function Page({ params }: Props) {
                           <Divider className="my-4" />
                           {assignment!.questions!.map((question) => {
                             return (
-                              <div
-                                className="flex items-center"
-                                key={question.id}
-                              >
-                                <p className="w-1/4">{question.title}</p>
-                                <div className="w-1/2 m-1">
-                                  <FileUpload
-                                    expectedFileTypes={["py"]}
-                                    onFileUpload={(fileContent) => {
-                                      if (
-                                        !fileContent ||
-                                        fileContent.length === 0
-                                      ) {
-                                        return;
-                                      }
-
-                                      handleFileUpload(
-                                        fileContent,
-                                        question.id,
-                                        "python"
-                                      );
-                                    }}
-                                  />
-                                </div>
-
-                                <Button
-                                  className="w-1/4"
-                                  onPress={() => handleSubmitCode(question.id)}
+                              <div>
+                                <div
+                                  className="flex items-center"
+                                  key={question.id}
                                 >
-                                  Submit
-                                </Button>
+                                  <p className="w-1/4">{question.title}</p>
+                                  <div className="w-1/2 m-1">
+                                    <FileUpload
+                                      expectedFileTypes={["py"]}
+                                      onFileUpload={(fileContent) => {
+                                        if (
+                                          !fileContent ||
+                                          fileContent.length === 0
+                                        ) {
+                                          return;
+                                        }
+
+                                        handleFileUpload(
+                                          fileContent,
+                                          question.id,
+                                          "python"
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <Button
+                                    className="w-1/4"
+                                    onPress={() =>
+                                      handleSubmitCode(question.id)
+                                    }
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                                {submissionStatus?.[question.id] && (
+                                  <Button
+                                    onPress={redirectToSubmissionPage}
+                                    fullWidth={true}
+                                  >
+                                    View Feedback
+                                  </Button>
+                                )}
+                                <Divider className="my-4" />
                               </div>
                             );
                           })}
