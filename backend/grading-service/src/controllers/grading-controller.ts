@@ -138,6 +138,39 @@ const getSubmittersByAssignmentId = async (
   }
 };
 
+const getSubmissionInfo = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { assignmentId } = request.params;
+    const { studentId } = GetSubmissionQueryValidator.parse(request.query);
+
+    const submissionInfo = await GetHandler.getSubmissionInfo(
+      assignmentId,
+      studentId
+    );
+
+    if (!submissionInfo) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Assignment not found",
+      });
+
+      return;
+    }
+
+    response.status(HttpStatusCode.OK).json(submissionInfo);
+  } catch (error) {
+    console.log(error);
+
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      error: "INTERNAL SERVER ERROR",
+      message: "An unexpected error has occurred. Please try again later",
+    });
+  }
+};
+
 const postParser = async (
   request: Request,
   response: Response
@@ -260,6 +293,7 @@ export const GradingController = {
   getSubmissionsByQuestionIdAndStudentId,
   getLatestSubmissionByQuestionIdAndStudentId,
   getSubmittersByAssignmentId,
+  getSubmissionInfo,
   postParser,
   postFeedback,
 };

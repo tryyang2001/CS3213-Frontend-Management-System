@@ -161,7 +161,64 @@ const getSubmittersByAssignmentId = async (
   });
 };
 
+interface SubmissionInfo {
+  questionId: string;
+  createdOn: number;
+}
+
+const getSubmissionInfo = async (
+  assignmentId: string,
+  studentId: number
+): Promise<SubmissionInfo[] | null> => {
+  // Check if the assignment exists
+  const assignment = await db.assignment.findUnique({
+    where: {
+      id: assignmentId,
+    },
+  });
+
+  if (!assignment) {
+    return null; // Assignment does not exist
+  }
+
+  // Retrieve questions for the given assignment
+  const questions = await db.question.findMany({
+    where: {
+      assignmentId: assignmentId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  // Retrieve submission info for each question and student combination
+  const submissionInfoPromises = questions.map(async (question) => {
+    // Retrieve submission info for the current question and student
+    const submission = await db.submission.findFirst({
+      where: {
+        questionId: question.id,
+        studentId: studentId,
+      },
+      select: {
+        createdOn: true,
+      },
+      orderBy: {
+        createdOn: "desc", // Get the latest submission first
+      },
+    });
+
+    return {
+      questionId: question.id,
+      createdOn: submission ? submission.createdOn.getTime() : 0, // Get submission date if exists, otherwise return null
+    };
+  });
+
+  // Wait for all submission info promises to resolve
+  return Promise.all(submissionInfoPromises);
+};
+
 export const GetHandler = {
+  getSubmissionInfo,
   getSubmissionsByQuestionIdAndStudentId,
   getLatestSubmissionByQuestionIdAndStudentId,
   getSubmittersByAssignmentId,

@@ -26,6 +26,11 @@ router.get(
   GradingController.getSubmittersByAssignmentId
 );
 
+router.get(
+  "/questions/:assignmentId/submissionInfo",
+  GradingController.getSubmissionInfo
+);
+
 router.use(docsRouter);
 
 export default router;
