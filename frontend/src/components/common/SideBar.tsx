@@ -80,11 +80,11 @@ export default function SideBar() {
     };
 
     if (user) {
-      fetchUserInfo().catch((_err) => {
-        return;
-      });
-
-      setIsLoadingUserRole(false);
+      fetchUserInfo()
+        .then(() => setIsLoadingUserRole(false))
+        .catch((_err) => {
+          return;
+        });
     }
     // router does not change
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,8 +124,8 @@ export default function SideBar() {
               <UserDropdown>
                 <Avatar
                   showFallback
-                  name="Jane"
-                  src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                  name={userInfo.name ?? ""}
+                  src={userInfo.avatarUrl ?? ""}
                 />
               </UserDropdown>
 
@@ -171,7 +171,7 @@ export default function SideBar() {
                   name={userInfo.name}
                   description={userInfo.email}
                   avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                    src: userInfo.avatarUrl ?? "",
                     alt: "Jane",
                     showFallback: true,
                   }}
