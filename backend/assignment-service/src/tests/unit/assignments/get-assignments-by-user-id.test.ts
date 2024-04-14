@@ -1,4 +1,3 @@
-import { Express } from "express";
 import { PrismaClient } from "@prisma/client";
 import db from "../../../models/db";
 import { GetHandler } from "../../../services/assignments/get-handler";

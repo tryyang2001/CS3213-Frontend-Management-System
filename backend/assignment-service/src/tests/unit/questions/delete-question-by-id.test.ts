@@ -19,6 +19,10 @@ describe("Unit Tests for deleteQuestion", () => {
       });
       dbMock.question.delete = jest.fn().mockResolvedValue({
         id: questionId,
+        title: "Question Title",
+        description: "Question Description",
+        numberOfTestCases: 1,
+        createdOn: new Date(),
       });
       dbMock.assignment.update = jest.fn().mockResolvedValue({
         id: "assignment-id",
