@@ -118,6 +118,15 @@ const getSubmittersByAssignmentId = async (
     const submitters =
       await GetHandler.getSubmittersByAssignmentId(assignmentId);
 
+    if (!submitters) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Assignment not found",
+      });
+
+      return;
+    }
+
     response.status(HttpStatusCode.OK).json(submitters);
   } catch (error) {
     console.log(error);
