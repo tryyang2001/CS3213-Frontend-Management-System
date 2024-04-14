@@ -139,7 +139,7 @@ export default function Page({ params }: Props) {
 
             {/* Button for submission */}
             {userRole === "student" && (
-              <div className="ml-auto mr-4 my-2">
+              <div className="ml-auto my-2">
                 <Button className="px-6" color="primary" onPress={onOpen}>
                   Submit
                 </Button>

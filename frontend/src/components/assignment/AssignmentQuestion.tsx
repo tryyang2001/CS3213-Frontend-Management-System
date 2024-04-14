@@ -8,7 +8,7 @@ interface Props {
 export default function AssignmentQuestion({ question }: Props) {
   return (
     <div className="flex px-0 py-4 mb-6">
-      <div className="w-full px-5">
+      <div className="w-full">
         {/* Question title */}
         <div className="flex space-x-4">
           <div className="flex-1 mr-2 text-xl font-semibold">
