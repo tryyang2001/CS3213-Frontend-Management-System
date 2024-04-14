@@ -1,7 +1,4 @@
-export const getLoginUserResponseBody = () => {
-    return {
-        uid: 1,
-        role: "student",
-    };
-  };
-  
+export const loginUserResponseBody = {
+  uid: 1,
+  role: "student",
+};
