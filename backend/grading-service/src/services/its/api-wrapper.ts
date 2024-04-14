@@ -183,22 +183,6 @@ async function saveSubmissionWithFeedbacks(
   studentSolutionParserString: string,
   feedbacks: ErrorFeedback[]
 ) {
-  // if the submission already exists, delete it
-  const existingSubmission = await db.submission.findFirst({
-    where: {
-      questionId: questionId,
-      studentId: studentId,
-    },
-  });
-
-  if (existingSubmission) {
-    await db.submission.delete({
-      where: {
-        id: existingSubmission.id,
-      },
-    });
-  }
-
   const submission = await db.submission.create({
     data: {
       questionId: questionId,
