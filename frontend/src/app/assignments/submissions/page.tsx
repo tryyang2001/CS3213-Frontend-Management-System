@@ -86,7 +86,6 @@ export default function Submissions() {
               assignmentSubmissionsData.push({questionId: crypto.randomUUID(), questionNo: 0, name: student.name, submissionDate: submissionDate, studentId: student.uid})
             }
           }
-          console.log(assignmentSubmissionsData);
           submissionsData[assignment.id] = assignmentSubmissionsData;
         }
         setSubmissions(submissionsData);

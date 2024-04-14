@@ -145,8 +145,9 @@ export default function SubmissionPage({ params }: Props) {
             <div className="col-span-1">
               <div className="flex justify-end">
                 <Select
+                  isDisabled={submissions ? false : true}
                   items={submissions ? submissions : []}
-                  label="Past Submissions"
+                  label={submissions ? "Past Submissions" : "No previous submissions for this question"}
                   selectedKeys={[selectedSubmissionId]}
                   className="max-w-xs"
                   onChange={handleSubmissionSelect}
