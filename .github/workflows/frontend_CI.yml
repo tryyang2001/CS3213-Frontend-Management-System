@@ -1,12 +1,8 @@
 name: Frontend CI
 on:
   workflow_call:
-  pull_request:
-    branches: [master]
-  push:
-    branches: [master]
 jobs:
-  frontend_build:
+  Frontend_build:
     permissions:
       checks: write
       pull-requests: write
@@ -43,8 +39,9 @@ jobs:
           cmd: build
           dir: frontend
   
-  frontend_tests:
+  Frontend_tests:
     name: Frontend Tests
+    needs: Frontend_build
     permissions:
       checks: write
       pull-requests: write

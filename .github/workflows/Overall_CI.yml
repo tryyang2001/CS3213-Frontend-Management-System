@@ -1,4 +1,4 @@
-name: Backend Services CI
+name: Overall CI
 # targeting pull requests to master branch
 on:
   workflow_call:
