@@ -162,7 +162,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
   };
 
   return (
-    <div className="mx-[8%]">
+    <div className="mx-[10%]">
       <form className="grid mx-4 px-4 gap-8" onSubmit={handleFormSubmit}>
         {/* Title */}
         <div className="grid grid-cols-12">
@@ -202,27 +202,29 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
         </div>
 
         {/* isPublished */}
-        <div className="grid grid-cols-12">
-          <FieldLabel isRequired>Publish now</FieldLabel>
-          <Switch
-            isSelected={isPublished}
-            onValueChange={setIsPublished}
-            color="success"
-          >
-            <div className="flex">
-              {isPublished ? "Yes" : "No"}
-              <Tooltip
-                color="primary"
-                content="Publishing an assignment will make the assignment to be visible for all the students in the course once the assignment is created"
-              >
-                <div className="flex items-center ml-[50%]">
-                  <Icons.QuestionMark />
-                </div>
-              </Tooltip>
-            </div>
-          </Switch>
-          <div className="ml-[10%] col-span-1 flex items-center" />
-        </div>
+        {isEditing && (
+          <div className="grid grid-cols-12">
+            <FieldLabel isRequired>Publish now</FieldLabel>
+            <Switch
+              isSelected={isPublished}
+              onValueChange={setIsPublished}
+              color="success"
+            >
+              <div className="flex">
+                {isPublished ? "Yes" : "No"}
+                <Tooltip
+                  color="primary"
+                  content="Publishing an assignment will make the assignment to be visible for all the students in the course once the assignment is created"
+                >
+                  <div className="flex items-center ml-[50%]">
+                    <Icons.QuestionMark />
+                  </div>
+                </Tooltip>
+              </div>
+            </Switch>
+            <div className="ml-[10%] col-span-1 flex items-center"></div>
+          </div>
+        )}
 
         {/* Description */}
         <div className="grid grid-cols-12">
