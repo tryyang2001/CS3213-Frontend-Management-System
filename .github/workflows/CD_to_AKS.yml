@@ -2,10 +2,6 @@ name: Build and deploy an app to AKS
 
 on:
   workflow_call:
-  pull_request:
-    types: [closed]
-    branches:
-      - master
   workflow_dispatch:
   
 env:
