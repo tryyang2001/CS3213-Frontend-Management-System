@@ -186,22 +186,6 @@ async function saveSubmissionWithFeedbacks(
   studentSolutionParserString: string,
   feedbacks: Feedback[]
 ): Promise<void> {
-  // if the submission already exists, delete it
-  const existingSubmission = await db.submission.findFirst({
-    where: {
-      questionId: questionId,
-      studentId: studentId,
-    },
-  });
-
-  if (existingSubmission) {
-    await db.submission.delete({
-      where: {
-        id: existingSubmission.id,
-      },
-    });
-  }
-
   const submission = await db.submission.create({
     data: {
       questionId: questionId,
@@ -221,5 +205,28 @@ async function saveSubmissionWithFeedbacks(
         hints: feedback.hints,
       };
     }),
+  });
+
+  // find which assignmentId the question belongs to
+  const questionAssignmentId = await db.question.findUnique({
+    where: {
+      id: questionId,
+    },
+    select: {
+      assignmentId: true,
+    },
+  });
+
+  if (!questionAssignmentId) {
+    return;
+  }
+
+  // register submitter
+  await db.submitter.create({
+    data: {
+      studentId: studentId,
+      assignmentId: questionAssignmentId.assignmentId!,
+      submissionId: submission.id,
+    },
   });
 }

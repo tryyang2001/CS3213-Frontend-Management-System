@@ -24,3 +24,14 @@ interface Submission {
   }[];
   createdOn: number;
 }
+
+interface SubmissionInfo {
+  questionId: string;
+  createdOn: number;
+}
+
+interface Submitter {
+  studentId: number;
+  name: string;
+  createdOn: number;
+}

@@ -79,7 +79,7 @@ export default function AccountEditor({
         onOpenChange={() => setAccountMessage("")}
       >
         <PopoverTrigger>
-          <Button color="danger" onClick={() => void handleAccountSubmit()}>
+          <Button color="primary" onClick={() => void handleAccountSubmit()}>
             {" "}
             Update Password{" "}
           </Button>

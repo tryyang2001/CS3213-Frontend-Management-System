@@ -47,6 +47,53 @@ describe("checkDatabase function", () => {
   });
 });
 
+describe("getAllStudents function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return an array of all students", async () => {
+    // Arrange
+    const mockStudents = [
+      {
+        uid: 1,
+        email: "test1@example.com",
+        password: "password12345",
+        name: "Student1",
+        major: "Computer Science",
+        role: "student",
+      },
+      {
+        uid: 2,
+        email: "test2@example.com",
+        password: "password67890",
+        name: "Student2",
+        major: "Computer Engineering",
+        role: "student",
+      },
+    ];
+    const mockResult = {
+      rows: mockStudents,
+    };
+    (pool.query as jest.Mock).mockResolvedValue(mockResult as QueryResult);
+
+    // Act
+    const result = await model.getAllStudents();
+
+    // Assert
+    expect(result).toEqual(mockStudents);
+  });
+
+  it("should throw an error if query fails", async () => {
+    // Arrange
+    const errorMessage = "Failed to fetch students";
+    (pool.query as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+    // Act and Assert
+    await expect(model.getAllStudents()).rejects.toThrow(errorMessage);
+  });
+});
+
 describe("getUserByUserId function", () => {
   afterEach(() => {
     jest.clearAllMocks();

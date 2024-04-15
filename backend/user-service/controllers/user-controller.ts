@@ -175,6 +175,33 @@ async function getUserInfo(
   }
 }
 
+async function getAllStudents(req: Request, res:Response) {
+  const queryUidString = req.query.uid;
+  if (typeof queryUidString !== 'string') {
+    return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({ message: 'Invalid uid.' });
+  }
+  try {
+    const uid = parseInt(queryUidString, 10);
+    const userIdSearch = await db.getUserByUserId(uid);
+    if (userIdSearch.rows.length == 0) {
+      console.log("User does not exist.");
+      return res.status(HttpStatusCode.BAD_REQUEST.valueOf()).json({
+        message: "User does not exist.",
+      });
+    } else if (userIdSearch.rows.length > 0) {
+      const role = userIdSearch.rows[0].role;
+        if (role !== 'tutor') {
+          return res.status(HttpStatusCode.FORBIDDEN).send({ message: 'Access denied. User is not a tutor.'});
+        }
+    }
+    const allStudents = await db.getAllStudents();
+    return res.json(allStudents);
+  } catch (err) {
+    console.log(err);
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR.valueOf()).send({ message: "Error getting all students." });
+  }
+}
+
 async function updateUserPassword(
   req: Request,
   res: Response
@@ -306,6 +333,7 @@ export default {
   registerUser,
   loginUser,
   getUserInfo,
+  getAllStudents,
   updateUserPassword,
   updateUserInfo,
   deleteUser,

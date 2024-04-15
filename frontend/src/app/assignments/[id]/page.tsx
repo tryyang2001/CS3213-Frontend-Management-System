@@ -86,8 +86,9 @@ export default function Page({ params }: Props) {
     router.push(`/assignments/${params.id}/edit`);
   };
 
-  const redirectToSubmissionPage = () => {
-    router.push(`/assignments/${params.id}/submission`);
+  const redirectToSubmissionPage = (questionId: string) => {
+    localStorage.setItem("currentQuestionId", questionId);
+    router.push(`/assignments/${params.id}/submission?studentId=${user?.uid}`);
   };
 
   const handleDeleteAssignment = (closeModal: () => void) => {
@@ -127,7 +128,6 @@ export default function Page({ params }: Props) {
         question_id: questionId,
         student_id: userId,
       };
-
       GradingService.postFeedback(requestBody)
         .then(() => {
           toast({
@@ -182,7 +182,7 @@ export default function Page({ params }: Props) {
                       <>
                         <ModalHeader className="flex items-center justify-between mt-4">
                           Submit
-                          <Button onPress={redirectToSubmissionPage}>
+                          <Button onPress={() => redirectToSubmissionPage("")}>
                             View Previous Submissions
                           </Button>
                         </ModalHeader>
@@ -229,7 +229,7 @@ export default function Page({ params }: Props) {
                                 </div>
                                 {submissionStatus?.[question.id] && (
                                   <Button
-                                    onPress={redirectToSubmissionPage}
+                                    onPress={() => redirectToSubmissionPage(question.id)}
                                     fullWidth={true}
                                   >
                                     View Feedback

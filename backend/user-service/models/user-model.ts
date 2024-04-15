@@ -2,6 +2,15 @@ import { QueryResult } from "pg";
 import pool from "../psql";
 import { UpdateFields } from "../types/request-body";
 
+async function getAllStudents(): Promise<any[]> {
+  try {
+    const result: QueryResult = await pool.query('SELECT * FROM users."User" WHERE role = $1', ['student']);
+    return result.rows;
+  } catch (error) {
+    throw error;
+  }
+};
+
 async function checkDatabase(): Promise<QueryResult> {
   const result: QueryResult = await pool.query('SELECT * FROM users."User"');
   return result;
@@ -82,6 +91,7 @@ async function deleteUser(uid: number): Promise<QueryResult> {
 }
 
 const db = {
+  getAllStudents,
   checkDatabase,
   getUserByUserId,
   getUserByEmail,

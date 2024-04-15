@@ -141,11 +141,16 @@ describe("Unit tests for generateFeedback service", () => {
       });
 
       // prevent writing to database
-      dbMock.submission.findFirst = jest.fn().mockResolvedValue(null);
       dbMock.submission.create = jest.fn().mockResolvedValue({
         id: "submission-id",
       });
       dbMock.feedback.createMany = jest.fn().mockResolvedValue(null);
+
+      dbMock.question.findUnique = jest.fn().mockResolvedValue({
+        id: questionId,
+      });
+
+      dbMock.submitter.create = jest.fn().mockResolvedValue(null);
     });
 
     describe("Given the reference solution parser string exists in the database", () => {
@@ -170,9 +175,10 @@ describe("Unit tests for generateFeedback service", () => {
         expect(axiosMock.post).toHaveBeenCalledTimes(1);
         expect(dbMock.referenceSolution.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.testCase.findFirst).toHaveBeenCalledTimes(1);
-        expect(dbMock.submission.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
+        expect(dbMock.question.findUnique).toHaveBeenCalledTimes(1);
+        expect(dbMock.submitter.create).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
         expect(feedbacks[0].line).toBe(2);
         expect(feedbacks[0].hints).toContain(CodeError.hintStrings[0]);
@@ -210,56 +216,10 @@ describe("Unit tests for generateFeedback service", () => {
         expect(dbMock.referenceSolution.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.referenceSolution.update).toHaveBeenCalledTimes(1);
         expect(dbMock.testCase.findFirst).toHaveBeenCalledTimes(1);
-        expect(dbMock.submission.findFirst).toHaveBeenCalledTimes(1);
         expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
         expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
-        expect(feedbacks).toHaveLength(1);
-        expect(feedbacks[0].line).toBe(2);
-        expect(feedbacks[0].hints).toContain(
-          "Incorrect else-block for if ( ((x % 2) == 1) )"
-        );
-
-        // reset the mock
-        spy.mockRestore();
-        jest.clearAllMocks();
-      });
-    });
-
-    describe("Given the submission already exists in the database", () => {
-      it("should replace the existing submission with the new one", async () => {
-        // Arrange
-        dbMock.referenceSolution.findFirst = jest.fn().mockResolvedValue({
-          codeParser: ReferenceSolution.codeParser,
-        });
-        const spy = jest
-          .spyOn(ITSApi, "generateParserString")
-          .mockResolvedValue(StudentSolution.pyCodeParser);
-
-        dbMock.submission.findFirst = jest.fn().mockResolvedValue({
-          id: "submission-id",
-        });
-        dbMock.submission.delete = jest.fn().mockResolvedValue(null);
-        dbMock.submission.create = jest.fn().mockResolvedValue({
-          id: "new-submission-id",
-        });
-        dbMock.feedback.createMany = jest.fn().mockResolvedValue(null);
-
-        // Act
-        const feedbacks = await ITSApi.generateErrorFeedback(
-          language,
-          studentCode,
-          questionId,
-          studentId
-        );
-
-        // Assert
-        expect(axiosMock.post).toHaveBeenCalledTimes(1);
-        expect(dbMock.referenceSolution.findFirst).toHaveBeenCalledTimes(1);
-        expect(dbMock.testCase.findFirst).toHaveBeenCalledTimes(1);
-        expect(dbMock.submission.findFirst).toHaveBeenCalledTimes(1);
-        expect(dbMock.submission.delete).toHaveBeenCalledTimes(1);
-        expect(dbMock.submission.create).toHaveBeenCalledTimes(1);
-        expect(dbMock.feedback.createMany).toHaveBeenCalledTimes(1);
+        expect(dbMock.question.findUnique).toHaveBeenCalledTimes(1);
+        expect(dbMock.submitter.create).toHaveBeenCalledTimes(1);
         expect(feedbacks).toHaveLength(1);
         expect(feedbacks[0].line).toBe(2);
         expect(feedbacks[0].hints).toContain(

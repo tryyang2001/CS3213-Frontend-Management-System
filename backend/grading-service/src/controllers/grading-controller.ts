@@ -14,7 +14,7 @@ import { PostFeedbackValidator } from "../libs/validators/post-feedback-validato
 import NotExistingStudentError from "../libs/errors/NotExistingStudentError";
 import { GetSubmissionQueryValidator } from "../libs/validators/get-submission-query-validator";
 
-const getSubmissionByQuestionIdAndStudentId = async (
+const getSubmissionsByQuestionIdAndStudentId = async (
   request: Request,
   response: Response
 ): Promise<void> => {
@@ -22,15 +22,58 @@ const getSubmissionByQuestionIdAndStudentId = async (
     const { questionId } = request.params;
     const { studentId } = GetSubmissionQueryValidator.parse(request.query);
 
-    const submission = await GetHandler.getSubmissionByQuestionIdAndStudentId(
+    const submissions = await GetHandler.getSubmissionsByQuestionIdAndStudentId(
       questionId,
       studentId
     );
 
+    response.status(HttpStatusCode.OK).json(submissions);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      response.status(HttpStatusCode.BAD_REQUEST).json({
+        error: "BAD REQUEST",
+        message: formatZodErrorMessage(error),
+      });
+
+      return;
+    }
+
+    if (error instanceof NotExistingStudentError) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Invalid student_id. " + error.message,
+      });
+
+      return;
+    }
+
+    console.log(error);
+
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      error: "INTERNAL SERVER ERROR",
+      message: "An unexpected error has occurred. Please try again later",
+    });
+  }
+};
+
+const getLatestSubmissionByQuestionIdAndStudentId = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { questionId } = request.params;
+    const { studentId } = GetSubmissionQueryValidator.parse(request.query);
+
+    const submission =
+      await GetHandler.getLatestSubmissionByQuestionIdAndStudentId(
+        questionId,
+        studentId
+      );
+
     if (!submission) {
       response.status(HttpStatusCode.NOT_FOUND).json({
         error: "NOT FOUND",
-        message: "No submission found",
+        message: "Submission not found",
       });
 
       return;
@@ -47,6 +90,78 @@ const getSubmissionByQuestionIdAndStudentId = async (
       return;
     }
 
+    if (error instanceof NotExistingStudentError) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Invalid student_id. " + error.message,
+      });
+
+      return;
+    }
+
+    console.log(error);
+
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      error: "INTERNAL SERVER ERROR",
+      message: "An unexpected error has occurred. Please try again later",
+    });
+  }
+};
+
+const getSubmittersByAssignmentId = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { assignmentId } = request.params;
+
+    const submitters =
+      await GetHandler.getSubmittersByAssignmentId(assignmentId);
+
+    if (!submitters) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Assignment not found",
+      });
+
+      return;
+    }
+
+    response.status(HttpStatusCode.OK).json(submitters);
+  } catch (error) {
+    console.log(error);
+
+    response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      error: "INTERNAL SERVER ERROR",
+      message: "An unexpected error has occurred. Please try again later",
+    });
+  }
+};
+
+const getSubmissionInfo = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { assignmentId } = request.params;
+    const { studentId } = GetSubmissionQueryValidator.parse(request.query);
+
+    const submissionInfo = await GetHandler.getSubmissionInfo(
+      assignmentId,
+      studentId
+    );
+
+    if (!submissionInfo) {
+      response.status(HttpStatusCode.NOT_FOUND).json({
+        error: "NOT FOUND",
+        message: "Assignment not found",
+      });
+
+      return;
+    }
+
+    response.status(HttpStatusCode.OK).json(submissionInfo);
+  } catch (error) {
     console.log(error);
 
     response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -175,7 +290,10 @@ const postFeedback = async (
 };
 
 export const GradingController = {
-  getSubmissionByQuestionIdAndStudentId,
+  getSubmissionsByQuestionIdAndStudentId,
+  getLatestSubmissionByQuestionIdAndStudentId,
+  getSubmittersByAssignmentId,
+  getSubmissionInfo,
   postParser,
   postFeedback,
 };

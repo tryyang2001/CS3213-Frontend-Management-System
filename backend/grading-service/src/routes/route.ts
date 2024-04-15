@@ -13,7 +13,22 @@ router.post("/feedback/generate", GradingController.postFeedback);
 
 router.get(
   "/questions/:questionId/submissions",
-  GradingController.getSubmissionByQuestionIdAndStudentId
+  GradingController.getSubmissionsByQuestionIdAndStudentId
+);
+
+router.get(
+  "/questions/:questionId/submission/latest",
+  GradingController.getLatestSubmissionByQuestionIdAndStudentId
+);
+
+router.get(
+  "/assignments/:assignmentId/submitters",
+  GradingController.getSubmittersByAssignmentId
+);
+
+router.get(
+  "/questions/:assignmentId/submissionInfo",
+  GradingController.getSubmissionInfo
 );
 
 router.use(docsRouter);
