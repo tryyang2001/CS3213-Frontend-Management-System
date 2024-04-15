@@ -25,11 +25,13 @@ interface Props {
 
 export default function SubmissionPage({ params }: Props) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [currentQuestionId, setCurrentQuestionId] = useState<string>(localStorage.getItem('currentQuestionId') ?? "");
+  const [currentQuestionId, setCurrentQuestionId] = useState<string>(
+    localStorage.getItem("currentQuestionId") ?? ""
+  );
   const [selectedSubmissionId, setSelectedSubmissionId] = useState("");
-  const search = useSearchParams();
-  localStorage.removeItem('currentQuestionId');
 
+  const search = useSearchParams();
+  localStorage.removeItem("currentQuestionId");
 
   const handleQuestionChange = (questionNumber: number, questionId: string) => {
     setCurrentQuestion(questionNumber);
@@ -52,19 +54,20 @@ export default function SubmissionPage({ params }: Props) {
     setSelectedSubmissionId(e.target.value);
   };
 
-  const {
-    data: assignment,
-    isError,
-  } = useQuery({
+  const { data: assignment, isError } = useQuery({
     queryKey: ["get-assignment", params.id],
     queryFn: async () => {
       const assignment = await assignmentService.getAssignmentById(params.id);
       // Set the default question to be the first question if it was not found in local store.
       if (currentQuestionId === "" && assignment?.questions) {
-        setCurrentQuestionId(assignment.questions[0].id)
+        setCurrentQuestionId(assignment.questions[0].id);
         setCurrentQuestion(0);
       } else if (currentQuestionId !== "" && assignment?.questions) {
-        setCurrentQuestion(assignment.questions.findIndex(question => question.id === currentQuestionId));
+        setCurrentQuestion(
+          assignment.questions.findIndex(
+            (question) => question.id === currentQuestionId
+          )
+        );
       }
       return assignment;
     },
@@ -73,14 +76,18 @@ export default function SubmissionPage({ params }: Props) {
   const { data: submissions, refetch: refetchSubmissions } = useQuery({
     queryKey: ["get-submissions", params.id, currentQuestionId],
     queryFn: async () => {
-      const studentId = search.get('studentId') as string | undefined;
+      if (!currentQuestionId || currentQuestionId === "") {
+        return [];
+      }
+
+      const studentId = search.get("studentId") as string | undefined;
       const parsedStudentId = studentId ? parseInt(studentId, 10) : 0;
       const submissions =
         await GradingService.getSubmissionsByQuestionIdAndStudentId({
           questionId: currentQuestionId,
           studentId: parsedStudentId,
         });
-      
+
       // Latest submission is displayed first
       const sortedSubmissions = submissions.sort(
         (a, b) => b.createdOn - a.createdOn
@@ -94,6 +101,10 @@ export default function SubmissionPage({ params }: Props) {
   const { data: testCases, refetch: refetchTestCases } = useQuery({
     queryKey: ["get-testcases", params.id, currentQuestionId],
     queryFn: async () => {
+      if (!currentQuestionId || currentQuestionId === "") {
+        return [];
+      }
+
       const testCases =
         await assignmentService.getQuestionTestCases(currentQuestionId);
       return testCases;
@@ -149,7 +160,11 @@ export default function SubmissionPage({ params }: Props) {
                 <Select
                   isDisabled={submissions ? false : true}
                   items={submissions ? submissions : []}
-                  label={submissions ? "Past Submissions" : "No previous submissions for this question"}
+                  label={
+                    submissions
+                      ? "Past Submissions"
+                      : "No previous submissions for this question"
+                  }
                   selectedKeys={[selectedSubmissionId]}
                   className="max-w-xs"
                   onChange={handleSubmissionSelect}
@@ -169,7 +184,7 @@ export default function SubmissionPage({ params }: Props) {
                     submission={submissions.find(
                       (submission) => submission.id === selectedSubmissionId
                     )}
-                  key={selectedSubmissionId}
+                    key={selectedSubmissionId}
                   />
                 ) : (
                   <FeedbackCodeEditor key="0" />
