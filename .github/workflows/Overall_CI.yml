@@ -14,22 +14,5 @@ jobs:
     deploy_production:
         name: Deploy Production
         needs: [frontend_ci, backend_ci]      
-        if: github.repository == 'CS3213-Frontend-Management-System/master'
-        permissions:
-            checks: write
-            pull-requests: write
-            contents: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Current Branch
-              uses: actions/checkout@v4
-      
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v3
-              with:
-                node-version: 20.x
-      
-            - name: Clean up
-              run: |
-                rm -rf frontend/node_modules
-                rm -rf frontend/coverage
+        if: github.repository == 'CS3213-Frontend-Management-System/master' && github.ref_type == 'tag'
+        uses: ./.github/workflows/CD_to_AKS.yml
