@@ -38,6 +38,7 @@ export default function FeedbackCodeEditor({ submission }: Props) {
     submission?.feedbacks?.forEach(() => {
       editor.createDecorationsCollection(newDecoration);
     });
+
     editor.focus();
   };
 

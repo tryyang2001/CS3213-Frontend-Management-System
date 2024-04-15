@@ -134,13 +134,21 @@ export default function SubmissionPage({ params }: Props) {
                       </span>
                     </p>
                   </div>
-                  <div>
+                  <div className="flex">
+                    <div className="text-xl font-semibold flex justify-center items-center mr-4">
+                      Questions:{" "}
+                    </div>
                     <ButtonGroup>
                       {assignment.questions?.map((question, index) => (
                         <Button
                           key={question.id}
                           onClick={() =>
                             handleQuestionChange(index, question.id)
+                          }
+                          className={
+                            question.id === currentQuestionId
+                              ? "bg-success text-white font-semibold"
+                              : ""
                           }
                         >{`${index + 1}`}</Button>
                       ))}

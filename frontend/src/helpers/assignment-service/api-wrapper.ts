@@ -52,6 +52,9 @@ const getAssignmentsByUserId = async (
 
     const assignments = response.data as Assignment[];
 
+    // sort assignments according to the deadline, latest deadline should be first
+    assignments.sort((a, b) => b.deadline - a.deadline);
+
     return assignments;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -14,11 +14,13 @@ interface SubmissionData {
   questionNo: number;
   submissionDate: number;
   name: string;
-  studentId: number
+  studentId: number;
 }
 
 export default function Submissions() {
-  const [submissions, setSubmissions] = useState<Record<string, SubmissionData[]>>({});
+  const [submissions, setSubmissions] = useState<
+    Record<string, SubmissionData[]>
+  >({});
 
   const { user } = useUserContext();
 
@@ -31,56 +33,65 @@ export default function Submissions() {
       const submissionsData: Record<string, SubmissionData[]> = {};
       if (user.role === "student") {
         // Retrieve all assignments that are published
-        const assignments =  await assignmentService.getAssignmentsByUserId(
+        const assignments = await assignmentService.getAssignmentsByUserId(
           user.uid,
           true,
           true
         );
-        await Promise.all(assignments.map(async (assignment) => {
-          const assignmentSubmissionsData: SubmissionData[] = [];
-          // Fetch submissionInfo for the current assignment
-          const submissionInfos = await GradingService.getSubmissionInfo({
-            assignmentId: assignment.id,
-            studentId: user.uid
-          });
-          let questionNo = 1;
-          submissionInfos?.forEach(submissionInfo => {
-            assignmentSubmissionsData.push({
-              questionId: submissionInfo.questionId,
-              questionNo: questionNo++,
-              name: "",
-              submissionDate: submissionInfo.createdOn,
-              studentId: user.uid
+
+        await Promise.all(
+          assignments.map(async (assignment) => {
+            const assignmentSubmissionsData: SubmissionData[] = [];
+            // Fetch submissionInfo for the current assignment
+            const submissionInfos = await GradingService.getSubmissionInfo({
+              assignmentId: assignment.id,
+              studentId: user.uid,
             });
+            let questionNo = 1;
+            submissionInfos?.forEach((submissionInfo) => {
+              assignmentSubmissionsData.push({
+                questionId: submissionInfo.questionId,
+                questionNo: questionNo++,
+                name: "",
+                submissionDate: submissionInfo.createdOn,
+                studentId: user.uid,
+              });
+            });
+            submissionsData[assignment.id] = assignmentSubmissionsData;
           })
-          submissionsData[assignment.id] = assignmentSubmissionsData;
-        }))
+        );
         setSubmissions(submissionsData);
         return assignments;
       }
-      
+
       if (user.role === "tutor") {
         const [assignments, students] = await Promise.all([
           assignmentService.getAssignmentsByUserId(user.uid, true, false),
-          userService.getAllStudents(user.uid)
+          userService.getAllStudents(user.uid),
         ]);
-        
-        await Promise.all(assignments.map(async (assignment) => {
-          const assignmentSubmissionsData: SubmissionData[] = [];
-          // Fetch submitters for the current assignment
-          const submitters = await GradingService.getSubmittersByAssignmentId(assignment.id)
-          students?.forEach(student => {
-            const submitted = submitters.find(submitter => submitter.studentId === student.uid);
-            assignmentSubmissionsData.push({
-              questionId: crypto.randomUUID(),
-              questionNo: 0,
-              name: student.name,
-              submissionDate: submitted ? submitted.createdOn : 0,
-              studentId: student.uid
+
+        await Promise.all(
+          assignments.map(async (assignment) => {
+            const assignmentSubmissionsData: SubmissionData[] = [];
+            // Fetch submitters for the current assignment
+            const submitters = await GradingService.getSubmittersByAssignmentId(
+              assignment.id
+            );
+            students?.forEach((student) => {
+              const submitted = submitters.find(
+                (submitter) => submitter.studentId === student.uid
+              );
+              assignmentSubmissionsData.push({
+                questionId: crypto.randomUUID(),
+                questionNo: 0,
+                name: student.name,
+                submissionDate: submitted ? submitted.createdOn : 0,
+                studentId: student.uid,
+              });
             });
+            submissionsData[assignment.id] = assignmentSubmissionsData;
           })
-          submissionsData[assignment.id] = assignmentSubmissionsData;
-        }))
+        );
         setSubmissions(submissionsData);
         return assignments;
       }
@@ -89,10 +100,15 @@ export default function Submissions() {
 
   return (
     <div className="h-dvh">
-      {(isLoading) ?
-       (<LogoLoading/>) :
-       (<AssignmentAccordion assignments={assignments} userRole={user?.role ?? ""} submissions={submissions}/>)
-      }
+      {isLoading ? (
+        <LogoLoading />
+      ) : (
+        <AssignmentAccordion
+          assignments={assignments}
+          userRole={user?.role ?? ""}
+          submissions={submissions}
+        />
+      )}
     </div>
   );
 }
