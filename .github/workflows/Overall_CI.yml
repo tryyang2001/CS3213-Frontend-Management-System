@@ -6,6 +6,10 @@ on:
     branches: [master]
   push:
     branches: [master]
+permissions:
+  checks: write
+  pull-requests: write
+  contents: write
 jobs:
     frontend_ci:
         uses: ./.github/workflows/frontend_CI.yml
