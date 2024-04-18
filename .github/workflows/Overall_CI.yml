@@ -10,6 +10,8 @@ permissions:
   checks: write
   pull-requests: write
   contents: write
+  actions: read 
+  id-token: write
 jobs:
     frontend_ci:
         uses: ./.github/workflows/frontend_CI.yml
