@@ -119,7 +119,7 @@ export default function SubmissionPage({ params }: Props) {
     <div>
       {assignment && (
         <div className="h-dvh flex p-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 w-full">
             <div className="col-span-1 overflow-y-auto flex-1 max-w-1/2">
               <div className="flex gap-2">
                 <div>

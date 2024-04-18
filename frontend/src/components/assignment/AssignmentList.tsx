@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Spacer,
+} from "@nextui-org/react";
 import DateUtils from "@/utils/dateUtils";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -46,7 +53,16 @@ function AssignmentList({ assignments, userRole }: Props) {
               key={assignment.id}
               className="bg-white shadow-md"
             >
-              <CardBody>
+              <CardHeader className="pb-0">
+                {assignment.isPublished ? (
+                  <Chip color="success" className="text-white font-bold">
+                    Published
+                  </Chip>
+                ) : (
+                  <Chip>Unpublished</Chip>
+                )}
+              </CardHeader>
+              <CardBody className="pt-1">
                 <div className="flex justify-between items-start">
                   <div>
                     <b className="text-black">{assignment.title}</b>

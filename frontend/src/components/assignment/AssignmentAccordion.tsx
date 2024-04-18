@@ -61,10 +61,12 @@ function AssignmentAccordion({ assignments, userRole, submissions }: Props) {
             startContent={
               assignment.deadline < new Date().getTime() ? (
                 <Chip>Expired</Chip>
-              ) : (
+              ) : assignment.isPublished ? (
                 <Chip color="success" className="text-white font-bold">
                   Ongoing
                 </Chip>
+              ) : (
+                <Chip>Unpublished</Chip>
               )
             }
           >

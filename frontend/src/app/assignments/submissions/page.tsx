@@ -47,6 +47,9 @@ export default function Submissions() {
               assignmentId: assignment.id,
               studentId: user.uid,
             });
+            submissionInfos?.sort((a, b) =>
+              a.questionId.localeCompare(b.questionId)
+            );
             let questionNo = 1;
             submissionInfos?.forEach((submissionInfo) => {
               assignmentSubmissionsData.push({
