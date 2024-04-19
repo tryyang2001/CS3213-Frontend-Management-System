@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bcdb23a9-cd1c-48c5-83de-2e50c5261614",
+		"_postman_id": "313e8188-b88a-47a5-bac0-5d0f769da657",
 		"name": "user-microservice",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21204766"
@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\" : \"Jane Doe\",\r\n  \"major\" : \"Comp Sci\",\r\n  \"course\" : \"CS1231\",\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\" : \"test123456\",\r\n  \"role\" : \"student\"\r\n}",
+					"raw": "{\r\n  \"name\" : \"Jane Doe\",\r\n  \"major\" : \"Comp Sci\",\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\" : \"test123456\",\r\n  \"role\" : \"student\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -69,7 +69,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"uid\": \"test@gmail.com\",\r\n  \"old_password\" : \"test123456\",\r\n  \"new_password\" : \"newtestpass\"\r\n}",
+					"raw": "{\r\n  \"uid\": \"18\",\r\n  \"old_password\" : \"test123456\",\r\n  \"new_password\" : \"newtestpass\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -97,7 +97,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"uid\" : 3,\r\n  \"email\": \"test@gmail.com\",\r\n  \"name\" : \"Joe Dane\",\r\n  \"major\" : \"Comp Eng\",\r\n  \"course\" : \"CS1231\",\r\n  \"role\" : \"student\"\r\n}",
+					"raw": "{\r\n  \"name\" : \"Joe Dane\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -105,7 +105,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3001/user/updateUserInfo",
+					"raw": "localhost:3001/user/updateUserInfo?uid=3",
 					"host": [
 						"localhost"
 					],
@@ -113,6 +113,12 @@
 					"path": [
 						"user",
 						"updateUserInfo"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "3"
+						}
 					]
 				}
 			},
@@ -125,7 +131,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"uid\" : \"12\"\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -133,7 +139,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3001/user/deleteUser",
+					"raw": "localhost:3001/user/deleteUser?uid=17",
 					"host": [
 						"localhost"
 					],
@@ -141,6 +147,12 @@
 					"path": [
 						"user",
 						"deleteUser"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "17"
+						}
 					]
 				}
 			},
@@ -166,7 +178,7 @@
 			"response": []
 		},
 		{
-			"name": "getAllUsers",
+			"name": "getAllStudents",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -185,24 +197,38 @@
 			"response": []
 		},
 		{
-			"name": "getUserInfo",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "health",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"uid\" : 3\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "localhost:3001/user/getUserInfo",
+					"raw": "localhost:3001/user/health",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"user",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserInfo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InR1dG9yQGVtYWlsLmNvbSIsInVpZCI6MiwiaWF0IjoxNzEzMjM1ODU4LCJleHAiOjE3MTM2Njc4NTh9.Npj8eDho0gAGI8iDzh78UmtWXV0MpXxVsSiPbxsecdU",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:3001/user/getUserInfo?uid=3",
 					"host": [
 						"localhost"
 					],
@@ -210,37 +236,12 @@
 					"path": [
 						"user",
 						"getUserInfo"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getUserByEmail",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"test@gmail.com\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3001/user/getUserByEmail",
-					"host": [
-						"localhost"
 					],
-					"port": "3001",
-					"path": [
-						"user",
-						"getUserByEmail"
+					"query": [
+						{
+							"key": "uid",
+							"value": "3"
+						}
 					]
 				}
 			},

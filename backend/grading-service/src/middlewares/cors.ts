@@ -1,5 +1,8 @@
 // @ts-expect-error as there is no @types/cors package available for typescript
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // TODO: Add production site to allowed origins
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS

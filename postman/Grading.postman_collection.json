@@ -49,8 +49,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"exec": [],
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -59,7 +62,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"language\": \"python\",\r\n    \"source_code\": \"def is_odd(x):\\r\\n    if x % 2 == 1:\\r\\n        return False\\r\\n    else:\\r\\n        return True\"\r\n}",
+					"raw": "{\r\n    \"language\": \"python\",\r\n    \"source_code\": \"def is_even(x):\\r\\n    if x % 2 == 1:\\r\\n        return True\\r\\n    else:\\r\\n        return False\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -118,7 +121,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{GRADING_API_URL}}/grading/api/questions/{{question_id}}/submissions?studentId=1",
+					"raw": "http://{{GRADING_API_URL}}/grading/api/questions/{{question_id}}/submissions?studentId={{student_id}}",
 					"protocol": "http",
 					"host": [
 						"{{GRADING_API_URL}}"
@@ -133,8 +136,60 @@
 					"query": [
 						{
 							"key": "studentId",
-							"value": "1"
+							"value": "{{student_id}}"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/questions/:id/submission/latest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{GRADING_API_URL}}/grading/api/questions/{{question_id}}/submission/latest?studentId={{student_id}}",
+					"protocol": "http",
+					"host": [
+						"{{GRADING_API_URL}}"
+					],
+					"path": [
+						"grading",
+						"api",
+						"questions",
+						"{{question_id}}",
+						"submission",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "studentId",
+							"value": "{{student_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assignments/:id/submitters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/grading/api/assignments/cluuv699a0000cwsuv1oha0a9/submitters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"grading",
+						"api",
+						"assignments",
+						"cluuv699a0000cwsuv1oha0a9",
+						"submitters"
 					]
 				}
 			},
@@ -175,12 +230,17 @@
 		},
 		{
 			"key": "question_id",
-			"value": "cltu7sh7b0007rdzclqfnzbt9",
+			"value": "cluz73c350002jaef02llnse4",
 			"type": "string"
 		},
 		{
 			"key": "student_id",
-			"value": "1",
+			"value": "3",
+			"type": "string"
+		},
+		{
+			"key": "assignment_id",
+			"value": "cluz6vdlk0000jaeflamfqla0",
 			"type": "string"
 		}
 	]

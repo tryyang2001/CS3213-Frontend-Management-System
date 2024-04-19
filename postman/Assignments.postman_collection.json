@@ -28,6 +28,32 @@
 			"response": []
 		},
 		{
+			"name": "/assignments?userId={id}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ASSIGNMENT_API_URL}}/assignment/api/assignments?userId={{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{ASSIGNMENT_API_URL}}"
+					],
+					"path": [
+						"assignment",
+						"api",
+						"assignments"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/assignments",
 			"event": [
 				{
@@ -50,7 +76,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Assignment 6 Demo\",\r\n    \"deadline\": 1735689599999,\r\n    \"authors\": [\"rui_yang_tan_user_id_1\"],\r\n    \"isPublished\": true\r\n}",
+					"raw": "{\r\n    \"title\": \"Demo Assignment\",\r\n    \"deadline\": 1735689599999,\r\n    \"authors\": [{{userId}}],\r\n    \"description\": \"This is an example of the assignment description field\",\r\n    \"isPublished\": false\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -100,7 +126,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Assignment 6 Demoo\"\r\n}",
+					"raw": "{\r\n    \"title\": \"Assignment Demoo\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -245,7 +271,7 @@
 							"    var test_case_ids = [];\r",
 							"\r",
 							"    responseBody.forEach(testCase => {\r",
-							"        if (!testCase.isPublic) {\r",
+							"        if (testCase.isPublic) {\r",
 							"            test_case_ids.add(testCase.id);\r",
 							"        }\r",
 							"    })\r",
@@ -261,8 +287,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"exec": [],
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -585,6 +614,11 @@
 		{
 			"key": "reference_solution_id",
 			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
