@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import AccountEditor from "../AccountEditor";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { mockUser, mockUserInfo } from "@/utils/testUtils";
+import { mockStudentUser, mockUserInfo } from "@/utils/testUtils";
 
 const mockPush = jest.fn((str: string) => str);
 
@@ -27,7 +27,7 @@ jest.mock("@/helpers/user-service/api-wrapper", () => {
       oldPassword: string,
       _newPassword: string
     ) => {
-      if (uid == mockUser.uid && oldPassword == mockUserInfo.email) {
+      if (uid == mockStudentUser.uid && oldPassword == mockUserInfo.email) {
         return;
       } else {
         throw new Error("Invalid Credentials");

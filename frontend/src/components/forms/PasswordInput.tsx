@@ -21,7 +21,7 @@ export default function PasswordInput({
     setPassword(s);
     if (setIsInvalid == undefined) return;
 
-    const isInvalid = s.length != 0 && s.length < 8;
+    const isInvalid = s.length != 0 && s.length < 10;
     setInvalidPassword(isInvalid);
     setIsInvalid(isInvalid);
   };

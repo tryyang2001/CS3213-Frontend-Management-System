@@ -75,13 +75,9 @@ const getSubmissionsByQuestionIdAndStudentId = async ({
   }
 };
 
-const getSubmittersByAssignmentId = async (
-  assignmentId : string
-) => {
+const getSubmittersByAssignmentId = async (assignmentId: string) => {
   try {
-    const response = await api.get(
-      `/assignments/${assignmentId}/submitters`
-    );
+    const response = await api.get(`/assignments/${assignmentId}/submitters`);
     const submitters = response.data as Submitter[];
     return submitters;
   } catch (error) {
@@ -144,7 +140,7 @@ const GradingService = {
   getSubmittersByAssignmentId,
   getSubmissionsByQuestionIdAndStudentId,
   postFeedback,
-  getSubmissionInfo
+  getSubmissionInfo,
 };
 
 export default GradingService;

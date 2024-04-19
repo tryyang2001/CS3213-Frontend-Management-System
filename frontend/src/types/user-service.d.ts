@@ -11,8 +11,8 @@ interface UserInfo {
 }
 
 interface StudentInfo {
-  uid: number,
-  name: string
+  uid: number;
+  name: string;
 }
 
 interface ErrorResponse {

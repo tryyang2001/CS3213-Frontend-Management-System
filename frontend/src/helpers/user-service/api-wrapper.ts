@@ -99,7 +99,7 @@ const getAllStudents = async (uid: number): Promise<StudentInfo[] | null> => {
     });
     if (response.status === HttpStatusCode.OK.valueOf()) {
       const responseData = response.data as StudentInfo[];
-      const studentInfos: StudentInfo[] = responseData.map(student => ({
+      const studentInfos: StudentInfo[] = responseData.map((student) => ({
         name: student.name,
         uid: student.uid,
       }));
@@ -197,6 +197,7 @@ const userService = {
   updateUserPassword,
   updateUserInfo,
   clearCookie,
+  api,
 };
 
 export default userService;

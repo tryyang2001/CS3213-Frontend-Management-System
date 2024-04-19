@@ -24,7 +24,9 @@ export default function FeedbackTabs({ submission, testcases }: Props) {
     {
       id: "feedback",
       label: "Feedback",
-      content: feedbackContent.length ? feedbackContent : ["Code is correct, no feedback required."],
+      content: feedbackContent.length
+        ? feedbackContent
+        : ["Code is correct, no feedback required."],
     },
     {
       id: "testcases",

@@ -191,6 +191,49 @@ exports[`Page Snapshot tests Loading Assignment Page Snapshot test 1`] = `
 </div>
 `;
 
+exports[`Page Snapshot tests Loading User Page Snapshot test 1`] = `
+<div>
+  <div
+    class="flex flex-col items-center p-2"
+  >
+    <div
+      class="flex flex-col items-center justify-center"
+      style="height: 100vh;"
+    >
+      <div
+        class="flex items-center justify-center object-cover"
+      >
+        <div
+          class="shadow-black/5 shadow-none group relative overflow-hidden bg-content3 dark:bg-content2 before:opacity-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:border-t before:border-content4/30 before:bg-gradient-to-r before:from-transparent before:via-content4 dark:before:via-default-700/10 before:to-transparent after:opacity-100 after:absolute after:inset-0 after:-z-10 after:bg-content3 dark:after:bg-content2 rounded-large"
+          style="max-width: 100%;"
+        >
+           
+          <img
+            alt="ITS Logo"
+            class="relative shadow-black/5 data-[loaded=true]:opacity-100 shadow-none opacity-0 transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large bg-logo mx-auto -mb-4 z-0"
+            height="100%"
+            src="/logo.svg"
+            width="100%"
+          />
+        </div>
+      </div>
+      <div
+        class="mx-2 -mt-2 z-20"
+      >
+        <div
+          class="flex items-center justify-center"
+        >
+          Loading...
+        </div>
+        <div
+          class="relative w-64 space-y-3 overflow-hidden rounded-md bg-logo p-3 shadow before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-slate-200 hover:shadow-lg before:animate-[shimmer_1.5s_infinite]"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Page Snapshot tests Login Snapshot test 1`] = `
 <div>
   <div
@@ -524,43 +567,492 @@ exports[`Page Snapshot tests Sign-up Snapshot test 1`] = `
 </div>
 `;
 
+exports[`Page Snapshot tests Student Assignment Page Snapshot test 1`] = `
+<div>
+  <div>
+    <div
+      class="ml-[12%] mt-[5%] mr-[8%]"
+    >
+      <div
+        class="flex gap-2"
+      >
+        <div>
+          <h1
+            class="text-3xl font-semibold "
+          >
+            Assignment 1
+          </h1>
+          <div
+            class="flex flex-col my-4 gap-2"
+          >
+            <p
+              class="text-lg font-semibold"
+            >
+              Due on:
+               
+              <span
+                class="italic font-medium"
+              >
+                Thursday, January 1, 1970 at 07:30 AM
+              </span>
+            </p>
+            <p
+              class="text-lg font-semibold"
+            >
+              Number of questions:
+               
+              <span
+                class="italic font-medium"
+              >
+                2
+              </span>
+            </p>
+            <div
+              class="my-4"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex px-0 py-4 mb-6"
+      >
+        <div
+          class="w-full"
+        >
+          <div
+            class="flex space-x-4"
+          >
+            <div
+              class="flex-1 mr-2 text-xl font-semibold"
+            >
+              Question 1
+            </div>
+          </div>
+          <hr
+            class="shrink-0 bg-divider border-none w-full h-divider mt-4 mb-2"
+            role="separator"
+          />
+          <div
+            class="flex mt-3"
+          >
+            <div
+              class="text-md text-justify"
+            >
+              description 1
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex px-0 py-4 mb-6"
+      >
+        <div
+          class="w-full"
+        >
+          <div
+            class="flex space-x-4"
+          >
+            <div
+              class="flex-1 mr-2 text-xl font-semibold"
+            >
+              Question 2
+            </div>
+          </div>
+          <hr
+            class="shrink-0 bg-divider border-none w-full h-divider mt-4 mb-2"
+            role="separator"
+          />
+          <div
+            class="flex mt-3"
+          >
+            <div
+              class="text-md text-justify"
+            >
+              description 2
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Page Snapshot tests User Page Snapshot test 1`] = `
 <div>
   <div
     class="flex flex-col items-center p-2"
   >
     <div
-      class="flex flex-col items-center justify-center"
-      style="height: 100vh;"
+      class="w-[90%]"
     >
       <div
-        class="flex items-center justify-center object-cover"
+        class="flex w-full justify-around pt-10"
       >
         <div
-          class="shadow-black/5 shadow-none group relative overflow-hidden bg-content3 dark:bg-content2 before:opacity-100 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:border-t before:border-content4/30 before:bg-gradient-to-r before:from-transparent before:via-content4 dark:before:via-default-700/10 before:to-transparent after:opacity-100 after:absolute after:inset-0 after:-z-10 after:bg-content3 dark:after:bg-content2 rounded-large"
-          style="max-width: 100%;"
+          class="text-xl font-bold"
         >
-           
-          <img
-            alt="ITS Logo"
-            class="relative shadow-black/5 data-[loaded=true]:opacity-100 shadow-none opacity-0 transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large bg-logo mx-auto -mb-4 z-0"
-            height="100%"
-            src="/logo.svg"
-            width="100%"
-          />
+           Your Account 
         </div>
+        <form
+          class="flex w-1/2 flex-col gap-4"
+        >
+          <div
+            class="flex flex-col relative overflow-hidden height-auto text-foreground box-border bg-content1 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 shadow-medium rounded-large transition-transform-background motion-reduce:transition-none border-none self-center max-w-[200px] max-h-[200px]"
+            tabindex="-1"
+          >
+            <span
+              class="flex relative justify-center items-center box-border overflow-hidden align-middle z-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 text-tiny bg-default text-default-foreground rounded-full object-cover h-200 w-200"
+              tabindex="-1"
+            >
+              <img
+                alt="Profile Picture"
+                class="flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100"
+                src="https://picsum.photos/200"
+              />
+            </span>
+            <div
+              class="p-3 h-auto flex w-full items-center color-inherit subpixel-antialiased bg-background/10 backdrop-blur backdrop-saturate-150 justify-end before:bg-white/10 overflow-hidden py-1 absolute rounded-large bottom-1 ml-1 z-10"
+            >
+              <button
+                class="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-3 min-w-unit-16 h-unit-8 gap-unit-2 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover text-tiny"
+                type="button"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+          <div
+            class="group flex flex-col w-full is-filled"
+            data-filled="true"
+            data-filled-within="true"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-required="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2 is-filled"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="react-aria-:r17:"
+                id="react-aria-:r18:"
+              >
+                Name
+              </label>
+              <div
+                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <input
+                  aria-label="Name"
+                  aria-labelledby="react-aria-:r17: react-aria-:r18:"
+                  aria-required="true"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground is-filled"
+                  data-filled="true"
+                  data-filled-within="true"
+                  data-slot="input"
+                  id="react-aria-:r17:"
+                  name="Name"
+                  required=""
+                  type="text"
+                  value="Abc"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="group flex flex-col w-full is-filled"
+            data-filled="true"
+            data-filled-within="true"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 !h-auto transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2 is-filled"
+              data-has-multiple-rows="true"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text relative will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small pb-0.5 pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="Bio"
+                id="react-aria-:r1d:"
+              >
+                Bio
+              </label>
+              <div
+                class="inline-flex w-full h-full box-border items-start group-data-[has-label=true]:items-start pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <textarea
+                  aria-label="Bio"
+                  aria-labelledby="Bio react-aria-:r1d:"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small resize-none data-[hide-scroll=true]:scrollbar-hide group-data-[has-value=true]:text-default-foreground pt-0 transition-height !duration-100 motion-reduce:transition-none is-filled"
+                  data-filled="true"
+                  data-filled-within="true"
+                  data-hide-scroll="true"
+                  data-slot="input"
+                  id="Bio"
+                  placeholder="Share any you like..."
+                >
+                  Hello!
+                </textarea>
+              </div>
+            </div>
+          </div>
+          <button
+            aria-expanded="false"
+            class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased"
+            data-slot="trigger"
+            type="button"
+          >
+             
+            Save Changes
+             
+          </button>
+        </form>
       </div>
       <div
-        class="mx-2 -mt-2 z-20"
+        class="flex w-full justify-around pt-10"
       >
         <div
-          class="flex items-center justify-center"
+          class="text-xl font-bold"
         >
-          Loading...
+           Your Profile 
         </div>
-        <div
-          class="relative w-64 space-y-3 overflow-hidden rounded-md bg-logo p-3 shadow before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-slate-200 hover:shadow-lg before:animate-[shimmer_1.5s_infinite]"
-        />
+        <form
+          class="flex w-1/2 flex-col gap-4"
+        >
+          <div
+            class="group flex flex-col w-full opacity-disabled pointer-events-none is-filled"
+            data-disabled="true"
+            data-filled="true"
+            data-filled-within="true"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 pointer-events-none transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2 is-filled"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="absolute z-10 origin-top-left subpixel-antialiased block text-foreground-500 cursor-text pointer-events-none will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="react-aria-:r1i:"
+                id="react-aria-:r1j:"
+              >
+                Email
+              </label>
+              <div
+                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <input
+                  aria-label="Email"
+                  aria-labelledby="react-aria-:r1i: react-aria-:r1j:"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground is-filled"
+                  data-filled="true"
+                  data-filled-within="true"
+                  data-slot="input"
+                  disabled=""
+                  id="react-aria-:r1i:"
+                  type="email"
+                  value="email@email.com"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="group flex flex-col w-full"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-required="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-8 rounded-small flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-12 py-1.5 px-3"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="react-aria-:r1n:"
+                id="react-aria-:r1o:"
+              >
+                Old Password
+              </label>
+              <div
+                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <input
+                  aria-label="Old Password"
+                  aria-labelledby="react-aria-:r1n: react-aria-:r1o:"
+                  aria-required="true"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
+                  data-has-end-content="true"
+                  data-slot="input"
+                  id="react-aria-:r1n:"
+                  required=""
+                  type="password"
+                  value=""
+                />
+                <button
+                  class="focus:outline-none"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="text-2xl text-default-400 pointer-events-none"
+                    fill="none"
+                    focusable="false"
+                    height="1em"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                  >
+                    <path
+                      d="M21.25 9.14969C18.94 5.51969 15.56 3.42969 12 3.42969C10.22 3.42969 8.49 3.94969 6.91 4.91969C5.33 5.89969 3.91 7.32969 2.75 9.14969C1.75 10.7197 1.75 13.2697 2.75 14.8397C5.06 18.4797 8.44 20.5597 12 20.5597C13.78 20.5597 15.51 20.0397 17.09 19.0697C18.67 18.0897 20.09 16.6597 21.25 14.8397C22.25 13.2797 22.25 10.7197 21.25 9.14969ZM12 16.0397C9.76 16.0397 7.96 14.2297 7.96 11.9997C7.96 9.76969 9.76 7.95969 12 7.95969C14.24 7.95969 16.04 9.76969 16.04 11.9997C16.04 14.2297 14.24 16.0397 12 16.0397Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M11.9984 9.14062C10.4284 9.14062 9.14844 10.4206 9.14844 12.0006C9.14844 13.5706 10.4284 14.8506 11.9984 14.8506C13.5684 14.8506 14.8584 13.5706 14.8584 12.0006C14.8584 10.4306 13.5684 9.14062 11.9984 9.14062Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="group flex flex-col w-full"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-required="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-8 rounded-small flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-12 py-1.5 px-3"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.tiny)/2_-_8px)] pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="react-aria-:r1s:"
+                id="react-aria-:r1t:"
+              >
+                New Password
+              </label>
+              <div
+                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <input
+                  aria-label="New Password"
+                  aria-labelledby="react-aria-:r1s: react-aria-:r1t:"
+                  aria-required="true"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
+                  data-has-end-content="true"
+                  data-slot="input"
+                  id="react-aria-:r1s:"
+                  required=""
+                  type="password"
+                  value=""
+                />
+                <button
+                  class="focus:outline-none"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="text-2xl text-default-400 pointer-events-none"
+                    fill="none"
+                    focusable="false"
+                    height="1em"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                  >
+                    <path
+                      d="M21.25 9.14969C18.94 5.51969 15.56 3.42969 12 3.42969C10.22 3.42969 8.49 3.94969 6.91 4.91969C5.33 5.89969 3.91 7.32969 2.75 9.14969C1.75 10.7197 1.75 13.2697 2.75 14.8397C5.06 18.4797 8.44 20.5597 12 20.5597C13.78 20.5597 15.51 20.0397 17.09 19.0697C18.67 18.0897 20.09 16.6597 21.25 14.8397C22.25 13.2797 22.25 10.7197 21.25 9.14969ZM12 16.0397C9.76 16.0397 7.96 14.2297 7.96 11.9997C7.96 9.76969 9.76 7.95969 12 7.95969C14.24 7.95969 16.04 9.76969 16.04 11.9997C16.04 14.2297 14.24 16.0397 12 16.0397Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M11.9984 9.14062C10.4284 9.14062 9.14844 10.4206 9.14844 12.0006C9.14844 13.5706 10.4284 14.8506 11.9984 14.8506C13.5684 14.8506 14.8584 13.5706 14.8584 12.0006C14.8584 10.4306 13.5684 9.14062 11.9984 9.14062Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="group flex flex-col w-full"
+            data-has-elements="true"
+            data-has-label="true"
+            data-has-value="true"
+            data-required="true"
+            data-slot="base"
+          >
+            <div
+              class="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-14 py-2"
+              data-slot="input-wrapper"
+              style="cursor: text;"
+            >
+              <label
+                class="absolute z-10 pointer-events-none origin-top-left subpixel-antialiased block text-foreground-500 cursor-text after:content-['*'] after:text-danger after:ml-0.5 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[filled-within=true]:text-default-600 group-data-[filled-within=true]:pointer-events-auto group-data-[filled-within=true]:scale-85 text-small group-data-[filled-within=true]:-translate-y-[calc(50%_+_theme(fontSize.small)/2_-_6px)] pe-2 max-w-full text-ellipsis overflow-hidden"
+                data-slot="label"
+                for="react-aria-:r21:"
+                id="react-aria-:r22:"
+              >
+                Confirm Password
+              </label>
+              <div
+                class="inline-flex w-full items-center h-full box-border group-data-[has-label=true]:items-end pb-0.5"
+                data-slot="inner-wrapper"
+              >
+                <input
+                  aria-label="Confirm Password"
+                  aria-labelledby="react-aria-:r21: react-aria-:r22:"
+                  aria-required="true"
+                  class="w-full font-normal bg-transparent !outline-none placeholder:text-foreground-500 focus-visible:outline-none data-[has-start-content=true]:ps-1.5 data-[has-end-content=true]:pe-1.5 text-small group-data-[has-value=true]:text-default-foreground"
+                  data-slot="input"
+                  id="react-aria-:r21:"
+                  name="Confirm new password"
+                  required=""
+                  type="password"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+          <button
+            aria-expanded="false"
+            class="group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 text-small gap-unit-2 rounded-medium [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover z-10 aria-expanded:scale-[0.97] aria-expanded:opacity-70 subpixel-antialiased"
+            data-slot="trigger"
+            type="button"
+          >
+             
+            Update Password
+             
+          </button>
+        </form>
       </div>
     </div>
   </div>

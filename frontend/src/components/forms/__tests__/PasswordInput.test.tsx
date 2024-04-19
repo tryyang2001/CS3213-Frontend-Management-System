@@ -39,7 +39,7 @@ describe("Password Input", () => {
       );
       expect(invalid.value).toBe(false);
       const passwordInput = screen.getByLabelText("Password");
-      fireEvent.change(passwordInput, { target: { value: "1234567" } });
+      fireEvent.change(passwordInput, { target: { value: "123456789" } });
       expect(invalid.value).toBe(true);
     });
   });
@@ -59,19 +59,18 @@ describe("Password Input", () => {
       expect(invalid.value).toBe(false);
     });
 
-    it("should be invalid given not enough characters", () => {
+    it("should not be invalid given not enough characters", () => {
       render(
         <PasswordInput
           label="Password"
           password={password.value}
           setPassword={password.setValue}
-          setIsInvalid={invalid.setValue}
         />
       );
       expect(invalid.value).toBe(false);
       const passwordInput = screen.getByLabelText("Password");
       fireEvent.change(passwordInput, { target: { value: "1234567" } });
-      expect(invalid.value).toBe(true);
+      expect(invalid.value).toBe(false);
     });
   });
 
