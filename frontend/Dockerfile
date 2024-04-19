@@ -13,7 +13,7 @@ RUN yarn install
 
 # Copy rest of the application files
 COPY . .
-RUN printf "$PROD_ENV" >> .env
+RUN if [ ! -f ".env" ]; then printf "$PROD_ENV" >> .env; fi
 
 # STAGE 2: build
 FROM base AS build

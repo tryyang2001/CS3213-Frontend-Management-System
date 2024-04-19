@@ -6,7 +6,7 @@ RUN yarn install
 
 COPY . .
 
-RUN printf "$PROD_ENV" >> .env
+RUN if [ ! -f ".env" ]; then printf "$PROD_ENV" >> .env; fi
 
 RUN yarn build
 
