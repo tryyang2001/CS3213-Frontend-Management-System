@@ -50,7 +50,7 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
                 );
               }}
               size="sm"
-              className="w-[40%]"
+              className="w-[40%] whitespace-nowrap"
             />
             <Input
               label={`Output for Test Case ${index + 1}`}
@@ -66,7 +66,7 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
                 );
               }}
               size="sm"
-              className="w-[40%]"
+              className="w-[40%] whitespace-nowrap"
             />
 
             <div className="mx-4">
