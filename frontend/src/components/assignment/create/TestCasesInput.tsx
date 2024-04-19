@@ -3,6 +3,7 @@
 import Icons from "@/components/common/Icons";
 import { Button, Input, Link, Switch, Tooltip } from "@nextui-org/react";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   testCases: TestCase[];
@@ -20,10 +21,10 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
 
   const [testCaseUniqueIds, setTestCaseUniqueIds] = useState<string[]>(() => {
     if (testCases.length === 0) {
-      return [crypto.randomUUID()];
+      return [uuidv4()];
     }
 
-    return testCases.map((tc) => tc.id ?? crypto.randomUUID());
+    return testCases.map((tc) => tc.id ?? uuidv4());
   });
 
   return (
@@ -117,7 +118,7 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
                     setShowAll(true);
                     setTestCaseUniqueIds([
                       ...testCaseUniqueIds,
-                      crypto.randomUUID(),
+                      uuidv4(),
                     ]);
                     setTestCases([
                       ...testCases,
