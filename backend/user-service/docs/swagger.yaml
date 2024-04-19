@@ -181,15 +181,11 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "body"
-          name: "userData"
-          description: "User ID"
+        - in: "query"
+          name: "uid"
+          description: "User ID to retrieve user information for"
           required: true
-          schema:
-            type: "object"
-            properties:
-              uid:
-                type: "string"
+          type: "string"
         - in: "cookie"
           name: "token"
           description: "Authentication token"
@@ -203,7 +199,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "Internal server error checking password."
+                example: "User deleted successfully."
         401:
           description: "Unauthorize due to invalid or no authentication token"
           schema:
@@ -336,6 +332,98 @@ paths:
                 type: "string"
                 example: "Internal server error getting user by uid."
 
+  /user/getAllStudents:
+    get:
+      tags:
+        - "User"
+      summary: "Get all students information"
+      description: "Retrieve all students information"
+      operationId: "getAllStudents"
+      parameters:
+        - in: "query"
+          name: "uid"
+          description: "Tutor uid"
+          required: true
+          type: "string"
+        - in: "cookie"
+          name: "token"
+          description: "Authentication token"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Students information retrieved"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                uid:
+                  type: "number"
+                  example: 2
+                name:
+                  type: "string"
+                  example: "Tutor Name"
+                email:
+                  type: "string"
+                  format: "email"
+                  example: "tutor@email.com"
+                major:
+                  type: "string"
+                  example: "major placeholder"
+                avatarUrl:
+                  type: "string"
+                  format: "uri"
+                  example: "https://utfs.io/f/a0584f1d-c6ae-41d0-9d12-783d01f5fdb0-sy2ruq.jpg"
+                role:
+                  type: "string"
+                  example: "tutor"
+                bio:
+                  type: "string"
+                  example: "This person has a bio!!!"
+        400:
+          description: "Invalid uid"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Invalid uid."
+        401:
+          description: "Unauthorize due to invalid or no authentication token"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Unauthorized, invalid token."
+        403:
+          description: "User is not a tutor"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Access denied. User is not a tutor."
+        404:
+          description: "User not found"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User does not exist."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Error getting all students."
+                
   /user/updateUserPassword:
     put:
       tags:
