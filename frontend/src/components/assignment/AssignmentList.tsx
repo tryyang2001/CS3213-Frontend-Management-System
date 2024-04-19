@@ -54,13 +54,22 @@ function AssignmentList({ assignments, userRole }: Props) {
               className="bg-white shadow-md"
             >
               <CardHeader className="pb-0">
-                {assignment.isPublished ? (
-                  <Chip color="success" className="text-white font-bold">
-                    Published
-                  </Chip>
-                ) : (
-                  <Chip>Unpublished</Chip>
-                )}
+                {userRole === "tutor" &&
+                  (assignment.isPublished ? (
+                    <Chip color="success" className="text-white font-bold mr-1">
+                      Published
+                    </Chip>
+                  ) : (
+                    <Chip className="mr-1">Unpublished</Chip>
+                  ))}
+                {assignment.isPublished &&
+                  (assignment.deadline < new Date().getTime() ? (
+                    <Chip>Expired</Chip>
+                  ) : (
+                    <Chip color="success" className="text-white font-bold">
+                      Ongoing
+                    </Chip>
+                  ))}
               </CardHeader>
               <CardBody className="pt-1">
                 <div className="flex justify-between items-start">
