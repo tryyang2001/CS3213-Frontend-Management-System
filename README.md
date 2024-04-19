@@ -30,9 +30,7 @@ Before running the project, make sure you have access to the following:
 
 ## Local Development
 
-There are two way to set up/run the project in local enviroment:
-### Run the project using yarn:
-
+Follow these steps to set up and run the project for local development:
 1. Clone the repository: `git clone https://github.com/tryyang2001/CS3213-Frontend-Management-System.git`
 2. Copy `.env` files obtained from the drive into directories: `frontend`, `backend/assignment-service`, `backend/user-service`, and `backend/grading-service` respectively
 3. At the root directory, run `yarn setup` to install all dependencies for all microservices. Take note that this process might take longer to finish (< 10 mins)
