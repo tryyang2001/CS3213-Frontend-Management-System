@@ -284,6 +284,7 @@ const assignmentService = {
   updateQuestion,
   deleteAssignment,
   deleteQuestion,
+  api,
 };
 
 export default assignmentService;

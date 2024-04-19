@@ -222,7 +222,7 @@ export default function AssignmentEditor({ isEditing = false }: Props) {
                 </Tooltip>
               </div>
             </Switch>
-            <div className="ml-[10%] col-span-1 flex items-center"></div>
+            <div className="ml-[10%] col-span-1 flex items-center" />
           </div>
         )}
 

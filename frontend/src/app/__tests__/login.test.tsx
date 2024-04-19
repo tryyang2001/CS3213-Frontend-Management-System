@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import LoginPage from "../login/page";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { mockUser, mockUserInfo } from "@/utils/testUtils";
+import { mockStudentUser, mockUserInfo } from "@/utils/testUtils";
 
 const mockPush = jest.fn((str: string) => str);
 
@@ -68,7 +68,7 @@ jest.mock("@/helpers/user-service/api-wrapper", () => {
   return {
     login: (email: string, password: string) => {
       if (email == correctEmail && password == correctPassword) {
-        return mockUser;
+        return mockStudentUser;
       } else {
         throw new Error("Invalid Credentials");
       }

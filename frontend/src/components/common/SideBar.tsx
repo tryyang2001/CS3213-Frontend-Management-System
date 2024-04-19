@@ -136,7 +136,7 @@ export default function SideBar() {
                     item.id === 2 &&
                     (user?.role ?? "student") === "student"
                   ) {
-                    return <div key={item.id}></div>;
+                    return <div key={item.id} />;
                   }
 
                   return (
@@ -184,7 +184,7 @@ export default function SideBar() {
                     item.id === 2 &&
                     (user?.role ?? "student") === "student"
                   ) {
-                    return <div key={item.id}></div>;
+                    return <div key={item.id} />;
                   }
 
                   return (

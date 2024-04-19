@@ -30,7 +30,7 @@ export const mockUserInfo: UserInfo = {
   bio: "Hello!",
 };
 
-export const mockUser: User = {
+export const mockStudentUser: User = {
   uid: 3,
   role: "Student",
 };
@@ -63,3 +63,21 @@ export const mockAssignment: Assignment = {
   createdOn: 0,
   updatedOn: 0,
 };
+
+export const mockReferenceSolution: ReferenceSolution = {
+  language: "py",
+  code: "def isOdd(num): return num % 2 == 1",
+};
+
+export const mockTestCases: TestCase[] = [
+  {
+    input: "1",
+    output: "True",
+    isPublic: true,
+  },
+  {
+    input: "2",
+    output: "False",
+    isPublic: false,
+  },
+];

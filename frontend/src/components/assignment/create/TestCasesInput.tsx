@@ -116,10 +116,7 @@ function TestCasesInput({ testCases, setTestCases }: Props) {
                 <Button
                   onClick={() => {
                     setShowAll(true);
-                    setTestCaseUniqueIds([
-                      ...testCaseUniqueIds,
-                      uuidv4(),
-                    ]);
+                    setTestCaseUniqueIds([...testCaseUniqueIds, uuidv4()]);
                     setTestCases([
                       ...testCases,
                       { input: "", output: "", isPublic: true },

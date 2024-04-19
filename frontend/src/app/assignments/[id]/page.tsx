@@ -171,7 +171,7 @@ export default function Page({ params }: Props) {
                   Submit
                 </Button>
                 <Modal
-                  size={"xl"}
+                  size="xl"
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   isDismissable={false}
@@ -229,7 +229,9 @@ export default function Page({ params }: Props) {
                                 </div>
                                 {submissionStatus?.[question.id] && (
                                   <Button
-                                    onPress={() => redirectToSubmissionPage(question.id)}
+                                    onPress={() =>
+                                      redirectToSubmissionPage(question.id)
+                                    }
                                     fullWidth={true}
                                   >
                                     View Feedback
