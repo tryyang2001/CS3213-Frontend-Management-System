@@ -30,7 +30,8 @@ Before running the project, make sure you have access to the following:
 
 ## Local Development
 
-Follow these steps to set up and run the project for local development:
+There are two way to set up/run the project in local enviroment:
+### Run the project using yarn:
 
 1. Clone the repository: `git clone https://github.com/tryyang2001/CS3213-Frontend-Management-System.git`
 2. Copy `.env` files obtained from the drive into directories: `frontend`, `backend/assignment-service`, `backend/user-service`, and `backend/grading-service` respectively
@@ -43,14 +44,32 @@ To run service individually, you will need to change path directory to the targe
 cd backend/assignment-service
 yarn dev
 ```
+## Production Build
+There are 2 ways to run production build in local environment
 
-## Production Build and Deployment
+### Run the project using `yarn`
 
 Follow these steps to build and run the project in production environment:
 
 1. Follow steps 1, 2, and 3 in local development for setting up the project
 2. At the root directory, you may start the server by running `yarn start`
 
+### Run the project using Docker Engine:
+Follow these steps to build and run the project in production environment:
+1. Clone the repository: `git clone https://github.com/tryyang2001/CS3213-Frontend-Management-System.git`
+2. Copy `.env` files obtained from the drive into directories: `frontend`, `backend/assignment-service`, `backend/user-service`, and `backend/grading-service` respectively
+3. Ensure you have Docker Engine installed, if not check out Docker documentation on [how to install Docker Engine](https://docs.docker.com/engine/install/). Open Docker Engine
+4. At the root directory run `docker-compose up`
+5. After all containers are up, run the application at `localhost:80`
+
+## Deployment
+
+We are using Containers as an Application (CaaS) approach for our microservices deployment. We chose Azure as the cloud platform with its Azure Container Registry (ACR) for pushing/storing/pulling build images and Azure Kubernetes Service (AKS) for orchestration between services and setting up API gateway using ingress-nginx. The steps of our deployment:
+1. Authenticate with Azure/ACR/AKS
+2. Build images for each microservices and push them to ACR
+3. Execute kuberenetes manifest files in `k8s/startup.yaml` to set up services/deployment and ingress-nginx
+
+You can find the similar deploying flow in our Continuous Deployment (CD) in `.github/workflows/CD_to_AKS.yml`
 ## Contact
 
 If you encountered any problem or need clarification from the developers, kindly contact tanruiyang01@u.nus.edu.
