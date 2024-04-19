@@ -10,7 +10,7 @@ import { Button, Tooltip } from "@nextui-org/react";
 import assignmentService from "@/helpers/assignment-service/api-wrapper";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { v4 as uuidv4 } from "uuid";
 interface Props {
   params: {
     id: string;
@@ -27,7 +27,7 @@ function Page({ params }: Props) {
     },
   ]);
   const [questionUniqueIds, setQuestionUniqueIds] = useState<string[]>([
-    crypto.randomUUID(),
+    uuidv4(),
   ]);
 
   const { toast } = useToast();
@@ -65,7 +65,7 @@ function Page({ params }: Props) {
       },
     ]);
 
-    setQuestionUniqueIds([...questionUniqueIds, crypto.randomUUID()]);
+    setQuestionUniqueIds([...questionUniqueIds, uuidv4()]);
   };
 
   const handleDeleteQuestion = (index: number) => {

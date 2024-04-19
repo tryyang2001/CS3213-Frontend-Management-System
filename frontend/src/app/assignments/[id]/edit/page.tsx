@@ -21,6 +21,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   params: {
@@ -78,7 +79,7 @@ function Page({ params }: Props) {
             code: rawReferenceSolution.code,
           };
 
-          setQuestionUniqueIds((prevIds) => [...prevIds, crypto.randomUUID()]);
+          setQuestionUniqueIds((prevIds) => [...prevIds, uuidv4()]);
 
           return {
             id: question.id,
@@ -128,7 +129,7 @@ function Page({ params }: Props) {
       },
     ]);
 
-    setQuestionUniqueIds((prevIds) => [...prevIds, crypto.randomUUID()]);
+    setQuestionUniqueIds((prevIds) => [...prevIds, uuidv4()]);
   };
 
   const handleDeleteQuestion = (index: number) => {

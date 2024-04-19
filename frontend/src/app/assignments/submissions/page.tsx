@@ -8,6 +8,7 @@ import LogoLoading from "@/components/common/LogoLoading";
 import AssignmentAccordion from "@/components/assignment/AssignmentAccordion";
 import GradingService from "@/helpers/grading-service/api-wrapper";
 import userService from "@/helpers/user-service/api-wrapper";
+import { v4 as uuidv4 } from "uuid";
 
 interface SubmissionData {
   questionId: string;
@@ -85,7 +86,7 @@ export default function Submissions() {
                 (submitter) => submitter.studentId === student.uid
               );
               assignmentSubmissionsData.push({
-                questionId: crypto.randomUUID(),
+                questionId: uuidv4(),
                 questionNo: 0,
                 name: student.name,
                 submissionDate: submitted ? submitted.createdOn : 0,
